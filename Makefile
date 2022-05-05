@@ -4,7 +4,7 @@
 
 #~~~~ Output ~~~~#
 
-SERV		=	ircserv
+NAME		=	ircserv
 CLIENT		=	ircclient
 
 #~~~~ Paths ~~~~#
@@ -32,10 +32,10 @@ RM			=	rm -rf
 
 #~~~~ Main Rules ~~~~#
 
-all :			$(SERV) $(CLIENT)
+all :			$(NAME) $(CLIENT)
 
-$(SERV) :		$(OBJ)
-				$(CC) $(CFLAG) $(OBJ) -o $(SERV) -I $(PATH_INC)
+$(NAME) :		$(OBJ)
+				$(CC) $(CFLAG) $(OBJ) -o $(NAME) -I $(PATH_INC)
 
 $(CLIENT) :
 				$(MAKE) -C $(PATH_CLIENT)
@@ -56,7 +56,7 @@ clean :
 			$(MAKE) clean -C $(PATH_CLIENT)
 
 fclean :
-			$(RM) $(PATH_OBJ) $(SERV) $(CLIENT)
+			$(RM) $(PATH_OBJ) $(NAME) $(CLIENT)
 			$(MAKE) fclean -C $(PATH_CLIENT)
 
 #~~~~ Eugene ~~~~#
