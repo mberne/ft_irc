@@ -4,20 +4,20 @@
 
 #~~~~ Output ~~~~#
 
-NAME		=	ircserv
+SERV		=	ircserv
+CLIENT		=	ircclient
 
 #~~~~ Paths ~~~~#
 
 VPATH		=	src/
-PATH_INC	=	include/
+PATH_INC	=	inc/
 PATH_OBJ	=	obj/
+PATH_CLIENT =	irc_client/
 
 #~~~~ Files ~~~~#
  
 SRC			=	main.cpp
-
 OBJ			=	$(addprefix $(PATH_OBJ), $(SRC:.cpp=.o))
-
 INC			=	$(addprefix $(PATH_INC), irc.hpp)
 
 #~~~~ Macros ~~~~#
@@ -32,26 +32,32 @@ RM			=	rm -rf
 
 #~~~~ Main Rules ~~~~#
 
-all :			$(NAME)
+all :			$(SERV) $(CLIENT)
 
-$(NAME) :		$(OBJ)
-				$(CC) $(CFLAG) $(OBJ) -o $(NAME) -I $(PATH_INC)
+$(SERV) :		$(OBJ)
+				$(CC) $(CFLAG) $(OBJ) -o $(SERV) -I $(PATH_INC)
+
+$(CLIENT) :
+				$(MAKE) -C $(PATH_CLIENT)
+				mv $(PATH_CLIENT)bircd $(CLIENT)
 
 re :			fclean all
 
 #~~~~ Compilation Rules ~~~~#
 
 $(PATH_OBJ)%.o :	%.cpp $(INC)
-					@mkdir -p $(dir $@);
+					@mkdir -p $(PATH_OBJ);
 					$(CC) $(CFLAG) -c $< -o $@ -I $(PATH_INC)
 
 #~~~~ Cleaning Rules ~~~~#
 
 clean :
-				$(RM) $(PATH_OBJ)
+			$(RM) $(PATH_OBJ)
+			$(MAKE) clean -C $(PATH_CLIENT)
 
-fclean :		clean
-				$(RM) $(NAME)
+fclean :
+			$(RM) $(PATH_OBJ) $(SERV) $(CLIENT)
+			$(MAKE) fclean -C $(PATH_CLIENT)
 
 #~~~~ Eugene ~~~~#
 
