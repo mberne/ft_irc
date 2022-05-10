@@ -5,14 +5,12 @@
 #~~~~ Output ~~~~#
 
 NAME		=	ircserv
-CLIENT		=	ircclient
 
 #~~~~ Paths ~~~~#
 
 VPATH		=	src/
 PATH_INC	=	inc/
 PATH_OBJ	=	obj/
-PATH_CLIENT =	irc_client/
 
 #~~~~ Files ~~~~#
  
@@ -32,14 +30,10 @@ RM			=	rm -rf
 
 #~~~~ Main Rules ~~~~#
 
-all :			$(NAME) $(CLIENT)
+all :			$(NAME)
 
 $(NAME) :		$(OBJ)
 				$(CC) $(CFLAG) $(OBJ) -o $(NAME) -I $(PATH_INC)
-
-$(CLIENT) :
-				$(MAKE) -C $(PATH_CLIENT)
-				mv $(PATH_CLIENT)bircd $(CLIENT)
 
 re :			fclean all
 
@@ -53,11 +47,9 @@ $(PATH_OBJ)%.o :	%.cpp $(INC)
 
 clean :
 			$(RM) $(PATH_OBJ)
-			$(MAKE) clean -C $(PATH_CLIENT)
 
 fclean :
-			$(RM) $(PATH_OBJ) $(NAME) $(CLIENT)
-			$(MAKE) fclean -C $(PATH_CLIENT)
+			$(RM) $(PATH_OBJ) $(NAME)
 
 #~~~~ Eugene ~~~~#
 
