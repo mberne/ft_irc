@@ -9,18 +9,19 @@
 #include <poll.h>
 #include <string>
 #include <cstdlib>
+#include "Server.hpp"
 
-#define USAGE		"usage: ircserv <port> <password>"
-#define PROTOCOL	"tcp"
+#define USAGE			"usage: ircserv <port> <password>"
+#define PROTOCOL		"tcp"
 
-#define FD_FREE	0
-#define FD_SERV	1
-#define FD_CLIENT	2
+// #define FD_FREE			0
+// #define FD_SERV			1
+// #define FD_CLIENT		2
 
-#define SERV_NAME		"Potato's land"
+#define SERV_NAME		"Potatoe's land"
 #define SERV_VERSION	4.2
-#define SERV_ADMIN		"Pinkie Pie"
-#define SERV_INFO		"Made with love by pthomas and mberne in 2022. Copyright damn son."
+#define SERV_ADMIN		"pinkie_pie"
+#define SERV_INFO		"Made with *LOUD TRUCK SOUND* by pthomas and mberne in 2022. Copyleft."
 
 typedef struct s_env
 {

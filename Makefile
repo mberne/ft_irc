@@ -16,11 +16,13 @@ PATH_OBJ	=	obj/
  
 SRC			=	main.cpp \
 				Channel.cpp \
-				Client.cpp
+				Client.cpp \
+				Server.cpp
 OBJ			=	$(addprefix $(PATH_OBJ), $(SRC:.cpp=.o))
 INC			=	$(addprefix $(PATH_INC), irc.hpp) \
 				$(addprefix $(PATH_INC), Channel.hpp) \
-				$(addprefix $(PATH_INC), Client.hpp)
+				$(addprefix $(PATH_INC), Client.hpp) \
+				$(addprefix $(PATH_INC), Server.hpp)
 
 
 #~~~~ Macros ~~~~#

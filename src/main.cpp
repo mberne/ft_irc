@@ -7,7 +7,7 @@ int initServ(int ac, char **av, t_env *irc)
 {
 	if (ac != 3)
 	{
-		std::cout << USAGE << std::endl;
+		std::cerr << USAGE << std::endl;
 		return EXIT_FAILURE;
 	}
 	int tmp = std::atoi(av[1]);
@@ -27,10 +27,7 @@ int main(int ac, char **av)
 
 	if (initServ(ac, av, &irc) == EXIT_FAILURE)
 		return EXIT_FAILURE;
-	if ((irc.pe = getprotobyname(PROTOCOL)) == NULL);
+	if ((irc.pe = getprotobyname(PROTOCOL)) == NULL)
 		return EXIT_FAILURE;
-
-	//
-
 	return EXIT_SUCCESS;
 }
