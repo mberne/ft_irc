@@ -23,7 +23,7 @@ class Server
 		Server(int port, std::string password);
 		~Server();
 
-		std::string	getPort();
+		int			getPort();
 		std::string	getPassword();
 		// get stats ?
 };

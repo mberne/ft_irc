@@ -10,7 +10,7 @@ Server::~Server()
 
 }
 
-std::string	Server::getPort()
+int	Server::getPort()
 {
 	return (this->_port);
 }
