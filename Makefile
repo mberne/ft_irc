@@ -14,9 +14,14 @@ PATH_OBJ	=	obj/
 
 #~~~~ Files ~~~~#
  
-SRC			=	main.cpp
+SRC			=	main.cpp \
+				Channel.cpp \
+				Client.cpp
 OBJ			=	$(addprefix $(PATH_OBJ), $(SRC:.cpp=.o))
-INC			=	$(addprefix $(PATH_INC), irc.hpp)
+INC			=	$(addprefix $(PATH_INC), irc.hpp) \
+				$(addprefix $(PATH_INC), Channel.hpp) \
+				$(addprefix $(PATH_INC), Client.hpp)
+
 
 #~~~~ Macros ~~~~#
 
@@ -84,7 +89,7 @@ eugene :
 			@ echo "              |          \`./_    \`|          |            .     _,'"
 			@ echo "              \`.           / \`----|          |-............\`---'"
 			@ echo "                \\          \\      |          |"
-			@ echo "               ,'           )     \`.         |"
+			@ echo "               ,'          )     \`.         |"
 			@ echo "                7____,,..--'      /          |"
 			@ echo "                                  \`---.__,--.'"
 
