@@ -25,6 +25,7 @@
 
 typedef struct s_env
 {
-	Server			*serv;
-	struct protoent	*pe;
+	Server				*serv;	// to be free
+	struct protoent		*pe;
+	struct sockaddr_in	servSocket;
 }				t_env;

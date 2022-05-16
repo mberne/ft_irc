@@ -1,7 +1,18 @@
 #include "irc.hpp"
 #include "Server.hpp"
 
-// free le serveur
+int	createServSocket(t_env *irc)
+{
+	int	sock = socket(AF_INET, SOCK_STREAM, NULL);
+	irc->servSocket.sin_family = AF_INET; // TCP
+	irc->servSocket.sin_port = htons(irc->serv->getPort()); // Convert port
+	irc->servSocket.sin_addr.s_addr = htonl(INADDR_ANY); // any sources accepted
+	if (bind(sock, (sockaddr*)&irc->servSocket, sizeof(irc->servSocket)) == -1)
+		return EXIT_FAILURE;
+	if (listen(sock, SOMAXCONN) == -1) // value max for second arg ?
+		return EXIT_FAILURE;
+	return EXIT_SUCCESS;
+}
 
 int initServ(int ac, char **av, t_env *irc)
 {
@@ -29,5 +40,13 @@ int main(int ac, char **av)
 		return EXIT_FAILURE;
 	if ((irc.pe = getprotobyname(PROTOCOL)) == NULL)
 		return EXIT_FAILURE;
+	if (createServSocket(&irc) == EXIT_FAILURE)
+		return EXIT_FAILURE;
+
+	// boucle inf tant que le serveur est online
+	// poll( -- , -- , NULL);
+
+	// parsing commande
+	// exec commande
 	return EXIT_SUCCESS;
 }
