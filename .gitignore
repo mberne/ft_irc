@@ -3,6 +3,7 @@
 .DS_Store
 obj/
 ircserv
+bircd
 
 # Prerequisites
 *.d
