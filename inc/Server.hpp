@@ -17,14 +17,15 @@ class Server
 	public:
 
 		std::map<std::string, Client*>	clients;
+		std::map<int, Client*>			clients;
 		std::map<std::string, Client*>	disconnectClients;
 		std::map<std::string, Channel*>	channels;
 
 		Server(int port, std::string password);
 		~Server();
 
-		int			getPort();
-		std::string	getPassword();
+		int			getPort() const;
+		std::string	getPassword() const;
 		// get stats ?
 };
 

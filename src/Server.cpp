@@ -10,12 +10,12 @@ Server::~Server()
 
 }
 
-int	Server::getPort()
+int	Server::getPort() const
 {
 	return (this->_port);
 }
 
-std::string	Server::getPassword()
+std::string	Server::getPassword() const
 {
 	return (this->_password);
 }
