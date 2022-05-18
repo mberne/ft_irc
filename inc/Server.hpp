@@ -16,6 +16,7 @@ class Server
 	
 	public:
 
+		int								sock;
 		std::map<std::string, Client*>	clients;
 		// std::map<int, Client*>			clients;
 		std::map<std::string, Client*>	disconnectClients;
