@@ -9,23 +9,21 @@
 #include <poll.h>
 #include <cstring>
 #include <cstdlib>
+#include <vector>
 #include "Server.hpp"
 
-#define USAGE			"usage: ircserv <port> <password>"
-#define PROTOCOL		"tcp"
-
-// #define FD_FREE			0
-// #define FD_SERV			1
-// #define FD_CLIENT		2
-
-#define SERV_NAME		"Potatoe's land"
-#define SERV_VERSION	4.2
-#define SERV_ADMIN		"pinkie_pie"
-#define SERV_INFO		"Made with *LOUD TRUCK SOUND* by pthomas and mberne in 2022. Copyleft."
+#define USAGE				"usage: ircserv <port> <password>"
+#define PROTOCOL			"tcp"
+#define SERV_NAME			"Potatoe's land"
+#define SERV_VERSION		4.2
+#define SERV_ADMIN			"pinkie_pie"
+#define SERV_INFO			"Made with *LOUD TRUCK SOUND* by pthomas and mberne in 2022. Copyleft."
+#define MAX_MESSAGE_LENGTH	512
 
 typedef struct s_env
 {
-	Server				*serv;	// to be free
-	struct protoent		*pe;
-	struct sockaddr_in	servSocket;
+	Server						*serv;
+	struct protoent				*pe;
+	struct sockaddr_in			servSocket;
+	std::vector<struct pollfd>	fds;
 }				t_env;
