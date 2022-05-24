@@ -8,12 +8,12 @@ int	serverSend(t_env *irc, int numberSockets)
 
 	while (i < irc->fds.size() && numberSockets > 0) // send
 	{
-		// ret = send(irc->fds[i].fd, msg, msgLength, 0);
-		ret = 1;
+		ret = send(irc->fds[i].fd, "Yo mec.", 8, 0);
 		if (ret == -1)
 		{
 			if (errno == ECONNRESET)
 				irc->fds.erase(irc->fds.begin() + i + 1);
+				// create the client in disconnectClients map and remove this client in clients map
 			else
 				return EXIT_FAILURE;
 		}
@@ -32,7 +32,8 @@ int	serverRecv(t_env *irc, int numberSockets)
 
 	do // accept all connexions
 	{
-		ret = accept(irc->fds[0].fd, (struct sockaddr*)&irc->servSocket, NULL);
+		socklen_t addrlen = sizeof(irc->servSocket);
+		ret = accept(irc->fds[0].fd, (struct sockaddr*)&irc->servSocket, &addrlen);
 		// static_cast<struct sockaddr*>(&irc->servSocket) ??
 		if (errno == EWOULDBLOCK)
 			break ;
@@ -41,6 +42,7 @@ int	serverRecv(t_env *irc, int numberSockets)
 			tmp.fd = ret;
 			tmp.events = POLLIN;
 			irc->fds.push_back(tmp);
+			// create a client in clients map
 		}
 		else
 			return EXIT_FAILURE;
@@ -51,14 +53,16 @@ int	serverRecv(t_env *irc, int numberSockets)
 		{
 			if (irc->fds[i].revents == POLLHUP) // deconnexion
 				irc->fds.erase(irc->fds.begin() + i + 1);
+				// create the client in disconnectClients map and remove this client in clients map
 			else if (irc->fds[i].revents == POLLIN || irc->fds[i].revents == POLLOUT)
 			{
 				ret = recv(irc->fds[i].fd, buf, MAX_MESSAGE_LENGTH, 0);
 				if (ret == 0)
 					irc->fds.erase(irc->fds.begin() + i + 1); // rip si on n'a rien a recevoir ?
+					// create the client in disconnectClients map and remove this client in clients map
 				else if (ret > 0)
 				{
-					std::cout << "Yo" << std::endl;
+					std::cout << "Yo la team." << std::endl;
 					// pthomas(buf, ret); parsing, exec and keep write in buffers
 				}
 				else
@@ -130,6 +134,22 @@ int initServ(int ac, char **av, t_env *irc)
 	return EXIT_SUCCESS;
 }
 
+void	cleanExit(t_env *irc)
+{
+	size_t	i = 0;
+
+	delete irc->serv;
+	delete irc->pe;
+	while (i < irc->fds.size())
+	{
+		close(irc->fds[i].fd);
+		i++;
+	}
+	irc->fds.clear();
+	// clean all maps (clients, disconnectClients, channels)
+	exit(EXIT_FAILURE);
+}
+
 int main(int ac, char **av)
 {
 	t_env	irc;
@@ -137,11 +157,19 @@ int main(int ac, char **av)
 	if (initServ(ac, av, &irc) == EXIT_FAILURE)
 		return EXIT_FAILURE;
 	if ((irc.pe = getprotobyname(PROTOCOL)) == NULL)
-		return EXIT_FAILURE; // + free serv
+	{
+		delete irc.serv;
+		return EXIT_FAILURE;
+	}
 	if (createServSocket(&irc) == EXIT_FAILURE)
-		return EXIT_FAILURE; // + free serv
+	{
+		delete irc.serv;
+		delete irc.pe;
+		if (irc.serv->sock > 0)
+			close(irc.serv->sock);
+		return EXIT_FAILURE;
+	}
 	if (mainLoop(&irc) == EXIT_FAILURE)
-		return EXIT_FAILURE; // + free serv, fd
-	// free irc.serv, viderle vector de pollfd
+		cleanExit(&irc);
 	return EXIT_SUCCESS;
 }
