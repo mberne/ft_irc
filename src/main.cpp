@@ -1,102 +1,6 @@
 #include "irc.hpp"
 #include "Server.hpp"
-
-int	serverSend(t_env *irc, int numberSockets)
-{
-	size_t	i = 1;
-	int		ret;
-
-	while (i < irc->fds.size() && numberSockets > 0) // send
-	{
-		ret = send(irc->fds[i].fd, "Yo mec.", 8, 0);
-		if (ret == -1)
-		{
-			if (errno == ECONNRESET)
-				irc->fds.erase(irc->fds.begin() + i + 1);
-				// create the client in disconnectClients map and remove this client in clients map
-			else
-				return EXIT_FAILURE;
-		}
-		i++;
-		numberSockets--;
-	}
-	return EXIT_SUCCESS;
-}
-
-int	serverRecv(t_env *irc, int numberSockets)
-{
-	int 			ret;
-	struct pollfd	tmp;
-	size_t			i = 1;
-	void			*buf[MAX_MESSAGE_LENGTH];
-
-	do // accept all connexions
-	{
-		socklen_t addrlen = sizeof(irc->servSocket);
-		ret = accept(irc->fds[0].fd, (struct sockaddr*)&irc->servSocket, &addrlen);
-		// static_cast<struct sockaddr*>(&irc->servSocket) ??
-		if (errno == EWOULDBLOCK)
-			break ;
-		else if (ret > 0)
-		{
-			tmp.fd = ret;
-			tmp.events = POLLIN;
-			irc->fds.push_back(tmp);
-			// create a client in clients map
-		}
-		else
-			return EXIT_FAILURE;
-	} while (ret > 0);
-	while (i < irc->fds.size() && numberSockets > 0) // recv
-	{
-		if (irc->fds[i].revents != 0) // there is an event on this socket
-		{
-			if (irc->fds[i].revents == POLLHUP) // deconnexion
-				irc->fds.erase(irc->fds.begin() + i + 1);
-				// create the client in disconnectClients map and remove this client in clients map
-			else if (irc->fds[i].revents == POLLIN || irc->fds[i].revents == POLLOUT)
-			{
-				ret = recv(irc->fds[i].fd, buf, MAX_MESSAGE_LENGTH, 0);
-				if (ret == 0)
-					irc->fds.erase(irc->fds.begin() + i + 1); // rip si on n'a rien a recevoir ?
-					// create the client in disconnectClients map and remove this client in clients map
-				else if (ret > 0)
-				{
-					std::cout << "Yo la team." << std::endl;
-					// pthomas(buf, ret); parsing, exec and keep write in buffers
-				}
-				else
-					return EXIT_FAILURE;
-			}
-			else
-				return EXIT_FAILURE;
-		}
-		i++;
-		numberSockets--;
-	}
-	return EXIT_SUCCESS;
-}
-
-int	mainLoop(t_env *irc)
-{
-	int 			numberSockets;
-	struct pollfd	tmp;
-
-	tmp.fd = irc->serv->sock; // Initialise the first listening socket
-	tmp.events = POLLIN;
-	irc->fds.push_back(tmp);
-	while (irc->serv)
-	{
-		numberSockets = poll(&irc->fds[0], irc->fds.size(), 0); // récupère le nombre de socket/client qui a une requête, NULL = non bloquant
-		if (numberSockets == -1)
-			return EXIT_FAILURE;
-		if (serverRecv(irc, numberSockets) == EXIT_FAILURE)
-			return EXIT_FAILURE;
-		if (serverSend(irc, numberSockets) == EXIT_FAILURE)
-			return EXIT_FAILURE;
-	}
-	return EXIT_SUCCESS;
-}
+#include "mainProcess.cpp"
 
 int	createServSocket(t_env *irc)
 {
@@ -106,10 +10,12 @@ int	createServSocket(t_env *irc)
 	irc->servSocket.sin_family = PF_INET; // address format IPV6
 	irc->servSocket.sin_port = htons(irc->serv->getPort()); // convert port
 	irc->servSocket.sin_addr.s_addr = htonl(INADDR_ANY); // any sources accepted
+	if (fcntl(irc->serv->sock, F_SETFL, O_NONBLOCK)) // server fd non blocking
+		return EXIT_FAILURE;
 	if (bind(irc->serv->sock, (struct sockaddr*)&irc->servSocket, sizeof(irc->servSocket)) == -1)
 		return EXIT_FAILURE;
-	// static_cast<struct sockaddr*>(&irc->servSocket) ??
-	if (listen(irc->serv->sock, 0) == -1)
+	// TOFIX: static_cast<struct sockaddr*>(&irc->servSocket) ??
+	if (listen(irc->serv->sock, SOMAXCONN) == -1) // TOFIX : SOMAXCONN = max value
 		return EXIT_FAILURE;
 	return EXIT_SUCCESS;
 }
