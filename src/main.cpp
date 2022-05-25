@@ -27,7 +27,7 @@ int	createServSocket(t_env *irc)
 	irc->servSocket.sin_family = PF_INET; // address format IPV6
 	irc->servSocket.sin_port = htons(irc->serv->getPort()); // convert port
 	irc->servSocket.sin_addr.s_addr = htonl(INADDR_ANY); // any sources accepted
-	if (fcntl(irc->serv->sock, F_SETFL, O_NONBLOCK)) // server socket non blocking
+	if (fcntl(irc->serv->sock, F_SETFL, O_NONBLOCK) == -1) // server socket non blocking
 		return EXIT_FAILURE;
 	if (bind(irc->serv->sock, reinterpret_cast<struct sockaddr*>(&irc->servSocket), sizeof(irc->servSocket)) == -1)
 		return EXIT_FAILURE;

@@ -7,14 +7,19 @@ int	sendMessages(t_env *irc, int numberSockets)
 
 	while (i < irc->fds.size() && numberSockets > 0)
 	{
-		ret = send(irc->fds[i].fd, "Yo mec.", 8, 0); // test in send
-		if (ret == -1)
+		if (irc->fds[i].revents != 0) // request on this socket
 		{
-			if (errno == ECONNRESET) // deconnexion
-				irc->fds.erase(irc->fds.begin() + i);
-				// TODO: create the client in disconnectClients map and remove this client in clients map --> irc->serv->removeClient(-, irc->fds.begin() + i);
-			// else
-			// 	return EXIT_FAILURE;
+			ret = send(irc->fds[i].fd, "Response.", 8, 0); // test in send
+			if (ret == -1)
+			{
+				if (errno == ECONNRESET) // deconnexion
+				{
+					irc->fds.erase(irc->fds.begin() + i);
+					// TODO: create the client in disconnectClients map and remove this client in clients map --> irc->serv->removeClient(-, irc->fds.begin() + i);
+				}
+				// else if (errno != EWOULDBLOCK && errno != EAGAIN)
+				// 	return EXIT_FAILURE;
+			}
 		}
 		i++;
 		numberSockets--;
@@ -33,21 +38,25 @@ int	receiveMessages(t_env *irc, int numberSockets)
 		if (irc->fds[i].revents != 0) // request on this socket
 		{
 			if (irc->fds[i].revents == POLLHUP) // deconnexion
+			{
 				irc->fds.erase(irc->fds.begin() + i);
-				// TODO: create the client in disconnectClients map and remove this client in clients map  --> irc->serv->removeClient(-, irc->fds.begin() + i);
+				// irc->serv->removeClient(irc->serv->clients[i], irc->serv->clients.begin() + i, irc->serv->clientsByName.begin() + i);
+			}
 			else if (irc->fds[i].revents == POLLIN || irc->fds[i].revents == POLLOUT)
 			{
 				ret = recv(irc->fds[i].fd, buf, MAX_MESSAGE_LENGTH, 0);
 				if (ret == 0)
+				{
 					irc->fds.erase(irc->fds.begin() + i); // deconnexion
 					// TODO: create the client in disconnectClients map and remove this client in clients map --> irc->serv->removeClient(-, irc->fds.begin() + i);
+				}
 				else if (ret > 0)
 				{
-					std::cout << "Yo la team." << std::endl; // test
+					std::cout << "Message from : " << i << std::endl; // test
 					// TODO: pthomas(buf, ret); parsing, exec and keep write in buffers
 				}
-				else if (ret < 0 && errno != EWOULDBLOCK && errno != EAGAIN)
-					return EXIT_FAILURE;
+				// else if (ret < 0 && errno != EWOULDBLOCK && errno != EAGAIN)
+				// 	return EXIT_FAILURE;
 			}
 			// else
 			// 	return EXIT_FAILURE;
@@ -71,20 +80,20 @@ int acceptConnexions(t_env *irc)
 			break ;
 		else if (ret > 0 && irc->fds.size() < RLIMIT_NOFILE - 1)
 		{
-			std::cout << "Bonjour." << std::endl; // test
+			std::cout << "Someone is connecting." << std::endl; // test
 			tmp.fd = ret;
 			tmp.events = POLLIN;
-			if (fcntl(tmp.fd, F_SETFL, O_NONBLOCK)) // client socket non blocking
+			if (fcntl(tmp.fd, F_SETFL, O_NONBLOCK) == -1) // client socket non blocking
 				return EXIT_FAILURE;
 			irc->fds.push_back(tmp);
-			// TODO: create a client in clients map --> irc->serv->addClient(ret);
+			irc->serv->addClient(ret);
 		}
 		// else if (ret > 0)
 		// {
 		// 	// too much client already connected
 		// }
-		else
-			return EXIT_FAILURE;
+		// else
+		// 	return EXIT_FAILURE;
 	} while (ret > 0);
 	return EXIT_SUCCESS;
 }

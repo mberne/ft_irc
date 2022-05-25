@@ -19,7 +19,7 @@ class Server
 		int								sock;
 		bool							online;
 		std::map<std::string, Client*>	clientsByName;
-		std::map<int, Client*>			clientsBySocket;
+		std::vector<Client*>			clients;
 		std::map<std::string, Client*>	disconnectClients;
 		std::map<std::string, Channel*>	channels;
 
@@ -29,8 +29,8 @@ class Server
 		int			getPort() const;
 		std::string	getPassword() const;
 		// get stats ?
-		// void		addClient(int sock);
-		// void		removeClient(Client *src, int it);
+		void		addClient(int sock);
+		// void		removeClient(Client *src, std::vector<Client*>::iterator it_vector, std::map<std::string, Client*>::iterator it_map);
 };
 
 #endif
