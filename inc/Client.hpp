@@ -13,9 +13,10 @@ class Client
 {
 	public:
 
-		Client(std::string nickname, std::string user, std::string host, std::string realName);
+		Client(int sock, std::string nickname, std::string user, std::string host, std::string realName);
 		~Client(void);
 
+		int				getSock(void) const;
 		std::string		getNickname(void) const;
 		void			setNickname(std::string nickname);
 		std::string		getUser(void) const;
@@ -31,6 +32,7 @@ class Client
 
 	private:
 
+		int									_sock;
 		std::string							_nickname;		// Unique nickname having a maximum length of nine (9) characters
 		std::vector<std::string>			_oldNicknames;	// List of the old nicknames of the user
 		std::string const					_user;			// The username of the client on that host

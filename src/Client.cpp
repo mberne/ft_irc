@@ -5,14 +5,19 @@ int		Client::nicknameMaxLength = 9;
 
 //~~ CONSTRUCTOR
 
-Client::Client(std::string nickname, std::string user, std::string host, std::string realName) \
-				: _nickname(nickname.substr(0, nicknameMaxLength)), _user(user), _host(host), _realName(realName), _op(false) {}
+Client::Client(int sock, std::string nickname, std::string user, std::string host, std::string realName) \
+				: _sock(sock), _nickname(nickname.substr(0, nicknameMaxLength)), _user(user), _host(host), _realName(realName), _op(false) {}
 
 //~~ DESTRUCTOR
 
 Client::~Client(void) {}
 
 //~~ ACCESSOR
+
+int				Client::getSock(void) const
+{
+	return(_sock);
+}
 
 std::string		Client::getNickname(void) const
 {

@@ -1,6 +1,23 @@
 #include "irc.hpp"
-#include "Server.hpp"
-#include "mainProcess.cpp"
+
+void	cleanExit(t_env *irc)
+{
+	size_t	i = 0;
+
+	delete irc->serv;
+	delete irc->pe;
+	while (i < irc->fds.size())
+	{
+		close(irc->fds[i].fd);
+		i++;
+	}
+	irc->fds.clear();
+	// TODO: clean all maps (clients, disconnectClients, channels) and free
+	// irc->serv->channels.clear();
+	// irc->serv->clients.clear();
+	// irc->serv->disconnectClients.clear();
+	exit(EXIT_FAILURE);
+}
 
 int	createServSocket(t_env *irc)
 {
@@ -10,12 +27,11 @@ int	createServSocket(t_env *irc)
 	irc->servSocket.sin_family = PF_INET; // address format IPV6
 	irc->servSocket.sin_port = htons(irc->serv->getPort()); // convert port
 	irc->servSocket.sin_addr.s_addr = htonl(INADDR_ANY); // any sources accepted
-	if (fcntl(irc->serv->sock, F_SETFL, O_NONBLOCK)) // server fd non blocking
+	if (fcntl(irc->serv->sock, F_SETFL, O_NONBLOCK)) // server socket non blocking
 		return EXIT_FAILURE;
-	if (bind(irc->serv->sock, (struct sockaddr*)&irc->servSocket, sizeof(irc->servSocket)) == -1)
+	if (bind(irc->serv->sock, reinterpret_cast<struct sockaddr*>(&irc->servSocket), sizeof(irc->servSocket)) == -1)
 		return EXIT_FAILURE;
-	// TOFIX: static_cast<struct sockaddr*>(&irc->servSocket) ??
-	if (listen(irc->serv->sock, SOMAXCONN) == -1) // TOFIX : SOMAXCONN = max value
+	if (listen(irc->serv->sock, SOMAXCONN) == -1) // SOMAXCONN = max value
 		return EXIT_FAILURE;
 	return EXIT_SUCCESS;
 }
@@ -38,22 +54,6 @@ int initServ(int ac, char **av, t_env *irc)
 	if (!irc->serv)
 		return EXIT_FAILURE;
 	return EXIT_SUCCESS;
-}
-
-void	cleanExit(t_env *irc)
-{
-	size_t	i = 0;
-
-	delete irc->serv;
-	delete irc->pe;
-	while (i < irc->fds.size())
-	{
-		close(irc->fds[i].fd);
-		i++;
-	}
-	irc->fds.clear();
-	// clean all maps (clients, disconnectClients, channels)
-	exit(EXIT_FAILURE);
 }
 
 int main(int ac, char **av)
