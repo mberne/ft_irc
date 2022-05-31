@@ -102,20 +102,20 @@ int	mainLoop(t_env *irc)
 	struct pollfd	tmp;
 
 	tmp.fd = irc->serv->sock; // initialize the first socket in pollfd (the server here)
-	tmp.events = POLLIN;
-	irc->fds.push_back(tmp);
-	irc->serv->online = 1;
-	while (irc->serv->online)
+	tmp.events = POLLIN; // Est ce que ce ne serait pas plus cohérant d'avoir une variable de type `struct pollfd` dans la classe serveur ?
+	irc->fds.push_back(tmp); // Peut être en plus faire ça pendant l'init ?
+	irc->serv->online = 1; // Variable unused
+	while (irc->serv->online) // Je regarde pas la suite parce qu'il faudrait qu'on en parle IRL ce sera plus simple
 	{
 		numberSockets = poll(&irc->fds[0], irc->fds.size(), -1); // return the number of socket with request, -1 = attente infinie OU 0 = pas d'attente
 		if (numberSockets == -1)
-			return EXIT_FAILURE;
+			return EXIT_FAILURE; // Est on obligé de couper le serv si une de ces choses ce passe ?
 		if (acceptConnexions(irc) == EXIT_FAILURE) // the server accept connexions
-			return EXIT_FAILURE;
+			return EXIT_FAILURE; // Est on obligé de couper le serv si une de ces choses ce passe ?
 		if (receiveMessages(irc, numberSockets) == EXIT_FAILURE) // the server retrieves the requests
-			return EXIT_FAILURE;
+			return EXIT_FAILURE; // Est on obligé de couper le serv si une de ces choses ce passe ?
 		if (sendMessages(irc, numberSockets) == EXIT_FAILURE) // the server responds to requests
-			return EXIT_FAILURE;
+			return EXIT_FAILURE; // Est on obligé de couper le serv si une de ces choses ce passe ?
 	}
 	return EXIT_SUCCESS;
 }

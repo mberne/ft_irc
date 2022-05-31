@@ -18,10 +18,10 @@ class Server
 
 		int								sock;
 		bool							online;
-		std::map<std::string, Client*>	clientsByName;
-		std::vector<Client*>			clients;
-		std::map<std::string, Client*>	disconnectClients;
-		std::map<std::string, Channel*>	channels;
+		std::map<std::string, Client*>	clientsByName;		// Je propose de renommer celui-ci `clients`
+		std::vector<Client*>			clients;			// Celui-là `newClients` ou `unregisteredClients`
+		std::map<std::string, Client*>	disconnectClients;	// Et celui-ci `oldClients` ou rester comme ça
+		std::map<std::string, Channel*>	channels;			
 
 		Server(int port, std::string password);
 		~Server();

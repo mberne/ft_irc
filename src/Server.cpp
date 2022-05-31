@@ -2,7 +2,7 @@
 
 Server::Server(int port, std::string password) : _port(port), _password(password)
 {
-	sock = -1;
+	sock = -1;	// Même si tu ne les initialise pas avec des paramètres, il doivent se trouver dans la liste d'initialisation. Exemple : [...]: _port(port), _password(password), sock(-1), online(false)
 	online = 0;
 	// stats ?
 }
@@ -24,8 +24,8 @@ std::string	Server::getPassword() const
 
 void	Server::addClient(int sock)
 {
-	Client *newClient = new Client(sock, "", "", "", "");
-	clients.push_back(newClient);
+	Client *newClient = new Client(sock, "", "", "", ""); // Sujet à changer quand j'aurais update mes classes
+	clients.push_back(newClient); // Tu peux directement pushback le retour de new sans le mettre dans une variable. Exemple : clients.push_back(new Client(sock, "", "", "", ""));
 }
 
 
