@@ -9,7 +9,7 @@ int	sendMessages(t_env *irc, int numberSockets)
 	{
 		if (irc->fds[i].revents != 0) // request on this socket
 		{
-			ret = send(irc->fds[i].fd, "Response.", 8, 0); // test in send
+			ret = send(irc->fds[i].fd, "Response.\n", 10, MSG_DONTWAIT); // test
 			if (ret == -1)
 			{
 				if (errno == ECONNRESET) // deconnexion
@@ -17,8 +17,8 @@ int	sendMessages(t_env *irc, int numberSockets)
 					irc->fds.erase(irc->fds.begin() + i);
 					// TODO: create the client in disconnectClients map and remove this client in clients map --> irc->serv->removeClient(-, irc->fds.begin() + i);
 				}
-				// else if (errno != EWOULDBLOCK && errno != EAGAIN)
-				// 	return EXIT_FAILURE;
+				else if (errno != EWOULDBLOCK && errno != EAGAIN)
+					return EXIT_FAILURE;
 			}
 		}
 		i++;
@@ -44,7 +44,7 @@ int	receiveMessages(t_env *irc, int numberSockets)
 			}
 			else if (irc->fds[i].revents == POLLIN || irc->fds[i].revents == POLLOUT)
 			{
-				ret = recv(irc->fds[i].fd, buf, MAX_MESSAGE_LENGTH, 0);
+				ret = recv(irc->fds[i].fd, buf, MAX_MESSAGE_LENGTH, MSG_DONTWAIT);
 				if (ret == 0)
 				{
 					irc->fds.erase(irc->fds.begin() + i); // deconnexion
@@ -55,11 +55,11 @@ int	receiveMessages(t_env *irc, int numberSockets)
 					std::cout << "Message from : " << i << std::endl; // test
 					// TODO: pthomas(buf, ret); parsing, exec and keep write in buffers
 				}
-				// else if (ret < 0 && errno != EWOULDBLOCK && errno != EAGAIN)
-				// 	return EXIT_FAILURE;
+				else if (ret < 0 && errno != EWOULDBLOCK && errno != EAGAIN)
+					return EXIT_FAILURE;
 			}
-			// else
-			// 	return EXIT_FAILURE;
+			else
+				return EXIT_FAILURE;
 		}
 		i++;
 		numberSockets--;
@@ -88,12 +88,10 @@ int acceptConnexions(t_env *irc)
 			irc->fds.push_back(tmp);
 			irc->serv->addClient(ret);
 		}
-		// else if (ret > 0)
-		// {
-		// 	// too much client already connected
-		// }
-		// else
-		// 	return EXIT_FAILURE;
+		else if (ret > 0)
+			std::cout << "Too much clients." << std::endl; // test
+		else
+			return EXIT_FAILURE;
 	} while (ret > 0);
 	return EXIT_SUCCESS;
 }
@@ -109,7 +107,7 @@ int	mainLoop(t_env *irc)
 	irc->serv->online = 1;
 	while (irc->serv->online)
 	{
-		numberSockets = poll(&irc->fds[0], irc->fds.size(), 0); // return the number of socket with request, 0 = non-blocking
+		numberSockets = poll(&irc->fds[0], irc->fds.size(), -1); // return the number of socket with request, -1 = attente infinie OU 0 = pas d'attente
 		if (numberSockets == -1)
 			return EXIT_FAILURE;
 		if (acceptConnexions(irc) == EXIT_FAILURE) // the server accept connexions

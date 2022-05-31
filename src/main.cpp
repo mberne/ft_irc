@@ -1,11 +1,11 @@
 #include "irc.hpp"
 
-void	cleanExit(t_env *irc)
+void	cleanExit(t_env *irc, int exitStatue)
 {
 	size_t	i = 0;
 
+	std::cout << "Clean exit with statue : " << exitStatue << std::endl;
 	delete irc->serv;
-	delete irc->pe;
 	while (i < irc->fds.size())
 	{
 		close(irc->fds[i].fd);
@@ -16,13 +16,20 @@ void	cleanExit(t_env *irc)
 	// irc->serv->channels.clear();
 	// irc->serv->clients.clear();
 	// irc->serv->disconnectClients.clear();
-	exit(EXIT_FAILURE);
+	exit(exitStatue);
 }
 
 int	createServSocket(t_env *irc)
 {
-	irc->serv->sock = socket(PF_INET, SOCK_STREAM, irc->pe->p_proto); // settings TCP
+	struct protoent	*pe;
+	int				sockopt = 1;
+
+	if ((pe = getprotobyname(PROTOCOL)) == NULL)
+		return EXIT_FAILURE;
+	irc->serv->sock = socket(PF_INET, SOCK_STREAM, pe->p_proto); // settings TCP
 	if (irc->serv->sock == -1)
+		return EXIT_FAILURE;
+  	if (setsockopt(irc->serv->sock, SOL_SOCKET,  SO_REUSEADDR, (char *)&sockopt, sizeof(sockopt)) < 0) // permit to reuse server address after close (protect bind from crash)
 		return EXIT_FAILURE;
 	irc->servSocket.sin_family = PF_INET; // address format IPV6
 	irc->servSocket.sin_port = htons(irc->serv->getPort()); // convert port
@@ -62,20 +69,14 @@ int main(int ac, char **av)
 
 	if (initServ(ac, av, &irc) == EXIT_FAILURE)
 		return EXIT_FAILURE;
-	if ((irc.pe = getprotobyname(PROTOCOL)) == NULL)
-	{
-		delete irc.serv;
-		return EXIT_FAILURE;
-	}
 	if (createServSocket(&irc) == EXIT_FAILURE)
 	{
-		delete irc.serv;
-		delete irc.pe;
 		if (irc.serv->sock > 0)
 			close(irc.serv->sock);
+		delete irc.serv;
 		return EXIT_FAILURE;
 	}
 	if (mainLoop(&irc) == EXIT_FAILURE)
-		cleanExit(&irc);
-	return EXIT_SUCCESS;
+		cleanExit(&irc, EXIT_FAILURE);
+	cleanExit(&irc, EXIT_SUCCESS);
 }

@@ -26,7 +26,6 @@
 typedef struct s_env
 {
 	Server						*serv;
-	struct protoent				*pe;
 	struct sockaddr_in			servSocket;
 	std::vector<struct pollfd>	fds;
 }				t_env;
@@ -35,3 +34,14 @@ int main(int ac, char **av);
 int	mainLoop(t_env *irc);
 
 #endif
+
+// A discuter :
+
+// ne pas faire la commande STATS
+// ne pas faire de map avec le nom d'utilisateur mais avec le socket du client, voire juste un vecteur
+// enlever le define du protocole (utilisé qu'une fois et de toute façon, pas pratique à changer si define quand même car fct vont crash)
+// enlever les clients déconnectés (quelle était l'utilité déjà ?)
+
+// Problèmes actuels :
+
+// plusieurs clients et paf : le zbeul

@@ -2,6 +2,7 @@
 
 Server::Server(int port, std::string password) : _port(port), _password(password)
 {
+	sock = -1;
 	online = 0;
 	// stats ?
 }
