@@ -37,6 +37,7 @@ class Client
 		char const *	getOutputBuffer( void ) const;
 
 		bool			isOldNickname(std::string nickname);
+		bool			isRegistered(void);
 		void			clearOutputBuffer(void);
 
 	private:
