@@ -41,7 +41,7 @@ class Client
 
 	private:
 
-		int const							_socket;
+		int const							_sock;
 		std::string							_nickname;		// Unique nickname having a maximum length of nine (9) characters
 		std::vector<std::string>			_oldNicknames;	// List of the old nicknames of the user
 		std::string							_user;			// The username of the client on that host
