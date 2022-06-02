@@ -10,9 +10,9 @@ Client::~Client(void) {}
 
 //~~ ACCESSOR
 
-int				Client::getSocket(void) const
+int				Client::getSock(void) const
 {
-	return(_socket);
+	return(_sock);
 }
 
 std::string		Client::getNickname(void) const
