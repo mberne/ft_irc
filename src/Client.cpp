@@ -1,18 +1,19 @@
 #include "Client.hpp"
 
-int		Client::channelsLimit = 10;
-int		Client::nicknameMaxLength = 9;
-
 //~~ CONSTRUCTOR
 
-Client::Client(std::string nickname, std::string user, std::string host, std::string realName) \
-				: _nickname(nickname.substr(0, nicknameMaxLength)), _user(user), _host(host), _realName(realName), _op(false) {}
+Client::Client(int socket) : _socket(socket) {}
 
 //~~ DESTRUCTOR
 
 Client::~Client(void) {}
 
 //~~ ACCESSOR
+
+int				Client::getSocket(void) const
+{
+	return(_socket);
+}
 
 std::string		Client::getNickname(void) const
 {
@@ -22,7 +23,7 @@ std::string		Client::getNickname(void) const
 void			Client::setNickname(std::string nickname)
 {
 	_oldNicknames.push_back(_nickname);
-	_nickname = nickname.substr(0, nicknameMaxLength);
+	_nickname = nickname.substr(0, MAX_NICKNAME_LENGTH);
 }
 
 
@@ -31,14 +32,29 @@ std::string		Client::getHost(void) const
 	return(_host);
 }
 
+void			Client::setHost(std::string host)
+{
+	_host = host;
+}
+
 std::string		Client::getUser(void) const
 {
 	return(_user);
 }
 
+void			Client::setUser(std::string user)
+{
+	_user = user;
+}
+
 std::string		Client::getRealName(void) const
 {
 	return(_realName);
+}
+
+void			Client::setRealName(std::string realName)
+{
+	_realName = realName;
 }
 
 bool			Client::getOperator(void) const
@@ -56,6 +72,33 @@ int				Client::getNumberOfChannels(void) const
 	return (_channels.size());
 }
 
+void	Client::joinChannel(Channel* channel)	
+{
+	// Error handling needed!
+	_channels.insert(std::pair<std::string, Channel*>(channel->getName(), channel));
+}
+
+Channel*	Client::getChannel(std::string name)
+{
+	return (_channels.find(name)->second);
+}
+
+void	Client::leaveChannel(Channel* channel)	
+{
+	// Error handling needed!
+	_channels.erase(channel->getName());
+}
+
+char*		Client::getInputBuffer( void )
+{
+	return (_inputBuffer);
+}
+
+const char*	Client::getOutputBuffer( void ) const
+{
+	return (_outputBuffer.c_str());
+}
+
 //~~ METHODS
 
 bool	Client::isOldNickname(std::string nickname)
@@ -66,14 +109,7 @@ bool	Client::isOldNickname(std::string nickname)
 	return (false);
 }
 
-void	Client::joinChannel(Channel* channel)	
+void			Client::clearOutputBuffer(void)
 {
-	// Error handling needed!
-	_channels.insert(std::pair<std::string, Channel*>(channel->getName(), channel));
-}
-
-void	Client::leaveChannel(Channel* channel)	
-{
-	// Error handling needed!
-	_channels.erase(channel->getName());
+	_outputBuffer.empty();
 }
