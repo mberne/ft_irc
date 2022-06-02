@@ -98,8 +98,4 @@ eugene :
 			@ echo "                7____,,..--'      /          |"
 			@ echo "                                  \`---.__,--.'"
 
-camion :
-	@ echo "♫ Pinpon, pinpon regrdez mon camion ! ♫"
-	@ echo "♫ Pinpon, pinpon regardez ses couleur ! ♫"
-
 .PHONY:		all clean fclean re eugene camion
