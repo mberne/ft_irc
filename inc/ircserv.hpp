@@ -1,6 +1,8 @@
 #ifndef IRCSERV_H
 # define IRCSERV_H
 
+/*** ~~ LIBS ~~ ***/
+
 # include <cstdlib>
 # include <string>
 # include <unistd.h>
@@ -12,6 +14,8 @@
 # include <sys/stat.h>
 # include <sys/socket.h>
 # include <sys/types.h>
+
+/*** ~~ DEFINES ~~ ***/
 
 # define USAGE						"usage: ircserv <port> <password>"
 # define PROTOCOL					"tcp"
@@ -28,12 +32,23 @@
 # define MAX_TOPIC_LENGTH			390
 # define MAX_MESSAGE_LENGTH			512
 
+/*** ~~ CLASSES ~~ ***/
+
+class Server;
+class Channel;
+class Client;
 # include "Server.hpp"
+# include "Channel.hpp"
+# include "Client.hpp"
+
+/*** ~~ STRUCTS ~~ ***/
 
 typedef struct s_env
 {
 	Server			*serv;
 	struct protoent	*pe;
 }				t_env;
+
+/*** ~~ PROTOTYPES ~~ ***/
 
 #endif //~~ IRCSERV_H
