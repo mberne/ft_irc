@@ -13,17 +13,20 @@ PATH_INC	=	inc/
 PATH_OBJ	=	obj/
 
 #~~~~ Files ~~~~#
- 
+
+VPATH		=	src/:inc/
+
 SRC			=	main.cpp \
 				Channel.cpp \
 				Client.cpp \
 				Server.cpp
-OBJ			=	$(addprefix $(PATH_OBJ), $(SRC:.cpp=.o))
-INC			=	$(addprefix $(PATH_INC), irc.hpp) \
-				$(addprefix $(PATH_INC), Channel.hpp) \
-				$(addprefix $(PATH_INC), Client.hpp) \
-				$(addprefix $(PATH_INC), Server.hpp)
 
+OBJ			=	$(addprefix $(PATH_OBJ), $(SRC:.cpp=.o))
+
+INC			=	ircserv.hpp \
+				Channel.hpp \
+				Client.hpp \
+				Server.hpp
 
 #~~~~ Macros ~~~~#
 
