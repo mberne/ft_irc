@@ -109,7 +109,12 @@ bool	Client::isOldNickname(std::string nickname)
 	return (false);
 }
 
-void			Client::clearOutputBuffer(void)
+bool	Client::isRegistered(void)
 {
-	_outputBuffer.empty();
+	return (_nickname.empty() == false && _user.empty() == false);
+}
+
+void	Client::clearOutputBuffer(void)
+{
+	_outputBuffer.clear();
 }
