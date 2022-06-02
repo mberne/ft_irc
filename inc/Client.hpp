@@ -5,7 +5,7 @@
 # include <string>
 # include <map>
 # include <vector>
-# include "irc.hpp"
+# include "ircserv.hpp"
 # include "Channel.hpp"
 
 class Channel;

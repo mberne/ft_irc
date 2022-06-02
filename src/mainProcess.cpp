@@ -1,4 +1,4 @@
-#include "irc.hpp"
+#include "ircserv.hpp"
 
 int	sendMessages(t_env *irc, int numberSockets)
 {
