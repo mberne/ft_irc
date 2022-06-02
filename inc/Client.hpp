@@ -17,7 +17,7 @@ class Client
 		Client(int socket);
 		~Client(void);
 
-		int				getSocket(void) const;
+		int				getSock(void) const;
 		std::string		getNickname(void) const;
 		void			setNickname(std::string nickname);
 		std::string		getUser(void) const;

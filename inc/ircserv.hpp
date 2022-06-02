@@ -1,6 +1,8 @@
 #ifndef IRCSERV_H
 # define IRCSERV_H
 
+/*** ~~ LIBS ~~ ***/
+
 # include <cstdlib>
 # include <string>
 # include <unistd.h>
@@ -13,6 +15,8 @@
 # include <sys/socket.h>
 # include <sys/types.h>
 # include <vector>
+
+/*** ~~ DEFINES ~~ ***/
 
 # define USAGE						"usage: ircserv <port> <password>"
 
@@ -33,6 +37,10 @@ class Server;
 class Channel;
 class Client;
 # include "Server.hpp"
+# include "Channel.hpp"
+# include "Client.hpp"
+
+/*** ~~ STRUCTS ~~ ***/
 
 typedef struct s_env
 {

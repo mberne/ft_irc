@@ -32,5 +32,5 @@ void	Server::removeClient(Client *src)
 {
 	oldClients.insert(std::pair<std::string, Client *>(src->getNickname(), src));
 	clientsByName.erase(src->getNickname());
-	clientsBySock.erase(src->getSocket());
+	clientsBySock.erase(src->getSock());
 }

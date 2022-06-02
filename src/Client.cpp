@@ -10,7 +10,7 @@ Client::~Client(void) {}
 
 //~~ ACCESSOR
 
-int				Client::getSocket(void) const
+int				Client::getSock(void) const
 {
 	return(_sock);
 }
