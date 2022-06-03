@@ -83,39 +83,39 @@ bool		BanMask::stringCorrespondToMask(std::string str, std::string mask) // NEED
 	size_t	i = 0;
 	size_t	j = 0;
 
-	while ( i < str.size() && j < mask.size() )
+	while (i < str.size() && j < mask.size())
 	{
-		if ( mask[j] == '*' )
+		if (mask[j] == '*')
 		{
 			size_t		start, end;
 			std::string	needle;
 
-			start = mask.find_first_not_of( "*", j );
-			if ( start == std::string::npos )
-				return ( true );
+			start = mask.find_first_not_of("*", j);
+			if (start == std::string::npos)
+				return (true);
 
-			end = mask.find_first_of( "*?", start );
+			end = mask.find_first_of("*?", start);
 			if (end == std::string::npos)
 				end = mask.size();
 			
 			needle = mask.substr(start, end - start);
-			i = str.find( needle, i);
+			i = str.find(needle, i);
 			j = end;
 
-			if ( i == std::string::npos )
-				return ( false );
+			if (i == std::string::npos)
+				return (false);
 			i += needle.size();
 		}
-		else if ( str[i] == mask[j] || (mask[j] == '?' && i < str.size()) )
+		else if (str[i] == mask[j] || (mask[j] == '?' && i < str.size()))
 		{
 			i++;
 			j++;
 		}
 		else
-			return ( false );
+			return (false);
 	}
-	j = mask.find_first_not_of( "*", j );
-	if ( j == std::string::npos )
+	j = mask.find_first_not_of("*", j);
+	if (j == std::string::npos)
 		j = mask.size();
 	return (i == str.size() && j == mask.size());
 }
@@ -179,7 +179,7 @@ bool			Channel::hasVoice(Client* client) const
 bool			Channel::isBanned(Client* client)
 {
 	for (std::map<std::string, BanMask>::iterator it = _banList.begin(); it != _banList.end(); it++)
-		if ( it->second.isClientBanned(client) == true )
+		if (it->second.isClientBanned(client) == true)
 			return (true);
 	return (false);
 }

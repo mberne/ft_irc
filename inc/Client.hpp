@@ -33,12 +33,13 @@ class Client
 		Channel*		getChannel(std::string name);
 		void			leaveChannel(Channel* channel);
 
-		char*			getInputBuffer( void );
-		char const *	getOutputBuffer( void ) const;
+		char*			getInputBuffer(void);
+		char const *	getOutputBuffer(void) const;
+		void			addToOutputBuffer(std::string output);
+		void			clearOutputBuffer(void);
 
 		bool			isOldNickname(std::string nickname);
 		bool			isRegistered(void);
-		void			clearOutputBuffer(void);
 
 	private:
 

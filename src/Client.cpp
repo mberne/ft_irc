@@ -89,14 +89,24 @@ void	Client::leaveChannel(Channel* channel)
 	_channels.erase(channel->getName());
 }
 
-char*		Client::getInputBuffer( void )
+char*		Client::getInputBuffer(void)
 {
 	return (_inputBuffer);
 }
 
-const char*	Client::getOutputBuffer( void ) const
+const char*	Client::getOutputBuffer(void) const
 {
 	return (_outputBuffer.c_str());
+}
+
+void	Client::addToOutputBuffer(std::string output)
+{
+	_outputBuffer += output;
+}
+
+void	Client::clearOutputBuffer(void)
+{
+	_outputBuffer.clear();
 }
 
 //~~ METHODS
@@ -112,9 +122,4 @@ bool	Client::isOldNickname(std::string nickname)
 bool	Client::isRegistered(void)
 {
 	return (_nickname.empty() == false && _user.empty() == false);
-}
-
-void	Client::clearOutputBuffer(void)
-{
-	_outputBuffer.clear();
 }
