@@ -1,11 +1,11 @@
 #include "ircserv.hpp"
 
-int	sendMessages(t_env *irc, int numberSockets)
+int	sendMessages(t_env *irc)
 {
 	std::vector<struct pollfd>::iterator	it = irc->fds.begin() + 1;
 	int										ret;
 
-	while (it < irc->fds.end() && numberSockets > 0)
+	while (it < irc->fds.end())
 	{
 		Client *client = irc->serv->clientsBySock.find(it->fd)->second;
 		if (it->revents != 0) // request on this socket
@@ -23,19 +23,18 @@ int	sendMessages(t_env *irc, int numberSockets)
 			}
 		}
 		it++;
-		numberSockets--;
 	}
 	return EXIT_SUCCESS;
 }
 
-int	receiveMessages(t_env *irc, int numberSockets)
+int	receiveMessages(t_env *irc)
 {
 	std::vector<struct pollfd>::iterator	it = irc->fds.begin() + 1;
 	int 									ret;
 	void									*buf[MAX_MESSAGE_LENGTH];
 
 
-	while (it < irc->fds.end() && numberSockets > 0)
+	while (it < irc->fds.end())
 	{
 		Client *client = irc->serv->clientsBySock.find(it->fd)->second;
 		if (it->revents != 0) // request on this socket
@@ -65,7 +64,6 @@ int	receiveMessages(t_env *irc, int numberSockets)
 				return EXIT_FAILURE;
 		}
 		it++;
-		numberSockets--;
 	}
 	return EXIT_SUCCESS;
 }
@@ -81,7 +79,7 @@ int acceptConnexions(t_env *irc)
 		ret = accept(irc->fds[0].fd, reinterpret_cast<struct sockaddr*>(&irc->servSocket), &addrlen);
 		if (ret < 0 && (errno == EWOULDBLOCK || errno == EAGAIN))
 			break ;
-		else if (ret > 0 && irc->fds.size() < OPEN_MAX - 3)
+		else if (ret > 0)
 		{
 			std::cout << "Someone is connecting." << std::endl; // test
 			tmp.fd = ret;
@@ -91,10 +89,8 @@ int acceptConnexions(t_env *irc)
 			irc->fds.push_back(tmp);
 			irc->serv->addClient(ret);
 		}
-		else if (ret > 0)
-			std::cout << "Too much clients." << std::endl; // test
 		else
-			return EXIT_FAILURE;
+			return EXIT_FAILURE; // trop de clients à gérer avec réponse spécifique ?
 	} while (ret > 0);
 	return EXIT_SUCCESS;
 }
@@ -111,9 +107,9 @@ int	mainLoop(t_env *irc)
 			return EXIT_FAILURE; // no exit
 		if (acceptConnexions(irc) == EXIT_FAILURE) // the server accept connexions
 			return EXIT_FAILURE; // no exit
-		if (receiveMessages(irc, numberSockets) == EXIT_FAILURE) // the server retrieves the requests
+		if (receiveMessages(irc) == EXIT_FAILURE) // the server retrieves the requests
 			return EXIT_FAILURE; // no exit
-		if (sendMessages(irc, numberSockets) == EXIT_FAILURE) // the server responds to requests
+		if (sendMessages(irc) == EXIT_FAILURE) // the server responds to requests
 			return EXIT_FAILURE; // no exit
 	}
 	return EXIT_SUCCESS;
