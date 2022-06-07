@@ -33,6 +33,8 @@
 # define MAX_MESSAGE_LENGTH			512
 # define MAX_PORT					65536
 
+/*** ~~ CLASSES ~~ ***/
+
 class Server;
 class Channel;
 class Client;
@@ -40,17 +42,9 @@ class Client;
 # include "Channel.hpp"
 # include "Client.hpp"
 
-/*** ~~ STRUCTS ~~ ***/
-
-typedef struct s_env
-{
-	Server			*serv;
-	struct sockaddr_in			servSocket;
-	std::vector<struct pollfd>	fds;
-}				t_env;
+/*** ~~ PROTOTYPES ~~ ***/
 
 int main(int ac, char **av);
-int	mainLoop(t_env *irc);
 
 #endif //~~ IRCSERV_H
 
@@ -58,3 +52,4 @@ int	mainLoop(t_env *irc);
 
 // ne pas faire la commande STATS
 // enlever les clients déconnectés (quelle était l'utilité déjà ?)
+// limiter le nombre d'utilisateur et dire ciao aux losers

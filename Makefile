@@ -15,7 +15,6 @@ PATH_OBJ	=	obj/
 #~~~~ Files ~~~~#
  
 SRC			=	main.cpp			\
-				mainProcess.cpp		\
 				Channel.cpp			\
 				Client.cpp			\
 				Server.cpp
