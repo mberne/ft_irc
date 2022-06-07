@@ -58,7 +58,3 @@ int	mainLoop(t_env *irc);
 
 // ne pas faire la commande STATS
 // enlever les clients déconnectés (quelle était l'utilité déjà ?)
-
-// Problèmes actuels :
-
-// plusieurs clients et paf : le zbeul

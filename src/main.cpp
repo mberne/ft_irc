@@ -28,7 +28,8 @@ void	cleanExit(t_env *irc, int status)
 	//		envoyer des messages comme quoi le serv ferme aux clients
 	//		std::cout << SERVER_NAME << "server closed" << std::endl;
 	//	}
-	std::cout << "Clean exit with status : " << status << std::endl;	
+	std::cout << "Clean exit with status : " << status << std::endl;
+	perror("Error");
 	std::for_each(irc->fds.begin(), irc->fds.end(), closeFd);
 	irc->fds.clear();
 	for (std::map<std::string, Channel*>::iterator it = irc->serv->channels.begin(); it != irc->serv->channels.end(); ++it)
@@ -55,7 +56,7 @@ int	createServSocket(t_env *irc)
 	irc->serv->sock = socket(PF_INET, SOCK_STREAM, pe->p_proto); // settings TCP
 	if (irc->serv->sock == -1)
 		return EXIT_FAILURE;
-  	if (setsockopt(irc->serv->sock, SOL_SOCKET,  SO_REUSEADDR, &sockopt, sizeof(sockopt)) < 0) // permit to reuse server address after close (protect bind from crash)
+  	if (setsockopt(irc->serv->sock, SOL_SOCKET, SO_REUSEADDR, &sockopt, sizeof(sockopt)) < 0) // permit to reuse server address after close (protect bind from crash)
 		return EXIT_FAILURE;
 	irc->servSocket.sin_family = PF_INET; // address format IPV6
 	irc->servSocket.sin_port = htons(irc->serv->getPort()); // convert port
