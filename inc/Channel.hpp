@@ -38,9 +38,6 @@ class	BanMask
 		std::string const	_host;
 };
 
-// Ban command syntax: /mode #channel +b *nick*!*ident*@*.host.domain
-// Wildcards : ? = (any char) and * = (any string of any length)
-
 class Channel
 {
 	public:

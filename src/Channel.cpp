@@ -67,16 +67,10 @@ void			Channel::setMods(int mods)
 
 bool		BanMask::isClientBanned(Client* client) const
 {
-	std::cout << "Mask: " << _mask << " | Result: ";
-	std::cout << "nick=" << BanMask::stringCorrespondToMask(client->getNickname(), _nick) << " | ";
-	std::cout << "ident=" << BanMask::stringCorrespondToMask(client->getUser(), _ident) << " | ";
-	std::cout << "host=" << BanMask::stringCorrespondToMask(client->getHost(), _host) << std::endl << std::endl;
 	return (BanMask::stringCorrespondToMask(client->getNickname(), _nick) == true \
 		&& BanMask::stringCorrespondToMask(client->getUser(), _ident) == true \
 		&& BanMask::stringCorrespondToMask(client->getHost(), _host) == true);
 }
-
-// ghetto.addBanMask("s*!pthomas@*.fr");
 
 bool		BanMask::stringCorrespondToMask(std::string str, std::string mask) // NEED TEST!
 {
@@ -94,7 +88,7 @@ bool		BanMask::stringCorrespondToMask(std::string str, std::string mask) // NEED
 			if (start == std::string::npos)
 				return (true);
 
-			end = mask.find_first_of("*?", start);
+			end = mask.find_first_of("*", start);
 			if (end == std::string::npos)
 				end = mask.size();
 			
@@ -106,7 +100,7 @@ bool		BanMask::stringCorrespondToMask(std::string str, std::string mask) // NEED
 				return (false);
 			i += needle.size();
 		}
-		else if (str[i] == mask[j] || (mask[j] == '?' && i < str.size()))
+		else if (str[i] == mask[j] && i < str.size())
 		{
 			i++;
 			j++;
