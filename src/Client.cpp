@@ -104,6 +104,11 @@ void	Client::addToOutputBuffer(std::string output)
 	_outputBuffer += output;
 }
 
+bool	Client::hasOutput()
+{
+	return (!_outputBuffer.empty());
+}
+
 void	Client::clearOutputBuffer(void)
 {
 	_outputBuffer.clear();

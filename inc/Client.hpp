@@ -36,10 +36,13 @@ class Client
 		char*			getInputBuffer(void);
 		char const *	getOutputBuffer(void) const;
 		void			addToOutputBuffer(std::string output);
+		bool			hasOutput(void);
 		void			clearOutputBuffer(void);
 
 		bool			isOldNickname(std::string nickname);
 		bool			isRegistered(void);
+
+		void			execute();
 
 	private:
 
