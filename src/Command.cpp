@@ -4,9 +4,13 @@
 
 //~~ CONSTRUCTOR
 
-Command::Command(std::string cmdLine, Client* sender)
+Command::Command(std::string cmdLine, Client* sender) : _sender(sender);
 {
-	// parsing
+	size_t	i = cmdLine.find_first_of(' ');
+
+	_cmd = cmdLine.substr(0, i);
+
+
 }
 
 void		Command::initSupportedCommands()
@@ -43,8 +47,135 @@ void		Command::initSupportedCommands()
 
 Command::~Command(void) {}
 
-//~~ OVERLOAD
-
-//~~ ACCESSOR
-
 //~~ METHODS
+
+void	pass(void)
+{
+
+}
+
+void	nick(void)
+{
+
+}
+
+void	user(void)
+{
+
+}
+
+void	oper(void)
+{
+
+}
+
+void	quit(void)
+{
+
+}
+
+void	join(void)
+{
+
+}
+
+void	part(void)
+{
+
+}
+
+void	mode(void)
+{
+
+}
+
+void	topic(void)
+{
+
+}
+
+void	names(void)
+{
+
+}
+
+void	list(void)
+{
+
+}
+
+void	kick(void)
+{
+
+}
+
+void	version(void)
+{
+
+}
+
+void	stats(void)
+{
+
+}
+
+void	time(void)
+{
+
+}
+
+void	admin(void)
+{
+
+}
+
+void	info(void)
+{
+
+}
+
+void	privmsg(void)
+{
+
+}
+
+void	notice(void)
+{
+
+}
+
+void	who(void)
+{
+
+}
+
+void	whois(void)
+{
+
+}
+
+void	whowas(void)
+{
+
+}
+
+void	kill(void)
+{
+
+}
+
+void	ping(void)
+{
+
+}
+
+void	pong(void)
+{
+
+}
+
+void	error(void)
+{
+
+}
+
