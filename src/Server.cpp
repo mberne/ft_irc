@@ -66,8 +66,7 @@ void	Server::sendMessages()
 	for (std::vector<struct pollfd>::iterator it = fds.begin() + 1; it < fds.end(); it++)
 	{
 		client = clientsBySock.find(it->fd)->second;
-		// if (client->hasOutput()) // request on this socket
-		if (it->revents != 0) // request on this socket
+		if (client->hasOutput()) // request on this socket
 		{
 			// ret = send(it->fd, client->getOutputBuffer(), 10, 0);
 			ret = send(it->fd, "Response.\n", 10, 0); // test
