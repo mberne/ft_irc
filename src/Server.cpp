@@ -2,7 +2,6 @@
 
 Server::Server(int port, std::string password) : _port(port), _password(password), online(false)
 {
-	// stats ?
 	struct protoent	*pe;
 	struct pollfd	tmp;
 	int				sockopt = 1;

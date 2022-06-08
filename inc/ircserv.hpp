@@ -15,6 +15,8 @@
 # include <sys/socket.h>
 # include <sys/types.h>
 # include <vector>
+# include "errors.hpp"
+# include "rpl.hpp"
 
 /*** ~~ DEFINES ~~ ***/
 
@@ -53,3 +55,4 @@ int main(int ac, char **av);
 // ne pas faire la commande STATS
 // enlever les clients déconnectés (quelle était l'utilité déjà ?)
 // limiter le nombre d'utilisateur et dire ciao aux losers
+// classe commande : constructeur verifie cmd existe + nb argument via une map<string, int>

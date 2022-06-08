@@ -23,7 +23,9 @@ OBJ			=	$(addprefix $(PATH_OBJ), $(SRC:.cpp=.o))
 INC			=	$(addprefix $(PATH_INC), ircserv.hpp)		\
 				$(addprefix $(PATH_INC), Channel.hpp)		\
 				$(addprefix $(PATH_INC), Client.hpp)		\
-				$(addprefix $(PATH_INC), Server.hpp)
+				$(addprefix $(PATH_INC), Server.hpp)		\
+				$(addprefix $(PATH_INC), errors.hpp)		\
+				$(addprefix $(PATH_INC), rpl.hpp)
 
 #~~~~ Macros ~~~~#
 

@@ -13,7 +13,6 @@ class Server
 
 		int			_port;
 		std::string	_password;
-		std::string	_stats; // tous les trucs STATS ?
 
 		void		acceptConnexions();
 		void		receiveMessages();
@@ -28,7 +27,8 @@ class Server
 		std::map<std::string, Client*>	clientsByName;
 		std::map<int, Client*>			clientsBySock;
 		std::map<std::string, Client*>	oldClients;
-		std::map<std::string, Channel*>	channels;			
+		std::map<std::string, Channel*>	channels;
+		// time
 
 		Server(int port, std::string password);
 		~Server();
@@ -38,7 +38,6 @@ class Server
 
 		int			getPort() const;
 		std::string	getPassword() const;
-		// get stats ?
 		void		addClient(int sock);
 		void		removeClient(Client *src, std::vector<struct pollfd>::iterator it);
 };
