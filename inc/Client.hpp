@@ -31,6 +31,7 @@ class Client
 		int				getNumberOfChannels(void) const;
 		void			joinChannel(Channel* channel);
 		Channel*		getChannel(std::string name);
+		std::string		getLastChannelName(void);
 		void			leaveChannel(Channel* channel);
 
 		char*			getInputBuffer(void);

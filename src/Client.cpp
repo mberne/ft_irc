@@ -83,6 +83,14 @@ Channel*	Client::getChannel(std::string name)
 	return (_channels.find(name)->second);
 }
 
+std::string		Client::getLastChannelName(void)
+{
+	if (!_channels.size())
+		return ("*");
+	else
+		return (_channels.at(0)->getName());
+}
+
 void	Client::leaveChannel(Channel* channel)	
 {
 	// Error handling needed!
