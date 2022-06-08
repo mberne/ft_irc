@@ -5,7 +5,6 @@
 # include <string>
 # include <map>
 # include <vector>
-# include <algorithm>
 # include "Client.hpp"
 
 /*** ~~ CHANNEL MOD FLAGS ~~ ***/
@@ -65,6 +64,7 @@ class Channel
 		void			removeBanMask(std::string banMask);
 
 		bool			isConnected(Client* client) const;
+		int				clientCount(void) const;
 		bool			isOperator(Client* client) const;
 		bool			hasVoice(Client* client) const;
 		bool			isBanned(Client* client);
