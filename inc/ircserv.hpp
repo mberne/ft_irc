@@ -14,11 +14,11 @@
 # include <sys/stat.h>
 # include <sys/socket.h>
 # include <sys/types.h>
+# include <vector>
 
 /*** ~~ DEFINES ~~ ***/
 
 # define USAGE						"usage: ircserv <port> <password>"
-# define PROTOCOL					"tcp"
 
 # define SERV_NAME					"Potatoe's land"
 # define SERV_VERSION				4.2
@@ -31,6 +31,7 @@
 # define MAX_CHANNEL_LENGTH			50
 # define MAX_TOPIC_LENGTH			390
 # define MAX_MESSAGE_LENGTH			512
+# define MAX_PORT					65536
 
 /*** ~~ CLASSES ~~ ***/
 
@@ -41,14 +42,14 @@ class Client;
 # include "Channel.hpp"
 # include "Client.hpp"
 
-/*** ~~ STRUCTS ~~ ***/
-
-typedef struct s_env
-{
-	Server			*serv;
-	struct protoent	*pe;
-}				t_env;
-
 /*** ~~ PROTOTYPES ~~ ***/
 
+int main(int ac, char **av);
+
 #endif //~~ IRCSERV_H
+
+// A discuter :
+
+// ne pas faire la commande STATS
+// enlever les clients déconnectés (quelle était l'utilité déjà ?)
+// limiter le nombre d'utilisateur et dire ciao aux losers

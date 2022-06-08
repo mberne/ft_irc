@@ -2,7 +2,7 @@
 
 //~~ CONSTRUCTOR
 
-Client::Client(int sock) : _sock(sock) {}
+Client::Client(int socket) : _sock(socket) {}
 
 //~~ DESTRUCTOR
 
