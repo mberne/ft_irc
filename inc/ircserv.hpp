@@ -18,12 +18,15 @@
 # include <string>
 # include <vector>
 # include <map>
+# include <cerrno>
+# include <cstdio>
 # include "errors.hpp"
 # include "replies.hpp"
 
 /*** ~~ DEFINES ~~ ***/
 
 # define USAGE						"usage: ircserv <port> <password>"
+
 // Server info
 # define SERV_NAME					"Potatoe's land"
 # define SERV_VERSION				4.2

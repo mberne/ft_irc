@@ -13,7 +13,7 @@ int main(int ac, char **av)
 	if (serverPort < 0 || serverPort > MAX_PORT || !av[2][0])
 	{
 		errno = EINVAL;
-		perror(SERV_NAME);
+		std::perror(SERV_NAME);
 		return EXIT_FAILURE;
 	}
 
