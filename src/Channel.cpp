@@ -183,5 +183,4 @@ int				Channel::clientCount(void) const
 	return (_clients.size());
 }
 
-
 // t'es beau <3
