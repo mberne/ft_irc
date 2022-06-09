@@ -117,7 +117,7 @@ bool		BanMask::stringCorrespondToMask(std::string str, std::string mask) // NEED
 void			Channel::addClient(Client* client)
 {
 	// Error handling needed!
-	_clients.insert(std::pair<std::string, Client*>(client->getNickname(), client));
+	_clients.insert(std::make_pair(client->getNickname(), client));
 }
 
 void			Channel::removeClient(Client* client)
@@ -127,7 +127,7 @@ void			Channel::removeClient(Client* client)
 
 void			Channel::addOperator(Client* client)
 {
-	_operators.insert(std::pair<std::string, Client*>(client->getNickname(), client));
+	_operators.insert(std::make_pair(client->getNickname(), client));
 }
 
 void			Channel::removeOperator(Client* client)
@@ -137,7 +137,7 @@ void			Channel::removeOperator(Client* client)
 
 void			Channel::addclientWithVoice(Client* client)
 {
-	_clientsWithVoicePerm.insert(std::pair<std::string, Client*>(client->getNickname(), client));
+	_clientsWithVoicePerm.insert(std::make_pair(client->getNickname(), client));
 }
 
 void			Channel::removeclientWithVoice(Client* client)
@@ -147,7 +147,7 @@ void			Channel::removeclientWithVoice(Client* client)
 
 void			Channel::addBanMask(std::string banMask)
 {
-	_banList.insert(std::pair<std::string, BanMask>(banMask, BanMask(banMask, banMask.find_first_of('!'), banMask.find_first_of('@'))));
+	_banList.insert(std::make_pair(banMask, BanMask(banMask, banMask.find_first_of('!'), banMask.find_first_of('@'))));
 }
 
 void			Channel::removeBanMask(std::string banMask)

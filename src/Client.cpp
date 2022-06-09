@@ -75,7 +75,7 @@ int				Client::getNumberOfChannels(void) const
 void	Client::joinChannel(Channel* channel)	
 {
 	// Error handling needed!
-	_channels.insert(std::pair<std::string, Channel*>(channel->getName(), channel));
+	_channels.insert(std::make_pair(channel->getName(), channel));
 }
 
 Channel*	Client::getChannel(std::string name)

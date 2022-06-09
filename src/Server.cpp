@@ -44,14 +44,14 @@ void	Server::addClient(int sock)
 {
 	Client *newClient = new Client(sock);
 	
-	clientsBySock.insert(std::pair<int, Client *>(sock, newClient));
+	clientsBySock.insert(std::make_pair(sock, newClient));
 }
 
 
 void	Server::removeClient(Client *src, std::vector<struct pollfd>::iterator it)
 {
 	std::cout << "Someone is disconnecting : " << it->fd << std::endl; // test
-	oldClients.insert(std::pair<std::string, Client *>(src->getNickname(), src));
+	oldClients.insert(std::make_pair(src->getNickname(), src));
 	clientsByName.erase(src->getNickname());
 	clientsBySock.erase(src->getSock());
 	close(it->fd);
