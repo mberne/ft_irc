@@ -11,35 +11,32 @@ class Server
 {
 	private:
 
-		int			_port;
-		std::string	_password;
+		int								_port;
+		std::string						_password;
+		bool							_online;
+		time_t							_startTime;
+		int								_sock;
+		struct sockaddr_in				_servSocket;
+		std::vector<struct pollfd>		_fds;
+		std::map<std::string, Client*>	_clientsByName;
+		std::map<int, Client*>			_clientsBySock;
+		std::map<std::string, Client*>	_oldClients;
+		std::map<std::string, Channel*>	_channels;
 
 		void		acceptConnexions();
 		void		receiveMessages();
 		void		sendMessages();
+		void		stop(int status); // SIGNAL HANDLING
+		void		addClient(int sock);
+		void		removeClient(Client *src, std::vector<struct pollfd>::iterator it);
 	
 	public:
-
-		struct sockaddr_in				servSocket;
-		std::vector<struct pollfd>		fds;
-		int								sock;
-		bool							online;
-		std::map<std::string, Client*>	clientsByName;
-		std::map<int, Client*>			clientsBySock;
-		std::map<std::string, Client*>	oldClients;
-		std::map<std::string, Channel*>	channels;
-		// time
 
 		Server(int port, std::string password);
 		~Server();
 
+		std::string	getStartTime() const;
 		void		run();
-		void		stop(int status); // SIGNAL HANDLING
-
-		int			getPort() const;
-		std::string	getPassword() const;
-		void		addClient(int sock);
-		void		removeClient(Client *src, std::vector<struct pollfd>::iterator it);
 };
 
 #endif

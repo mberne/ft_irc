@@ -23,7 +23,7 @@
 // Les réponses RPL_LISTSTART, RPL_LIST, RPL_LISTEND marquent le début, les réponses proprement dites, et la fin du traitement d'une commande LIST.
 // S'il n'y a aucun canal disponible, seules les réponses de début et de fin sont envoyées.
 # define RPL_LISTSTART(user) SERV_NAME + " 321 " + user + " Channel :Users Name"
-# define RPL_LIST(user, channel) SERV_NAME + " 322 " + user + " " + channel->getName() + " " + channel->clientCount() + " :" + channel->getTopic()
+# define RPL_LIST(user, channel) SERV_NAME + " 322 " + user + " " + channel->getName() + " " + channel->clientCount() + " :" + channel->getTopic() // boucler dessus
 # define RPL_LISTEND(user) SERV_NAME + " 323 " + user + " :End of /LIST"
 
 # define RPL_CHANNELMODEIS(user, channel) SERV_NAME + " 324 " + user + " " + channel->getName() + " <mode> <paramètres de mode>" // pthomas
@@ -47,37 +47,37 @@
 // En réponse à un message NAMES, une paire consistant de RPL_NAMREPLY et RPL_ENDOFNAMES est renvoyée par le serveur au client.
 // S'il n'y a pas de canal résultant de la requête, seul RPL_ENDOFNAMES est retourné.
 // L'exception à cela est lorsqu'un message NAMES est envoyé sans paramètre et que tous les canaux et contenus visibles sont renvoyés en une suite de message RPL_NAMEREPLY avec un RPL_ENDOFNAMES indiquant la fin.
-# define RPL_NAMREPLY(user) SERV_NAME + " 353 " + user + " <canal> :[[@|+]<pseudo> [[@|+]<pseudo> [...]]]"
-# define RPL_ENDOFNAMES(user) SERV_NAME + " 366 " + user + " <canal> :End of /NAMES list"
+# define RPL_NAMREPLY(user, channel) SERV_NAME + " 353 " + user + " " + channel->getName() + " :[[@|+]<pseudo> [[@|+]<pseudo> [...]]]" // pthomas
+# define RPL_ENDOFNAMES(user, name) SERV_NAME + " 366 " + user + " " + name + " :End of /NAMES list"
 
 // Quand il liste les bannissements actifs pour un canal donné, un serveur doit renvoyer la liste en utilisant les messages RPL_BANLIST et RPL_ENDOFBANLIST.
 // Un RPL_BANLIST différent doit être utilisé pour chaque identification de bannissement.
 // Après avoir listé les identifications de bannissement (s'il y en a), un RPL_ENDOFBANLIST doit être renvoyé.
-# define RPL_BANLIST(user) SERV_NAME + " 367 " + user + " <canal> <identification de bannissement>"
-# define RPL_ENDOFBANLIST(user) SERV_NAME + " 368 " + user + " <canal> :End of channel ban list"
+# define RPL_BANLIST(user, channel) SERV_NAME + " 367 " + user + " " + channel->getName() + " " + <identification de bannissement> // pthomas
+# define RPL_ENDOFBANLIST(user, name) SERV_NAME + " 368 " + user + " " + name + " :End of channel ban list"
 
 // Un serveur répondant à un message INFO doit envoyer toute sa série d'info en une suite de réponses RPL_INFO, avec un RPL_ENDOFINFO pour indiquer la fin des réponses.
-# define RPL_INFO(user) SERV_NAME + " 371 " + user + " : <chaîne>"
+# define RPL_INFO(user, arg) SERV_NAME + " 371 " + user + " " + arg // boucle sur les macro SERV a mettre en arg
 # define RPL_ENDOFINFO(user) SERV_NAME + " 374 " + user + " :End of /INFO list"
 
 // RPL_YOUREOPER est renvoyé à un client qui vient d'émettre un message OPER et a obtenu le statut d'opérateur.
 # define RPL_YOUREOPER(user) SERV_NAME + " 381 " + user + " :You are now an IRC operator"
 
-// Lorsqu'il répond à un message TIME, un serveur doit répondre en utilisant le format RPL_TIME ci-dessus.
+// Lorsqu'il répond à un message TIME, un serveur doit répondre en utilisant le format RPL_TIME.
 // La chaîne montrant l'heure ne doit contenir que le jour et l'heure corrects.
 // Il n'y a pas d'obligation supplémentaire.
-# define RPL_TIME(user) SERV_NAME + " 391 " + user + " <serveur> :<chaîne indiquant l'heure locale du serveur>"
+# define RPL_TIME(user, currentTime) SERV_NAME + " 391 " + user + " " + SERV_NAME + ":" + currentTime
 
 // Pour répondre à une requête au sujet du mode du client, RPL_UMODEIS est renvoyé.
-# define RPL_ENDOFSTATS(user) SERV_NAME + " 219 " + user + " <lettre de stats> :End of /STATS report"
-# define RPL_STATSUPTIME(user) SERV_NAME + " 242 " + user + " :Server Up %d days %d:%02d:%02d"
-# define RPL_UMODEIS(user) SERV_NAME + " 221 " + user + " <chaîne de mode utilisateur>"
+# define RPL_STATSUPTIME(user, server) SERV_NAME + " 242 " + user + " :Server Up " + server->getStartTime()
+# define RPL_UMODEIS(user, client) SERV_NAME + " 221 " + user + " <chaîne de mode utilisateur>" // pthomas
+# define RPL_ENDOFSTATS(user, arg) SERV_NAME + " 219 " + user + " " + arg + " :End of /STATS report"
 
 // Lorsqu'il répond à un message ADMIN, un serveur doit renvoyer les réponses RLP_ADMINME à RPL_ADMINEMAIL et fournir un texte de message avec chacune.
 // Pour RPL_ADMINLOC1, on attend une description de la ville et de l'état où se trouve le serveur, suivie des détails de l'université et du département (RPL_ADMINLOC2), et finalement le contact administratif pour ce serveur (avec obligatoirement une adresse email) dans RPL_ADMINEMAIL.
-# define RPL_ADMINME(user) SERV_NAME + " 256 " + user + " <serveur> :Administrative info"
-# define RPL_ADMINLOC1(user) SERV_NAME + " 257 " + user + " : <info admin>"
-# define RPL_ADMINLOC2(user) SERV_NAME + " 258 " + user + " : <info admin>"
-# define RPL_ADMINEMAIL(user) SERV_NAME + " 259 " + user + " : <info admin>"
+# define RPL_ADMINME(user) SERV_NAME + " 256 " + user + " " + SERV_NAME " :Administrative info"
+# define RPL_ADMINLOC1(user) SERV_NAME + " 257 " + user + " :" + SERV_LOC1
+# define RPL_ADMINLOC2(user) SERV_NAME + " 258 " + user + " :" + SERV_LOC2
+# define RPL_ADMINEMAIL(user) SERV_NAME + " 259 " + user + " :" + SERV_ADMIN + " " + SERV_ADMIN_EMAIL
 
 #endif
