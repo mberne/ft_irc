@@ -12,7 +12,7 @@
 # define RPL_WHOISUSER(user, client) SERV_NAME + " 311 " + user + " " + client->getNickname() + " " + client->getUser() + " " + client->getHost() + " * :" + client->getRealName()
 # define RPL_WHOISSERVER(user, nickname) SERV_NAME + " 312 " + user + " " + nickname + " " + SERV_NAME + " " + SERV_INFO
 # define RPL_WHOISOPERATOR(user, nickname) SERV_NAME + " 313 " + user + " " + nickname + " :is an IRC operator"
-# define RPL_WHOISCHANNELS(user, nickname) SERV_NAME + " 319 " + user + " " + nickname + " :{[@|+]<canal><espace>}" // pthomas
+# define RPL_WHOISCHANNELS(user, nickname, client) SERV_NAME + " 319 " + user + " " + nickname + (client->isOp())" :{[@|+]<canal><espace>}" // pthomas
 # define RPL_ENDOFWHOIS(user, nickname) SERV_NAME + " 318 " + user + " " + nickname + " :End of /WHOIS list"
 
 // Lorsqu'il répond à un message WHOWAS, un serveur doit utiliser RPL_WHOWASUSER, RPL_WHOISSERVER ou ERR_WASNOSUCHNICK pour chacun des pseudonymes de la liste fournie.
@@ -26,7 +26,7 @@
 # define RPL_LIST(user, channel) SERV_NAME + " 322 " + user + " " + channel->getName() + " " + channel->clientCount() + " :" + channel->getTopic() // boucler dessus
 # define RPL_LISTEND(user) SERV_NAME + " 323 " + user + " :End of /LIST"
 
-# define RPL_CHANNELMODEIS(user, channel) SERV_NAME + " 324 " + user + " " + channel->getName() + " <mode> <paramètres de mode>" // pthomas
+# define RPL_CHANNELMODEIS(user, channel, mode, modeParams) SERV_NAME + " 324 " + user + " " + channel->getName() + " " + mode + (modeParams ? " " + modeParams : "")
 
 // Lors de l'envoi d'un message TOPIC pour déterminer le sujet d'un canal, une de ces deux réponses est envoyée.
 // Si le sujet est défini, RPL_TOPIC est renvoyée, sinon c'est RPL_NOTOPIC.
@@ -41,7 +41,7 @@
 // La paire RPL_WHOREPLY et RPL_ENDOFWHO est utilisée en réponse à un message WHO.
 // Le RPL_WHOREPLY n'est envoyé que s'il y a une correspondance à la requête WHO.
 // S'il y a une liste de paramètres fournie avec le message WHO, un RPL_ENDOFWHO doit être envoyé après le traitement de chaque élément de la liste, <nom> étant l'élément.
-# define RPL_WHOREPLY(user) SERV_NAME + " 352 " + user + " " + client->getLastChannelName() + " " + client->getUser() + " " + client->getHost() + " " + SERV_NAME + " " + client->getNickname() + " <H|G>[*][@|+]" + " :0 " + client->getRealName() // pthomas
+# define RPL_WHOREPLY(user) SERV_NAME + " 352 " + user + " " + client->getLastChannelName() + " " + client->getUser() + " " + client->getHost() + " " + SERV_NAME + " " + client->getNickname() + " H" + (client->isOp() ? "*" : "" ) + [@|+]" + " :0 " + client->getRealName() // pthomas
 # define RPL_ENDOFWHO(user, name) SERV_NAME + " 315 " + user + " " + name " :End of /WHO list"
 
 // En réponse à un message NAMES, une paire consistant de RPL_NAMREPLY et RPL_ENDOFNAMES est renvoyée par le serveur au client.
@@ -53,7 +53,7 @@
 // Quand il liste les bannissements actifs pour un canal donné, un serveur doit renvoyer la liste en utilisant les messages RPL_BANLIST et RPL_ENDOFBANLIST.
 // Un RPL_BANLIST différent doit être utilisé pour chaque identification de bannissement.
 // Après avoir listé les identifications de bannissement (s'il y en a), un RPL_ENDOFBANLIST doit être renvoyé.
-# define RPL_BANLIST(user, channel) SERV_NAME + " 367 " + user + " " + channel->getName() + " " + <identification de bannissement> // pthomas
+# define RPL_BANLIST(user, channel, banid) SERV_NAME + " 367 " + user + " " + channel->getName() + " " + banid
 # define RPL_ENDOFBANLIST(user, name) SERV_NAME + " 368 " + user + " " + name + " :End of channel ban list"
 
 // Un serveur répondant à un message INFO doit envoyer toute sa série d'info en une suite de réponses RPL_INFO, avec un RPL_ENDOFINFO pour indiquer la fin des réponses.

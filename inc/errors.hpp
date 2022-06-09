@@ -3,6 +3,9 @@
 
 #include "ircserv.hpp"
 
+# define ERR_UNKNOWNERROR(user, command, subcommand, info) SERV_NAME + " 400 " + user + " " + command + (subcommand ? " " + subcommand : "") + " :"info
+
+
 # define ERR_NOSUCHNICK(user, command, name) SERV_NAME + " 401 " + user + " " + command + " " + name + " :No such nick/channel"
 // Utilisé pour indiquer que le pseudonyme passé en paramètre à la commande n'est pas actuellement utilisé.
 
