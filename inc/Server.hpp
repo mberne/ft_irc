@@ -1,5 +1,5 @@
-#ifndef SERVER_HPP
-#define SERVER_HPP
+#ifndef SERVER_H
+#define SERVER_H
 
 # include <string>
 # include <vector>
@@ -44,4 +44,4 @@ class Server
 		void		removeClient(Client *src, std::vector<struct pollfd>::iterator it);
 };
 
-#endif
+#endif //~~ SERVER_H
