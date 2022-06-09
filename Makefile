@@ -8,22 +8,31 @@ NAME		=	ircserv
 
 #~~~~ Paths ~~~~#
 
-VPATH		=	src/
+VPATH		=	src/:inc/:src/command/
 PATH_INC	=	inc/
 PATH_OBJ	=	obj/
 
 #~~~~ Files ~~~~#
  
-SRC			=	main.cpp			\
-				Channel.cpp			\
-				Client.cpp			\
-				Server.cpp
+SRC			=	main.cpp						\
+				Server.cpp						\
+				Client.cpp						\
+				Channel.cpp						\
+				Command.cpp						\
+				channel_operations.cpp			\
+				connection_registration.cpp		\
+				miscellaneous_messages.cpp		\
+				sending_messages.cpp			\
+				server_queries_and_commands.cpp	\
+				user_based_queries.cpp
+
 
 OBJ			=	$(addprefix $(PATH_OBJ), $(SRC:.cpp=.o))
-INC			=	$(addprefix $(PATH_INC), ircserv.hpp)		\
-				$(addprefix $(PATH_INC), Channel.hpp)		\
-				$(addprefix $(PATH_INC), Client.hpp)		\
-				$(addprefix $(PATH_INC), Server.hpp)
+INC			=	ircserv.hpp		\
+				Server.hpp		\
+				Client.hpp		\
+				Channel.hpp		\
+				Command.hpp
 
 #~~~~ Macros ~~~~#
 
