@@ -14,9 +14,12 @@
 # include <sys/stat.h>
 # include <sys/socket.h>
 # include <sys/types.h>
+# include <ctime>
 # include <string>
 # include <vector>
 # include <map>
+# include "errors.hpp"
+# include "rpl.hpp"
 
 /*** ~~ DEFINES ~~ ***/
 
@@ -25,7 +28,10 @@
 # define SERV_NAME					"Potatoe's land"
 # define SERV_VERSION				4.2
 # define SERV_ADMIN					"pinkie_pie"
+# define SERV_ADMIN_EMAIL			"pinkie_pie@rainbow.dash"
 # define SERV_INFO					"Made with *LOUD TRUCK SOUND* by pthomas and mberne in 2022. Copyleft."
+# define SERV_LOC1					"Charbonniere, France"
+# define SERV_LOC2					"42 Lyon"
 
 # define CHANNEL_LIMIT				25
 # define CHANNEL_LIMIT_PER_CLIENT	10
@@ -93,3 +99,4 @@ void	error(std::vector<std::string> cmd, Client* sender, Server* serv);
 // ne pas faire la commande STATS
 // enlever les clients déconnectés (quelle était l'utilité déjà ?)
 // limiter le nombre d'utilisateur et dire ciao aux losers
+// classe commande : constructeur verifie cmd existe + nb argument via une map<string, int>
