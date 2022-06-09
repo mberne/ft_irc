@@ -26,8 +26,8 @@ SRC			=	main.cpp						\
 				server_queries_and_commands.cpp	\
 				user_based_queries.cpp
 
-
 OBJ			=	$(addprefix $(PATH_OBJ), $(SRC:.cpp=.o))
+
 INC			=	ircserv.hpp		\
 				Server.hpp		\
 				Client.hpp		\

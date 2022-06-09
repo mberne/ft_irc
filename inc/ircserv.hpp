@@ -24,7 +24,7 @@
 /*** ~~ DEFINES ~~ ***/
 
 # define USAGE						"usage: ircserv <port> <password>"
-
+// Server info
 # define SERV_NAME					"Potatoe's land"
 # define SERV_VERSION				4.2
 # define SERV_ADMIN					"pinkie_pie"
@@ -32,7 +32,7 @@
 # define SERV_INFO					"Made with *LOUD TRUCK SOUND* by pthomas and mberne in 2022. Copyleft."
 # define SERV_LOC1					"Charbonniere, France"
 # define SERV_LOC2					"42 Lyon"
-
+// Server specifications
 # define CHANNEL_LIMIT				25
 # define CHANNEL_LIMIT_PER_CLIENT	10
 # define MAX_NICKNAME_LENGTH		9
@@ -99,4 +99,3 @@ void	error(std::vector<std::string> cmd, Client* sender, Server* serv);
 // ne pas faire la commande STATS
 // enlever les clients déconnectés (quelle était l'utilité déjà ?)
 // limiter le nombre d'utilisateur et dire ciao aux losers
-// classe commande : constructeur verifie cmd existe + nb argument via une map<string, int>
