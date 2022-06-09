@@ -3,8 +3,8 @@
 
 # include <iostream>
 # include <string>
-# include <map>
 # include <vector>
+# include <map>
 # include "ircserv.hpp"
 # include "Channel.hpp"
 
