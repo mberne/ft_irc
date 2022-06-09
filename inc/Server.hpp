@@ -4,22 +4,29 @@
 # include <string>
 # include <vector>
 # include <map>
+# include <algorithm>
 # include "Client.hpp"
 # include "Channel.hpp"
-# include <algorithm>
+# include "Command.hpp"
 
 class Server
 {
 	private:
 
-		int			_port;
-		std::string	_password;
-		std::string	_stats; // tous les trucs STATS ?
+		int							_port;
+		std::string					_password;
+		std::string					_stats; // tous les trucs STATS ?
+		std::vector<Command>		_cmdList;
 
+		void		initSupportedCommands();
 		void		acceptConnexions();
 		void		receiveMessages();
+		void		executeRequest(std::string cmdLine, Client* sender);
 		void		sendMessages();
-	
+		
+
+
+
 	public:
 
 		struct sockaddr_in				servSocket;
