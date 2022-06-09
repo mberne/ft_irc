@@ -72,6 +72,26 @@ int				Client::getNumberOfChannels() const
 	return (_channels.size());
 }
 
+char*		Client::getInputBuffer()
+{
+	return (_inputBuffer);
+}
+
+const char*	Client::getOutputBuffer() const
+{
+	return (_outputBuffer.c_str());
+}
+
+//~~ METHODS
+
+bool	Client::isOldNickname(std::string nickname)
+{
+	for (std::vector<std::string>::iterator it = _oldNicknames.begin(); it != _oldNicknames.end(); it++)
+		if (!nickname.compare(*it))
+			return (true);
+	return (false);
+}
+
 void	Client::joinChannel(Channel* channel)	
 {
 	// Error handling needed!
@@ -97,16 +117,6 @@ void	Client::leaveChannel(Channel* channel)
 	_channels.erase(channel->getName());
 }
 
-char*		Client::getInputBuffer()
-{
-	return (_inputBuffer);
-}
-
-const char*	Client::getOutputBuffer() const
-{
-	return (_outputBuffer.c_str());
-}
-
 void	Client::addToOutputBuffer(std::string output)
 {
 	_outputBuffer += output;
@@ -120,16 +130,6 @@ bool	Client::hasOutput()
 void	Client::clearOutputBuffer()
 {
 	_outputBuffer.clear();
-}
-
-//~~ METHODS
-
-bool	Client::isOldNickname(std::string nickname)
-{
-	for (std::vector<std::string>::iterator it = _oldNicknames.begin(); it != _oldNicknames.end(); it++)
-		if (!nickname.compare(*it))
-			return (true);
-	return (false);
 }
 
 bool	Client::isRegistered()

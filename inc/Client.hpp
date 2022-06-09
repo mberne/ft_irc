@@ -29,17 +29,17 @@ class Client
 		bool			isOperator() const;
 		void			setOperator(bool value);
 		int				getNumberOfChannels() const;
-		void			joinChannel(Channel* channel);				// Add the Channel sent as paramater to the _channels map
-		void			leaveChannel(Channel* channel);				// Remove the Channel sent as paramater from the _channels map
 		Channel*		getChannel(std::string name);
-		std::string		getLastChannelName();
 		char*			getInputBuffer();
 		char const *	getOutputBuffer() const;
+
+		bool			isOldNickname(std::string nickname);		// Return true if the string sent as parameter is an old client's nickname
+		void			joinChannel(Channel* channel);				// Add the Channel sent as paramater to the _channels map
+		void			leaveChannel(Channel* channel);				// Remove the Channel sent as paramater from the _channels map
+		std::string		getLastChannelName();
 		void			addToOutputBuffer(std::string output);		// Append the string sent as parameter to the output buffer
 		void			clearOutputBuffer();						// Clear the output buffer
-
 		bool			hasOutput();								// Return true if the server have message to send to the client
-		bool			isOldNickname(std::string nickname);		// Return true if the string sent as parameter is an old client's nickname
 		bool			isRegistered();								// Return true if the client used the registrations commands (PASS, NICK, USER)
 
 	private:
