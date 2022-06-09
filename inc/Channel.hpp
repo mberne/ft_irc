@@ -23,7 +23,7 @@ class	BanMask
 	public:
 
 		BanMask(std::string banMask, size_t firstSepPos, size_t secondSepPos);
-		~BanMask(void);
+		~BanMask();
 
 		bool			isClientBanned(Client* client) const;
 
@@ -42,33 +42,33 @@ class Channel
 	public:
 
 		Channel(std::string name);
-		~Channel(void);
+		~Channel();
 
-		std::string		getName(void) const;
-		std::string		getTopic(void) const;
+		std::string		getName() const;
+		std::string		getTopic() const;
 		void			setTopic(std::string topic);
-		std::string		getPassword(void) const;
+		std::string		getPassword() const;
 		void			setPassword(std::string topic);
-		int				getUserLimit(void) const;
+		int				getUserLimit() const;
 		void			setUserLimit(int topic);
-		int				getMods(void) const;
+		int				getMods() const;
 		void			setMods(int topic);
 
-		void			addClient(Client* client);
-		void			removeClient(Client* client);
-		void			addOperator(Client* client);
-		void			removeOperator(Client* client);
-		void			addclientWithVoice(Client* client);
-		void			removeclientWithVoice(Client* client);
+		void			addClient(Client* client);				// Add the Client to the channel
+		void			removeClient(Client* client);			// Remove the Client from the channel
+		void			addOperator(Client* client);			// Add the Client to the list of channel operators
+		void			removeOperator(Client* client);			// Remove the Client from the list of channel operators
+		void			addclientWithVoice(Client* client);		// Add the Client to the list of clients with voice permission
+		void			removeclientWithVoice(Client* client);	// Remove the Client from the list of clients with voice permission
 		void			addBanMask(std::string banMask);
 		void			removeBanMask(std::string banMask);
 
 		bool			isConnected(Client* client) const;
 		bool			isOperator(Client* client) const;
-		bool			hasVoice(Client* client) const;
+		bool			hasVoice(Client* client) const;			// Return true if the client has voice permission
 		bool			isBanned(Client* client);
 
-		int				clientCount(void) const;
+		int				clientCount() const;
 
 	private:
 
@@ -81,7 +81,7 @@ class Channel
 		std::map<std::string, Client*>		_clients;				// List of clients connected to the channel
 		std::map<std::string, Client*>		_operators;				// List of channel's operators
 		std::map<std::string, Client*>		_clientsWithVoicePerm;	// List of clients with voice permission on (only if flag m is on)
-		std::map<std::string, BanMask>		_banList;	// List of clients with voice permission on (only if flag m is on)
+		std::map<std::string, BanMask>		_banList;				// List of ban masks
 };
 
 #endif //~~ CHANNEL_H
@@ -89,7 +89,7 @@ class Channel
 /*
 *	NAME RESTRICTIONS:
 *	Channels names are strings (beginning with a '&' or '#' character) of length up to 200 characters.
-*	Apart from the the requirement that the first character being either '&' or '#';
+*	Apart from the requirement that the first character being either '&' or '#';
 *	the only restriction on a channel name is that it may not contain any spaces (' '),
 *	a control G (^G or ASCII 7)
 *	or a comma (',' which is used as a list item separator by the protocol).

@@ -12,18 +12,18 @@ Channel::Channel(std::string name) : _name(name), _userLimit(-1), _mods(0) {}
 
 //~~ DESTRUCTOR
 
-BanMask::~BanMask(void) {}
+BanMask::~BanMask() {}
 
-Channel::~Channel(void) {}
+Channel::~Channel() {}
 
 //~~ ACCESSOR
 
-std::string		Channel::getName(void) const
+std::string		Channel::getName() const
 {
 	return (_name);
 }
 
-std::string		Channel::getTopic(void) const
+std::string		Channel::getTopic() const
 {
 	return (_topic);
 }
@@ -33,7 +33,7 @@ void			Channel::setTopic(std::string topic)
 	_topic = topic;
 }
 
-std::string		Channel::getPassword(void) const
+std::string		Channel::getPassword() const
 {
 	return (_password);
 }
@@ -43,7 +43,7 @@ void			Channel::setPassword(std::string password)
 	_password = password;
 }
 
-int				Channel::getUserLimit(void) const
+int				Channel::getUserLimit() const
 {
 	return (_userLimit);
 }
@@ -53,7 +53,7 @@ void			Channel::setUserLimit(int userLimit)
 	_userLimit = userLimit;
 }
 
-int				Channel::getMods(void) const
+int				Channel::getMods() const
 {
 	return (_mods);
 }
@@ -178,7 +178,7 @@ bool			Channel::isBanned(Client* client)
 	return (false);
 }
 
-int				Channel::clientCount(void) const
+int				Channel::clientCount() const
 {
 	return (_clients.size());
 }

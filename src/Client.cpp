@@ -6,16 +6,16 @@ Client::Client(int socket) : _sock(socket) {}
 
 //~~ DESTRUCTOR
 
-Client::~Client(void) {}
+Client::~Client() {}
 
 //~~ ACCESSOR
 
-int				Client::getSock(void) const
+int				Client::getSock() const
 {
 	return(_sock);
 }
 
-std::string		Client::getNickname(void) const
+std::string		Client::getNickname() const
 {
 	return(_nickname);
 }
@@ -27,7 +27,7 @@ void			Client::setNickname(std::string nickname)
 }
 
 
-std::string		Client::getHost(void) const
+std::string		Client::getHost() const
 {
 	return(_host);
 }
@@ -37,7 +37,7 @@ void			Client::setHost(std::string host)
 	_host = host;
 }
 
-std::string		Client::getUser(void) const
+std::string		Client::getUser() const
 {
 	return(_user);
 }
@@ -47,7 +47,7 @@ void			Client::setUser(std::string user)
 	_user = user;
 }
 
-std::string		Client::getRealName(void) const
+std::string		Client::getRealName() const
 {
 	return(_realName);
 }
@@ -57,7 +57,7 @@ void			Client::setRealName(std::string realName)
 	_realName = realName;
 }
 
-bool			Client::getOperator(void) const
+bool			Client::isOperator() const
 {
 	return (_op);
 }
@@ -67,7 +67,7 @@ void			Client::setOperator(bool value)
 	_op = value;
 }
 
-int				Client::getNumberOfChannels(void) const
+int				Client::getNumberOfChannels() const
 {
 	return (_channels.size());
 }
@@ -83,7 +83,7 @@ Channel*	Client::getChannel(std::string name)
 	return (_channels.find(name)->second);
 }
 
-std::string		Client::getLastChannelName(void)
+std::string		Client::getLastChannelName()
 {
 	if (!_channels.size())
 		return ("*");
@@ -97,12 +97,12 @@ void	Client::leaveChannel(Channel* channel)
 	_channels.erase(channel->getName());
 }
 
-char*		Client::getInputBuffer(void)
+char*		Client::getInputBuffer()
 {
 	return (_inputBuffer);
 }
 
-const char*	Client::getOutputBuffer(void) const
+const char*	Client::getOutputBuffer() const
 {
 	return (_outputBuffer.c_str());
 }
@@ -117,7 +117,7 @@ bool	Client::hasOutput()
 	return (!_outputBuffer.empty());
 }
 
-void	Client::clearOutputBuffer(void)
+void	Client::clearOutputBuffer()
 {
 	_outputBuffer.clear();
 }
@@ -132,7 +132,7 @@ bool	Client::isOldNickname(std::string nickname)
 	return (false);
 }
 
-bool	Client::isRegistered(void)
+bool	Client::isRegistered()
 {
-	return (_nickname.empty() == false && _user.empty() == false);
+	return (_nickname.empty() == false && _user.empty() == false && _hasEnteredPassword == true);
 }
