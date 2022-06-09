@@ -5,52 +5,26 @@
 # include <string>
 # include <vector>
 # include <map>
+# include "Server.hpp"
 # include "Client.hpp"
 
 class Command
 {
 	public:
 
-		Command(std::string cmdLine, Client* sender);
-		~Command(void);
+		Command(std::string name, int minArg, void (*fct)(std::vector<std::string> cmd, Client* sender, Server* server));
+		~Command();
 
-		static void		initSupportedCommands();
+		std::string		getName() const;
+		size_t			getMinArg() const;
+
+		void	execute(std::vector<std::string> cmd, Client* sender, Server* serv);									// Execute the the command by calling the appropriate function pointed by `_fct`
 
 	private:
 
-		std::string							_cmd;
-		std::vector<std::string>			_args;
-		Client*								_sender;
-
-		static std::map<std::string, std::pair<int, void (*)(void)> >	_commands;
-
-		void	pass(void);
-		void	nick(void);
-		void	user(void);
-		void	oper(void);
-		void	quit(void);
-		void	join(void);
-		void	part(void);
-		void	mode(void);
-		void	topic(void);
-		void	names(void);
-		void	list(void);
-		void	kick(void);
-		void	version(void);
-		void	stats(void);
-		void	time(void);
-		void	admin(void);
-		void	info(void);
-		void	privmsg(void);
-		void	notice(void);
-		void	who(void);
-		void	whois(void);
-		void	whowas(void);
-		void	kill(void);
-		void	ping(void);
-		void	pong(void);
-		void	error(void);
-
+		std::string			_name;													// The command name
+		size_t				_minArg;												// The minimum number of arguments the command need
+		void 				(*_fct)(std::vector<std::string> cmd, Client* sender, Server* server);	// A pointer to the function that execute the command
 };
 
 #endif //~~ COMMAND_H
