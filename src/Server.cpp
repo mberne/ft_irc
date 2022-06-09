@@ -119,7 +119,7 @@ void		Server::executeRequest(std::string cmdLine, Client* sender)
 			*cmd = *it;
 	if (cmd == NULL)
 	{
-		// sender->addToOutputBuffer(ERRUNKNOWNCOMMAND(cmd));
+		// sender->addToOutputBuffer(ERR_UNKNOWNCOMMAND(sender->getName(), cmdArgs.front()));
 		return;
 	}
 	for (i = cmdLine.find_first_of(' '); i != std::string::npos; i = cmdLine.find_first_of(' '))

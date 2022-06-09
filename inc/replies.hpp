@@ -41,7 +41,7 @@
 // La paire RPL_WHOREPLY et RPL_ENDOFWHO est utilisée en réponse à un message WHO.
 // Le RPL_WHOREPLY n'est envoyé que s'il y a une correspondance à la requête WHO.
 // S'il y a une liste de paramètres fournie avec le message WHO, un RPL_ENDOFWHO doit être envoyé après le traitement de chaque élément de la liste, <nom> étant l'élément.
-# define RPL_WHOREPLY(user) SERV_NAME + " 352 " + user + " " + client->getLastChannelName() + " " + client->getUser() + " " + client->getHost() + " " + SERV_NAME + " " + client->getNickname() + " H" + (client->isOp() ? "*" : "" ) + [@|+]" + " :0 " + client->getRealName() // pthomas
+# define RPL_WHOREPLY(user) SERV_NAME + " 352 " + user + " " + client->getLastChannelName() + " " + client->getUser() + " " + client->getHost() + " " + SERV_NAME + " " + client->getNickname() + " H" + (client->isOp() ? "*" : "" ) + "[@|+]" + " :0 " + client->getRealName() // pthomas
 # define RPL_ENDOFWHO(user, name) SERV_NAME + " 315 " + user + " " + name " :End of /WHO list"
 
 // En réponse à un message NAMES, une paire consistant de RPL_NAMREPLY et RPL_ENDOFNAMES est renvoyée par le serveur au client.

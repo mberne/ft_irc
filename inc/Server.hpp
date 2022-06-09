@@ -24,7 +24,7 @@ class Server
 		std::map<int, Client*>			_clientsBySock;
 		std::map<std::string, Client*>	_oldClients;
 		std::map<std::string, Channel*>	_channels;
-		std::vector<Command>		_cmdList;
+		std::vector<Command>			_cmdList;
 
 		void		initSupportedCommands();
 		void		acceptConnexions();

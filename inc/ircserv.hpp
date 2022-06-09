@@ -55,9 +55,6 @@ class Command;
 
 /*** ~~ PROTOTYPES ~~ ***/
 
-// main.cpp
-int main(int ac, char **av);
-
 // Server commands
 // Channel operations
 void	pass(std::vector<std::string> cmd, Client* sender, Server* serv);
