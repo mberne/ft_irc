@@ -168,6 +168,11 @@ std::string &	Client::getInputBuffer()
 	return _inputBuffer;
 }
 
+void			Client::addToInputBuffer(char* buf)
+{
+	_inputBuffer += buf;
+}
+
 const char*	Client::getOutputBuffer() const
 {
 	return _outputBuffer.c_str();
