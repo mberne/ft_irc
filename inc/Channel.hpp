@@ -48,26 +48,25 @@ class Channel
 		// CHANNEL INFO
 		std::string		getName() const;
 		std::string		getTopic() const;
-		void			setTopic(std::string topic);
 		std::string		getPassword() const;
-		void			setPassword(std::string password);
+		int				clientCount() const;
+		int				getUserLimit() const;
+		bool			isModerated() const;
+		bool			isInvite() const;
+		bool			nonMembersCanTalk() const;
+		bool			isPrivate() const;
+		bool			isSecret() const;
+		bool			hasTopic() const;
 		// MODS
 		// void			addMods(int mods, ...);
 		// void			removeMods(int mods);
-		// std::string		getMods() const;
-		// bool			isInvite() const;
-		// bool			isModerated() const;
-		// bool			nonMembersCanTalk() const;
-		// bool			isPrivate() const;
-		// bool			isSecret() const;
-		// bool			hasTopic() const;
-		// int				getUserLimit() const;
-		// void			addOperator(Client* client);			// Add the Client to the list of channel operators
-		// void			removeOperator(Client* client);			// Remove the Client from the list of channel operators
-		// void			addclientWithVoice(Client* client);		// Add the Client to the list of clients with voice permission
-		// void			removeclientWithVoice(Client* client);	// Remove the Client from the list of clients with voice permission
-		// void			addBanMask(std::string banMask);
-		// void			removeBanMask(std::string banMask);
+		std::string		getMods() const;
+		void			addOperator(Client* client);			// Add the Client to the list of channel operators
+		void			removeOperator(Client* client);			// Remove the Client from the list of channel operators
+		void			addclientWithVoice(Client* client);		// Add the Client to the list of clients with voice permission
+		void			removeclientWithVoice(Client* client);	// Remove the Client from the list of clients with voice permission
+		void			addBanMask(std::string banMask);
+		void			removeBanMask(std::string banMask);
 		// CLIENTS
 		void			addClient(Client* client);				// Add the Client to the channel
 		void			removeClient(Client* client);			// Remove the Client from the channel
@@ -77,7 +76,6 @@ class Channel
 		bool			isBanned(Client* client);
 
 
-		int				clientCount() const;
 
 	private:
 

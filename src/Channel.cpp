@@ -16,7 +16,7 @@ BanMask::~BanMask() {}
 
 Channel::~Channel() {}
 
-//~~ ACCESSOR
+//~~ CHANNEL INFO
 
 std::string		Channel::getName() const
 {
@@ -28,19 +28,14 @@ std::string		Channel::getTopic() const
 	return (_topic);
 }
 
-void			Channel::setTopic(std::string topic)
-{
-	_topic = topic;
-}
-
 std::string		Channel::getPassword() const
 {
 	return (_password);
 }
 
-void			Channel::setPassword(std::string password)
+int				Channel::clientCount() const
 {
-	_password = password;
+	return (_clients.size());
 }
 
 int				Channel::getUserLimit() const
@@ -48,22 +43,37 @@ int				Channel::getUserLimit() const
 	return (_userLimit);
 }
 
-void			Channel::setUserLimit(int userLimit)
+bool			Channel::isModerated() const
 {
-	_userLimit = userLimit;
+	return ((_mods | CHANNEL_FLAG_M) == _mods);
 }
 
-int				Channel::getMods() const
+bool			Channel::isInvite() const
 {
-	return (_mods);
+	return ((_mods | CHANNEL_FLAG_I) == _mods);
 }
 
-void			Channel::setMods(int mods)
+bool			Channel::nonMembersCanTalk() const
 {
-	_mods = mods;
+	return ((_mods | CHANNEL_FLAG_N) == _mods);
 }
 
-//~~ METHODS
+bool			Channel::isPrivate() const
+{
+	return ((_mods | CHANNEL_FLAG_P) == _mods);
+}
+
+bool			Channel::isSecret() const
+{
+	return ((_mods | CHANNEL_FLAG_S) == _mods);
+}
+
+bool			Channel::hasTopic() const
+{
+	return ((_mods | CHANNEL_FLAG_T) == _mods);
+}
+
+//~~ BanMask METHODS
 
 bool		BanMask::isClientBanned(Client* client) const
 {
@@ -114,15 +124,25 @@ bool		BanMask::stringCorrespondToMask(std::string str, std::string mask) // NEED
 	return (i == str.size() && j == mask.size());
 }
 
-void			Channel::addClient(Client* client)
-{
-	// Error handling needed!
-	_clients.insert(std::make_pair(client->getNickname(), client));
-}
+//~~ MODS
 
-void			Channel::removeClient(Client* client)
+std::string		Channel::getMods() const
 {
-	_clients.erase(client->getNickname());
+	std::string modsString("+");
+
+	if (isPrivate() == true)
+		modsString += 'p';
+	if (isSecret() == true)
+		modsString += 's';
+	if (isInvite() == true)
+		modsString += 'i';
+	if (hasTopic() == true)
+		modsString += 't';
+	if (nonMembersCanTalk() == true)
+		modsString += 'n';
+	if (isModerated() == true)
+		modsString += 'm';
+	return (modsString);
 }
 
 void			Channel::addOperator(Client* client)
@@ -155,6 +175,19 @@ void			Channel::removeBanMask(std::string banMask)
 	_banList.erase(banMask);
 }
 
+//~~ CLIENTS
+
+void			Channel::addClient(Client* client)
+{
+	// Error handling needed!
+	_clients.insert(std::make_pair(client->getNickname(), client));
+}
+
+void			Channel::removeClient(Client* client)
+{
+	_clients.erase(client->getNickname());
+}
+
 bool			Channel::isConnected(Client* client) const
 {
 	return (_clients.find(client->getNickname()) != _clients.end());
@@ -176,11 +209,6 @@ bool			Channel::isBanned(Client* client)
 		if (it->second.isClientBanned(client) == true)
 			return (true);
 	return (false);
-}
-
-int				Channel::clientCount() const
-{
-	return (_clients.size());
 }
 
 // t'es beau <3
