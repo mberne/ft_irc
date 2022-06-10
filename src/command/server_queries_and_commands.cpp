@@ -1,16 +1,21 @@
 #include "ircserv.hpp"
 
-void	who(std::vector<std::string> cmd, Client* sender, Server* serv)
+void	kill(std::vector<std::string> cmd, Client* sender, Server* serv) // mberne
 {
 	(void)cmd; (void)sender; (void)serv;
 }
 
-void	whois(std::vector<std::string> cmd, Client* sender, Server* serv)
+void	ping(std::vector<std::string> cmd, Client* sender, Server* serv) // mberne
 {
 	(void)cmd; (void)sender; (void)serv;
 }
 
-void	whowas(std::vector<std::string> cmd, Client* sender, Server* serv)
+void	pong(std::vector<std::string> cmd, Client* sender, Server* serv) // mberne
+{
+	(void)cmd; (void)sender; (void)serv;
+}
+
+void	error(std::vector<std::string> cmd, Client* sender, Server* serv) // mberne
 {
 	(void)cmd; (void)sender; (void)serv;
 }
