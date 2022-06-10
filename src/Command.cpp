@@ -2,7 +2,7 @@
 
 //~~ CONSTRUCTOR
 
-Command::Command(std::string name, int minArg, void (*fct)(std::vector<std::string> cmd, Client* sender, Server* server)) : _name(name), _minArg(minArg), _fct(fct) {}
+Command::Command(std::string name, int minArg, void (*fct)(std::vector<std::string> cmd, Client* sender, Server* server)) : fct(fct), _name(name), _minArg(minArg) {}
 
 //~~ DESTRUCTOR
 
@@ -18,11 +18,4 @@ std::string		Command::getName() const
 size_t		Command::getMinArg() const
 {
 	return (_minArg);	
-}
-
-//~~ METHODS
-
-void	Command::execute(std::vector<std::string> cmd, Client* sender, Server* serv)
-{
-	_fct(cmd, sender, serv);
 }

@@ -18,13 +18,12 @@ class Command
 		std::string		getName() const;
 		size_t			getMinArg() const;
 
-		void	execute(std::vector<std::string> cmd, Client* sender, Server* serv);									// Execute the the command by calling the appropriate function pointed by `_fct`
+		void 				(*fct)(std::vector<std::string> cmd, Client* sender, Server* server);	// A pointer to the function that execute the command
 
 	private:
 
-		std::string			_name;													// The command name
-		size_t				_minArg;												// The minimum number of arguments the command need
-		void 				(*_fct)(std::vector<std::string> cmd, Client* sender, Server* server);	// A pointer to the function that execute the command
+		std::string const	_name;																	// The command name
+		size_t const		_minArg;																// The minimum number of arguments the command need
 };
 
 #endif //~~ COMMAND_H
