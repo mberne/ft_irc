@@ -147,7 +147,7 @@ void		Server::executeRequest(Client* sender)
 		std::vector<std::string>	cmdArgs;
 
 		if (cmdLine.front() == ':')
-			cmdLine.erase(0, cmdLine.find_first_not_of(' ', cmdLine.find_of(' ', 0)));
+			cmdLine.erase(0, cmdLine.find_first_not_of(' ', cmdLine.find_first_of(' ', 0)));
 		for (size_t j = cmdLine.find_first_of(' '); j != std::string::npos; j = cmdLine.find_first_of(' '))
 		{
 			cmdArgs.push_back(cmdLine.substr(0, j));
