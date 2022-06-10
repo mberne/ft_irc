@@ -8,8 +8,8 @@
 # include "ircserv.hpp"
 # include "Channel.hpp"
 
-# define CLIENT_O 1	// Server operator flag;
-# define CLIENT_I 2	// invisible client flag;
+# define CLIENT_FLAG_O 1	// Server operator flag;
+# define CLIENT_FLAG_I 2	// invisible client flag;
 
 class Channel;
 
@@ -35,8 +35,8 @@ class Client
 		bool			isOperator() const;
 		bool			isInvisible() const;
 		// MODS
-		void			addMods(int mods);
-		void			removeMods(int mods);
+		void			addMods(std::string mods);
+		void			removeMods(std::string mods);
 		std::string		getMods() const;
 		// CHANNEL
 		void			joinChannel(Channel* channel);				// Add the Channel sent as paramater to the _channels map

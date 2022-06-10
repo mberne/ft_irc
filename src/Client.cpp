@@ -71,24 +71,30 @@ bool	Client::isRegistered() const
 
 bool			Client::isOperator() const
 {
-	return ((_mods | CLIENT_O) == _mods);
+	return ((_mods | CLIENT_FLAG_O) == _mods);
 }
 
 bool			Client::isInvisible() const
 {
-	return ((_mods | CLIENT_I) == _mods);
+	return ((_mods | CLIENT_FLAG_I) == _mods);
 }
 
 //~~ MODS
 
-void			Client::addMods(int mods)
+void			Client::addMods(std::string mods)
 {
-	_mods |= mods;
+	if (mods.find('o'))
+		_mods |= CLIENT_FLAG_O;
+	if (mods.find('i'))
+		_mods |= CLIENT_FLAG_I;
 }
 
-void			Client::removeMods(int mods)
+void			Client::removeMods(std::string mods)
 {
-	_mods &= ~mods;
+	if (mods.find('o'))
+		_mods &= ~CLIENT_FLAG_O;
+	if (mods.find('i'))
+		_mods &= ~CLIENT_FLAG_I;
 }
 
 std::string		Client::getMods() const
