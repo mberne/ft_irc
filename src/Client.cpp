@@ -142,7 +142,7 @@ std::string		Client::getLastChannelName() const
 	if (!_channels.size())
 		return "*";
 	else
-		return _channels.at(0)->getName();
+		return _channels.front()->getName();
 }
 
 // std::string		Client::showChannelList()

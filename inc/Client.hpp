@@ -78,6 +78,3 @@ class Client
 *   i - marks a users as invisible;
 *   o - operator flag.
 */
-
-// message en plusieurs partie
-// constructeur de channel
