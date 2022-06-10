@@ -12,10 +12,10 @@ Command::~Command() {}
 
 std::string		Command::getName() const
 {
-	return (_name);	
+	return _name;
 }
 
 size_t		Command::getMinArg() const
 {
-	return (_minArg);	
+	return _minArg;
 }

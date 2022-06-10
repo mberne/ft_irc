@@ -20,27 +20,27 @@ Channel::~Channel() {}
 
 std::string		Channel::getName() const
 {
-	return (_name);
+	return _name;
 }
 
 std::string		Channel::getTopic() const
 {
-	return (_topic);
+	return _topic;
 }
 
 std::string		Channel::getPassword() const
 {
-	return (_password);
+	return _password;
 }
 
 int				Channel::clientCount() const
 {
-	return (_clients.size());
+	return _clients.size();
 }
 
 int				Channel::getUserLimit() const
 {
-	return (_userLimit);
+	return _userLimit;
 }
 
 bool			Channel::isModerated() const
@@ -96,7 +96,7 @@ bool		BanMask::stringCorrespondToMask(std::string str, std::string mask) // NEED
 
 			start = mask.find_first_not_of("*", j);
 			if (start == std::string::npos)
-				return (true);
+				return true;
 
 			end = mask.find_first_of("*", start);
 			if (end == std::string::npos)
@@ -107,7 +107,7 @@ bool		BanMask::stringCorrespondToMask(std::string str, std::string mask) // NEED
 			j = end;
 
 			if (i == std::string::npos)
-				return (false);
+				return false;
 			i += needle.size();
 		}
 		else if (str[i] == mask[j] && i < str.size())
@@ -116,7 +116,7 @@ bool		BanMask::stringCorrespondToMask(std::string str, std::string mask) // NEED
 			j++;
 		}
 		else
-			return (false);
+			return false;
 	}
 	j = mask.find_first_not_of("*", j);
 	if (j == std::string::npos)
@@ -142,7 +142,7 @@ std::string		Channel::getMods() const
 		modsString += 'n';
 	if (isModerated() == true)
 		modsString += 'm';
-	return (modsString);
+	return modsString;
 }
 
 void			Channel::addOperator(Client* client)
@@ -207,8 +207,8 @@ bool			Channel::isBanned(Client* client)
 {
 	for (std::map<std::string, BanMask>::iterator it = _banList.begin(); it != _banList.end(); it++)
 		if (it->second.isClientBanned(client) == true)
-			return (true);
-	return (false);
+			return true;
+	return false;
 }
 
 // t'es beau <3

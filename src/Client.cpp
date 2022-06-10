@@ -12,12 +12,12 @@ Client::~Client() {}
 
 int				Client::getSock() const
 {
-	return(_sock);
+	return _sock;
 }
 
 std::string		Client::getNickname() const
 {
-	return(_nickname);
+	return _nickname;
 }
 
 void			Client::setNickname(std::string nickname)
@@ -30,13 +30,13 @@ bool	Client::isOldNickname(std::string nickname)
 {
 	for (std::vector<std::string>::iterator it = _oldNicknames.begin(); it != _oldNicknames.end(); it++)
 		if (!nickname.compare(*it))
-			return (true);
-	return (false);
+			return true;
+	return false;
 }
 
 std::string		Client::getUser() const
 {
-	return(_user);
+	return _user;
 }
 
 void			Client::setUser(std::string user)
@@ -46,7 +46,7 @@ void			Client::setUser(std::string user)
 
 std::string		Client::getHost() const
 {
-	return(_host);
+	return _host;
 }
 
 void			Client::setHost(std::string host)
@@ -56,7 +56,7 @@ void			Client::setHost(std::string host)
 
 std::string		Client::getRealName() const
 {
-	return(_realName);
+	return _realName;
 }
 
 void			Client::setRealName(std::string realName)
@@ -105,7 +105,7 @@ std::string		Client::getMods() const
 		modsString += 'i';
 	if (isOperator() == true)
 		modsString += 'o';
-	return (modsString);
+	return modsString;
 }
 
 //~~ CHANNELS
@@ -124,20 +124,20 @@ void	Client::leaveChannel(Channel* channel)
 
 Channel*	Client::getChannel(std::string name) const
 {
-	return (_channels.find(name)->second);
+	return _channels.find(name)->second;
 }
 
 int				Client::getNumberOfChannels() const
 {
-	return (_channels.size());
+	return _channels.size();
 }
 
 std::string		Client::getLastChannelName() const
 {
 	if (!_channels.size())
-		return ("*");
+		return "*";
 	else
-		return (_channels.at(0)->getName());
+		return _channels.at(0)->getName();
 }
 
 // std::string		Client::showChannelList()
@@ -160,12 +160,12 @@ std::string		Client::getLastChannelName() const
 
 char*		Client::getInputBuffer()
 {
-	return (_inputBuffer);
+	return _inputBuffer;
 }
 
 const char*	Client::getOutputBuffer() const
 {
-	return (_outputBuffer.c_str());
+	return _outputBuffer.c_str();
 }
 
 void	Client::addToOutputBuffer(std::string output)
@@ -180,5 +180,5 @@ void	Client::clearOutputBuffer()
 
 bool	Client::hasOutput() const
 {
-	return (!_outputBuffer.empty());
+	return !_outputBuffer.empty();
 }
