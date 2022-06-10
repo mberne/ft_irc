@@ -26,21 +26,25 @@ class Server
 		std::map<std::string, Channel*>	_channels;
 		std::vector<Command>			_cmdList;
 
+		void		addClient(int sock);
+		void		removeClient(Client *src, std::vector<struct pollfd>::iterator it);
+
 		void		initSupportedCommands();
 		void		acceptConnexions();
 		void		receiveMessages();
 		void		executeRequest(std::string cmdLine, Client* sender);
 		void		sendMessages();
 		void		stop(int status); // SIGNAL HANDLING
-		void		addClient(int sock);
-		void		removeClient(Client *src, std::vector<struct pollfd>::iterator it);
 	
 	public:
 
 		Server(int port, std::string password);
 		~Server();
 
+		Client*		getClient(std::string name) const;
+		Channel*	getChannel(std::string name) const;
 		std::string	getStartTime() const;
+
 		void		run();
 };
 

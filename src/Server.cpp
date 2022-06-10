@@ -1,5 +1,7 @@
 #include "Server.hpp"
 
+//~~ CONSTRUCTOR
+
 Server::Server(int port, std::string password) : _port(port), _password(password), _online(false), _startTime(std::time(NULL))
 {
 	struct protoent	*pe;
@@ -70,6 +72,18 @@ std::string	Server::getStartTime() const
 	return asctime(timeinfo);
 }
 
+//~~ ACCESSOR
+
+Client*		Server::getClient(std::string name) const
+{
+	
+}
+
+Channel*	Server::getChannel(std::string name) const
+{
+	
+}
+
 //~~ METHODS
 
 void	Server::addClient(int sock)
@@ -119,7 +133,7 @@ void		Server::executeRequest(std::string cmdLine, Client* sender)
 			*cmd = *it;
 	if (cmd == NULL)
 	{
-		// sender->addToOutputBuffer(ERR_UNKNOWNCOMMAND(sender->getName(), cmdArgs.front()));
+		sender->addToOutputBuffer(ERR_UNKNOWNCOMMAND(sender->getNickname(), cmdArgs.front()));
 		return;
 	}
 	for (i = cmdLine.find_first_of(' '); i != std::string::npos; i = cmdLine.find_first_of(' '))
@@ -130,7 +144,7 @@ void		Server::executeRequest(std::string cmdLine, Client* sender)
 	cmdArgs.push_back(cmdLine);
 	if (cmdArgs.size() < cmd->getMinArg())
 	{
-		// sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(cmd));
+		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmdArgs.front()));
 		return;
 	}
 	cmd->execute(cmdArgs, sender, this);
