@@ -74,15 +74,15 @@ std::string	Server::getStartTime() const
 	return asctime(timeinfo);
 }
 
-Client*		Server::getClient(std::string name) const
-{
+// Client*		Server::getClient(std::string name) const
+// {
 	
-}
+// }
 
-Channel*	Server::getChannel(std::string name) const
-{
+// Channel*	Server::getChannel(std::string name) const
+// {
 	
-}
+// }
 
 //~~ METHODS
 
@@ -121,38 +121,45 @@ void	Server::sendMessages()
 	}
 }
 
-void		Server::executeRequest(std::string cmdLine, Client* sender)
+void		Server::executeCommand(std::vector<std::string>	cmdArgs, Client* sender)
 {
-	size_t						i;
-	std::vector<std::string>	cmdArgs;
-	Command*					cmd = NULL;
-
+	Command*	cmd;
 
 	for (std::vector<Command>::iterator it = _cmdList.begin(); it != _cmdList.end(); it++)
+	{
 		if (!cmdArgs.front().compare(it->getName()))
-			*cmd = *it;
+			cmd = &(*it);
+	}
 	if (cmd == NULL)
-	{
 		sender->addToOutputBuffer(ERR_UNKNOWNCOMMAND(sender->getNickname(), cmdArgs.front()));
-		return;
-	}
-	for (i = cmdLine.find_first_of(' '); i != std::string::npos; i = cmdLine.find_first_of(' '))
-	{
-		cmdArgs.push_back(cmdLine.substr(0, i));
-		cmdLine.erase(0, i);
-	}
-	cmdArgs.push_back(cmdLine);
-	if (cmdArgs.size() < cmd->getMinArg())
-	{
-		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmdArgs.front()));
-		return;
-	}
-	cmd->execute(cmdArgs, sender, this);
+	else
+		cmd->_fct(cmdArgs, sender, this);
 }
 
-// vérifier si la commande existe
-// vérifier si elle a le nombre d'arguments minimal requis
-// appeler la fonction d'exécution de la commande
+void		Server::executeRequest(Client* sender)
+{
+	std::string inputBuffer(sender->getInputBuffer());
+
+	for(size_t	i = 0; i != std::string::npos; i = inputBuffer.find('\r'))
+	{
+		inputBuffer.erase(i, 1);
+		i = 0;
+	}
+	for(size_t	i = 0; i != std::string::npos; i = inputBuffer.find('\n'))
+	{
+		std::string					cmdLine = inputBuffer.substr(0, i);
+		std::vector<std::string>	cmdArgs;
+
+		for (i = cmdLine.find_first_of(' '); i != std::string::npos; i = cmdLine.find_first_of(' '))
+		{
+			cmdArgs.push_back(cmdLine.substr(0, i));
+			cmdLine.erase(0, i);
+		}
+		cmdArgs.push_back(cmdLine);
+		executeCommand(cmdArgs, sender);
+		inputBuffer.erase(0, i);
+	}
+}
 
 void	Server::receiveMessages()
 {
@@ -173,7 +180,7 @@ void	Server::receiveMessages()
 			{
 				buf[ret] = '\0';
 				std::cout << "Message from socket : " << it->fd << std::endl; // test
-				// TODO: execute() -> fct membre du client : parsing, exec and keep write in buffers
+				executeRequest(client);
 			}
 		}
 	}

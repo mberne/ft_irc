@@ -32,7 +32,9 @@ class Server
 		void		initSupportedCommands();
 		void		acceptConnexions();
 		void		receiveMessages();
-		void		executeRequest(std::string cmdLine, Client* sender);
+		void		handleRequests(Client* client);
+		void		executeRequest(Client* sender);
+		void		executeCommand(std::vector<std::string>	cmd, Client* sender);
 		void		sendMessages();
 		void		stop(int status); // SIGNAL HANDLING
 	

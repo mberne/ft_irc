@@ -3,18 +3,19 @@
 
 # include <iostream>
 # include <string>
+# include <cstdarg>
 # include <vector>
 # include <map>
 # include "Client.hpp"
 
 /*** ~~ CHANNEL MOD FLAGS ~~ ***/
 
-# define CHAN_P 1	// Private channel flag;
-# define CHAN_S 2	// Secret channel flag;
-# define CHAN_I 4	// Invite-only channel flag;
-# define CHAN_T 8	// Topic settable by channel operator only flag;
-# define CHAN_N 16	// No messages to channel from clients on the outside flag;
-# define CHAN_M 32	// Moderated channel flag;
+# define CHANNEL_FLAG_P 1	// Private channel flag;
+# define CHANNEL_FLAG_S 2	// Secret channel flag;
+# define CHANNEL_FLAG_I 4	// Invite-only channel flag;
+# define CHANNEL_FLAG_T 8	// Topic settable by channel operator only flag;
+# define CHANNEL_FLAG_N 16	// No messages to channel from clients on the outside flag;
+# define CHANNEL_FLAG_M 32	// Moderated channel flag;
 
 class Client;
 
@@ -44,29 +45,37 @@ class Channel
 		Channel(std::string name);
 		~Channel();
 
+		// CHANNEL INFO
 		std::string		getName() const;
 		std::string		getTopic() const;
 		void			setTopic(std::string topic);
 		std::string		getPassword() const;
-		void			setPassword(std::string topic);
-		int				getUserLimit() const;
-		void			setUserLimit(int topic);
-		int				getMods() const;
-		void			setMods(int topic);
-
+		void			setPassword(std::string password);
+		// MODS
+		// void			addMods(int mods, ...);
+		// void			removeMods(int mods);
+		// std::string		getMods() const;
+		// bool			isInvite() const;
+		// bool			isModerated() const;
+		// bool			nonMembersCanTalk() const;
+		// bool			isPrivate() const;
+		// bool			isSecret() const;
+		// bool			hasTopic() const;
+		// int				getUserLimit() const;
+		// void			addOperator(Client* client);			// Add the Client to the list of channel operators
+		// void			removeOperator(Client* client);			// Remove the Client from the list of channel operators
+		// void			addclientWithVoice(Client* client);		// Add the Client to the list of clients with voice permission
+		// void			removeclientWithVoice(Client* client);	// Remove the Client from the list of clients with voice permission
+		// void			addBanMask(std::string banMask);
+		// void			removeBanMask(std::string banMask);
+		// CLIENTS
 		void			addClient(Client* client);				// Add the Client to the channel
 		void			removeClient(Client* client);			// Remove the Client from the channel
-		void			addOperator(Client* client);			// Add the Client to the list of channel operators
-		void			removeOperator(Client* client);			// Remove the Client from the list of channel operators
-		void			addclientWithVoice(Client* client);		// Add the Client to the list of clients with voice permission
-		void			removeclientWithVoice(Client* client);	// Remove the Client from the list of clients with voice permission
-		void			addBanMask(std::string banMask);
-		void			removeBanMask(std::string banMask);
-
 		bool			isConnected(Client* client) const;
 		bool			isOperator(Client* client) const;
 		bool			hasVoice(Client* client) const;			// Return true if the client has voice permission
 		bool			isBanned(Client* client);
+
 
 		int				clientCount() const;
 
@@ -85,6 +94,8 @@ class Channel
 };
 
 #endif //~~ CHANNEL_H
+
+// channel->showClientList() "[[@|+]<pseudo> [[@|+]<pseudo> [...]]]"
 
 /*
 *	NAME RESTRICTIONS:
