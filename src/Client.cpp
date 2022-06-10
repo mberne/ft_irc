@@ -8,7 +8,7 @@ Client::Client(int sock) : _sock(sock) {}
 
 Client::~Client() {}
 
-//~~ ACCESSOR
+//~~ CLIENT INFO
 
 int				Client::getSock() const
 {
@@ -26,15 +26,12 @@ void			Client::setNickname(std::string nickname)
 	_nickname = nickname.substr(0, MAX_NICKNAME_LENGTH);
 }
 
-
-std::string		Client::getHost() const
+bool	Client::isOldNickname(std::string nickname)
 {
-	return(_host);
-}
-
-void			Client::setHost(std::string host)
-{
-	_host = host;
+	for (std::vector<std::string>::iterator it = _oldNicknames.begin(); it != _oldNicknames.end(); it++)
+		if (!nickname.compare(*it))
+			return (true);
+	return (false);
 }
 
 std::string		Client::getUser() const
@@ -47,6 +44,16 @@ void			Client::setUser(std::string user)
 	_user = user;
 }
 
+std::string		Client::getHost() const
+{
+	return(_host);
+}
+
+void			Client::setHost(std::string host)
+{
+	_host = host;
+}
+
 std::string		Client::getRealName() const
 {
 	return(_realName);
@@ -57,14 +64,60 @@ void			Client::setRealName(std::string realName)
 	_realName = realName;
 }
 
-bool			Client::isOperator() const
+bool	Client::isRegistered() const
 {
-	return (_op);
+	return (_nickname.empty() == false && _user.empty() == false && _hasEnteredPassword == true);
 }
 
-void			Client::setOperator(bool value)
+//~~ MODS
+
+void			Client::addMods(int mods)
 {
-	_op = value;
+	_mods |= mods;
+}
+
+void			Client::removeMods(int mods)
+{
+	_mods &= ~mods;
+}
+
+std::string		Client::getMods() const
+{
+	std::string modsString("+");
+
+	if (isInvisible() == true)
+		modsString += 'i';
+	if (isOperator() == true)
+		modsString += 'o';
+}
+
+bool			Client::isOperator() const
+{
+	return ((_mods | CLIENT_O) == _mods);
+}
+
+bool			Client::isInvisible() const
+{
+	return ((_mods | CLIENT_I) == _mods);
+}
+
+//~~ CHANNELS
+
+void	Client::joinChannel(Channel* channel)	
+{
+	// Error handling needed!
+	_channels.insert(std::make_pair(channel->getName(), channel));
+}
+
+void	Client::leaveChannel(Channel* channel)	
+{
+	// Error handling needed!
+	_channels.erase(channel->getName());
+}
+
+Channel*	Client::getChannel(std::string name) const
+{
+	return (_channels.find(name)->second);
 }
 
 int				Client::getNumberOfChannels() const
@@ -72,10 +125,31 @@ int				Client::getNumberOfChannels() const
 	return (_channels.size());
 }
 
-Channel*	Client::getChannel(std::string name)
+std::string		Client::getLastChannelName() const
 {
-	return (_channels.find(name)->second);
+	if (!_channels.size())
+		return ("*");
+	else
+		return (_channels.at(0)->getName());
 }
+
+std::string		Client::showChannelList()
+{
+	std::string		channelList;
+
+	for(std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); it++)
+	{
+		if (it != _channels.begin())
+			channelList += " ";
+		if (it->second->isOperator(this))
+			channelList += "@";
+		else if (it->second->isModerated() && it->second->hasVoice(this))
+			channelList += "+";
+		channelList += it->second->getName();
+	}
+}
+
+//~~ BUFFER
 
 char*		Client::getInputBuffer()
 {
@@ -87,44 +161,9 @@ const char*	Client::getOutputBuffer() const
 	return (_outputBuffer.c_str());
 }
 
-//~~ METHODS
-
-bool	Client::isOldNickname(std::string nickname)
-{
-	for (std::vector<std::string>::iterator it = _oldNicknames.begin(); it != _oldNicknames.end(); it++)
-		if (!nickname.compare(*it))
-			return (true);
-	return (false);
-}
-
-void	Client::joinChannel(Channel* channel)	
-{
-	// Error handling needed!
-	_channels.insert(std::make_pair(channel->getName(), channel));
-}
-
-std::string		Client::getLastChannelName()
-{
-	if (!_channels.size())
-		return ("*");
-	else
-		return (_channels.at(0)->getName());
-}
-
-void	Client::leaveChannel(Channel* channel)	
-{
-	// Error handling needed!
-	_channels.erase(channel->getName());
-}
-
 void	Client::addToOutputBuffer(std::string output)
 {
 	_outputBuffer += output;
-}
-
-bool	Client::hasOutput()
-{
-	return (!_outputBuffer.empty());
 }
 
 void	Client::clearOutputBuffer()
@@ -132,7 +171,7 @@ void	Client::clearOutputBuffer()
 	_outputBuffer.clear();
 }
 
-bool	Client::isRegistered()
+bool	Client::hasOutput() const
 {
-	return (_nickname.empty() == false && _user.empty() == false && _hasEnteredPassword == true);
+	return (!_outputBuffer.empty());
 }

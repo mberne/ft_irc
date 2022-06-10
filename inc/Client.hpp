@@ -8,8 +8,8 @@
 # include "ircserv.hpp"
 # include "Channel.hpp"
 
-# define CHAN_O 1	// Server operator flag;
-# define CHAN_I 2	// invisible client flag;
+# define CLIENT_O 1	// Server operator flag;
+# define CLIENT_I 2	// invisible client flag;
 
 class Channel;
 
@@ -20,30 +20,37 @@ class Client
 		Client(int sock);
 		~Client();
 
+		// CLIENT INFO
 		int				getSock() const;
 		std::string		getNickname() const;
 		void			setNickname(std::string nickname);
+		bool			isOldNickname(std::string nickname);		// Return true if the string sent as parameter is an old client's nickname
 		std::string		getUser() const;
 		void			setUser(std::string user);
 		std::string		getHost() const;
 		void			setHost(std::string host);
 		std::string		getRealName() const;
 		void			setRealName(std::string realName);
+		bool			isRegistered() const;						// Return true if the client used the registrations commands (PASS, NICK, USER)
+		// MODS
+		void			addMods(int mods);
+		void			removeMods(int mods);
+		std::string		getMods() const;
 		bool			isOperator() const;
-		void			setOperator(bool value);
-		int				getNumberOfChannels() const;
-		Channel*		getChannel(std::string name);
-		char*			getInputBuffer();
-		char const *	getOutputBuffer() const;
-
+		bool			isInvisible() const;
+		// CHANNEL
 		void			joinChannel(Channel* channel);				// Add the Channel sent as paramater to the _channels map
 		void			leaveChannel(Channel* channel);				// Remove the Channel sent as paramater from the _channels map
-		std::string		getLastChannelName();
+		Channel*		getChannel(std::string name) const;
+		int				getNumberOfChannels() const;
+		std::string		getLastChannelName() const;
+		std::string		showChannelList();
+		// BUFFER
+		char*			getInputBuffer();
+		char const *	getOutputBuffer() const;
 		void			addToOutputBuffer(std::string output);		// Append the string sent as parameter to the output buffer
 		void			clearOutputBuffer();						// Clear the output buffer
-		bool			hasOutput();								// Return true if the server have message to send to the client
-		bool			isOldNickname(std::string nickname);		// Return true if the string sent as parameter is an old client's nickname
-		bool			isRegistered();								// Return true if the client used the registrations commands (PASS, NICK, USER)
+		bool			hasOutput() const;							// Return true if the server have message to send to the client
 
 	private:
 
@@ -53,6 +60,7 @@ class Client
 		std::string							_user;					// The username of the client on that host
 		std::string							_host;					// The real name of the host that the client is running on
 		std::string							_realName;				// The real name of the user
+		int									_mods;					// cf. comment at end of file
 		bool								_op;					// If true the client is a server operator
 		std::map<std::string, Channel*>		_channels;				// List of channels the client is connected to
 		bool								_hasEnteredPassword;	// If true the client has entered the server password using PASS command
@@ -62,3 +70,9 @@ class Client
 };
 
 #endif //~~ CLIENT_H
+
+/*
+*	USER MODES:
+*   i - marks a users as invisible;
+*   o - operator flag.
+*/
