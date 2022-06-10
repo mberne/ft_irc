@@ -12,7 +12,7 @@
 # define RPL_WHOISUSER(user, client) SERV_NAME + std::string(" 311 ") + user + std::string(" ") + client->getNickname() + std::string(" ") + client->getUser() + std::string(" ") + client->getHost() + std::string(" * :") + client->getRealName()
 # define RPL_WHOISSERVER(user, nickname) SERV_NAME + std::string(" 312 ") + user + std::string(" ") + nickname + std::string(" ") + SERV_NAME + std::string(" ") + SERV_INFO
 # define RPL_WHOISOPERATOR(user, nickname) SERV_NAME + std::string(" 313 ") + user + std::string(" ") + nickname + std::string(" :is an IRC operator")
-# define RPL_WHOISCHANNELS(user, nickname, client) SERV_NAME + std::string(" 319 ") + user + std::string(" ") + nickname + (client->isOp())" :{[@|+]<canal><espace>}") // pthomas
+# define RPL_WHOISCHANNELS(user, nickname, client) SERV_NAME + std::string(" 319 ") + user + std::string(" ") + nickname + std::string(" :") + client->showChannelList
 # define RPL_ENDOFWHOIS(user, nickname) SERV_NAME + std::string(" 318 ") + user + std::string(" ") + nickname + std::string(" :End of /WHOIS list")
 
 // Lorsqu'il répond à un message WHOWAS, un serveur doit utiliser RPL_WHOWASUSER, RPL_WHOISSERVER ou ERR_WASNOSUCHNICK pour chacun des pseudonymes de la liste fournie.
@@ -26,11 +26,11 @@
 # define RPL_LIST(user, channel) SERV_NAME + std::string(" 322 ") + user + std::string(" ") + channel->getName() + std::string(" ") + channel->clientCount() + std::string(" :") + channel->getTopic() // boucler dessus
 # define RPL_LISTEND(user) SERV_NAME + std::string(" 323 ") + user + std::string(" :End of /LIST")
 
-# define RPL_CHANNELMODEIS(user, channel, mode, modeParams) SERV_NAME + std::string(" 324 ") + user + std::string(" ") + channel->getName() + std::string(" ") + mode + (modeParams ? " ") + modeParams : "")
+# define RPL_CHANNELMODEIS(user, channel, mode, modeParams) SERV_NAME + std::string(" 324 ") + user + std::string(" ") + channel->getName() + std::string(" ") + mode + (modeParams.empty() ? "" : " " + modeParams)
 
 // Lors de l'envoi d'un message TOPIC pour déterminer le sujet d'un canal, une de ces deux réponses est envoyée.
 // Si le sujet est défini, RPL_TOPIC est renvoyée, sinon c'est RPL_NOTOPIC.
-# define RPL_NOTOPIC(user, name) SERV_NAME + std::string(" 331 ") + user + std::string(" ") + name " :No topic is set")
+# define RPL_NOTOPIC(user, name) SERV_NAME + std::string(" 331 ") + user + std::string(" ") + name + std::string(" :No topic is set")
 # define RPL_TOPIC(user, channel) SERV_NAME + std::string(" 332 ") + user + std::string(" ") + channel->getName() + std::string(" :") + channel->getTopic()
 
 // Réponse du serveur indiquant les détails de sa version.
@@ -41,13 +41,13 @@
 // La paire RPL_WHOREPLY et RPL_ENDOFWHO est utilisée en réponse à un message WHO.
 // Le RPL_WHOREPLY n'est envoyé que s'il y a une correspondance à la requête WHO.
 // S'il y a une liste de paramètres fournie avec le message WHO, un RPL_ENDOFWHO doit être envoyé après le traitement de chaque élément de la liste, <nom> étant l'élément.
-# define RPL_WHOREPLY(user) SERV_NAME + std::string(" 352 ") + user + std::string(" ") + client->getLastChannelName() + std::string(" ") + client->getUser() + std::string(" ") + client->getHost() + std::string(" ") + SERV_NAME + std::string(" ") + client->getNickname() + std::string(" H") + (client->isOp() ? "*" : "" ) + std::string("[@|+]") + std::string(" :0 ") + client->getRealName() // pthomas
+# define RPL_WHOREPLY(user) SERV_NAME + std::string(" 352 ") + user + std::string(" ") + client->getLastChannelName() + std::string(" ") + client->getUser() + std::string(" ") + client->getHost() + std::string(" ") + SERV_NAME + std::string(" ") + client->getNickname() + std::string(" H") + (client->isOp() ? "*" : "" ) + (client->getChannel(client->getLastChannelName)->isOperator(client) ? "@" : (client->getChannel(client->getLastChannelName)->hasVoice(client) ? "+" : "")) + std::string(" :0 ") + client->getRealName()
 # define RPL_ENDOFWHO(user, name) SERV_NAME + std::string(" 315 ") + user + std::string(" ") + name " :End of /WHO list")
 
 // En réponse à un message NAMES, une paire consistant de RPL_NAMREPLY et RPL_ENDOFNAMES est renvoyée par le serveur au client.
 // S'il n'y a pas de canal résultant de la requête, seul RPL_ENDOFNAMES est retourné.
 // L'exception à cela est lorsqu'un message NAMES est envoyé sans paramètre et que tous les canaux et contenus visibles sont renvoyés en une suite de message RPL_NAMEREPLY avec un RPL_ENDOFNAMES indiquant la fin.
-# define RPL_NAMREPLY(user, channel) SERV_NAME + std::string(" 353 ") + user + std::string(" ") + channel->getName() + std::string(" :[[@|+]<pseudo> [[@|+]<pseudo> [...]]]") // pthomas
+# define RPL_NAMREPLY(user, channel) SERV_NAME + std::string(" 353 ") + user + std::string(" ") + channel->getName() + std::string(" :") + channel->showClientList()
 # define RPL_ENDOFNAMES(user, name) SERV_NAME + std::string(" 366 ") + user + std::string(" ") + name + std::string(" :End of /NAMES list")
 
 // Quand il liste les bannissements actifs pour un canal donné, un serveur doit renvoyer la liste en utilisant les messages RPL_BANLIST et RPL_ENDOFBANLIST.
@@ -70,7 +70,7 @@
 
 // Pour répondre à une requête au sujet du mode du client, RPL_UMODEIS est renvoyé.
 # define RPL_STATSUPTIME(user, server) SERV_NAME + std::string(" 242 ") + user + std::string(" :Server Up ") + server->getStartTime()
-# define RPL_UMODEIS(user, client) SERV_NAME + std::string(" 221 ") + user + std::string(" <chaîne de mode utilisateur>") // pthomas
+# define RPL_UMODEIS(user, client) SERV_NAME + std::string(" 221 ") + user + std::string(" ") + client->showModes()
 # define RPL_ENDOFSTATS(user, arg) SERV_NAME + std::string(" 219 ") + user + std::string(" ") + arg + std::string(" :End of /STATS report")
 
 // Lorsqu'il répond à un message ADMIN, un serveur doit renvoyer les réponses RLP_ADMINME à RPL_ADMINEMAIL et fournir un texte de message avec chacune.

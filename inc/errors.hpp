@@ -3,7 +3,7 @@
 
 #include "ircserv.hpp"
 
-# define ERR_UNKNOWNERROR(user, command, subcommand, info) SERV_NAME + std::string(" 400 ") + user + std::string(" ") + command + (subcommand ? " ") + subcommand : "") + std::string(" :") + info
+# define ERR_UNKNOWNERROR(user, command, subcommand, info) SERV_NAME + std::string(" 400 ") + user + std::string(" ") + command + (subcommand.empty() ? "" : " ") + subcommand) + std::string(" :") + info
 
 
 # define ERR_NOSUCHNICK(user, command, name) SERV_NAME + std::string(" 401 ") + user + std::string(" ") + command + std::string(" ") + name + std::string(" :No such nick/channel")
