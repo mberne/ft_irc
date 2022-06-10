@@ -259,3 +259,12 @@ void	Server::stop(int status)
    	_oldClients.clear();
 	exit(status);
 }
+
+std::string	Server::currentTime()
+{
+	struct tm	*timeinfo;
+	time_t		time;
+	
+	timeinfo = localtime(&time);
+	return asctime(timeinfo);
+}

@@ -4,7 +4,7 @@
 #include "ircserv.hpp"
 
 # define ERR_UNKNOWNERROR(user, command, subcommand, info) SERV_NAME + std::string(" 400 ") + user + std::string(" ") + command + (subcommand.empty() ? "" : " ") + subcommand) + std::string(" :") + info
-
+// Indicates that the given command/subcommand could not be processed. <subcommand> may repeat for more specific subcommands.
 
 # define ERR_NOSUCHNICK(user, command, name) SERV_NAME + std::string(" 401 ") + user + std::string(" ") + command + std::string(" ") + name + std::string(" :No such nick/channel")
 // Utilisé pour indiquer que le pseudonyme passé en paramètre à la commande n'est pas actuellement utilisé.

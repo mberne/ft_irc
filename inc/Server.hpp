@@ -48,6 +48,7 @@ class Server
 		Channel*	getChannel(std::string name) const;
 
 		void		run();
+		std::string	currentTime();
 };
 
 #endif //~~ SERVER_H

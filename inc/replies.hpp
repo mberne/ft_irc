@@ -57,7 +57,7 @@
 # define RPL_ENDOFBANLIST(user, name) SERV_NAME + std::string(" 368 ") + user + std::string(" ") + name + std::string(" :End of channel ban list")
 
 // Un serveur répondant à un message INFO doit envoyer toute sa série d'info en une suite de réponses RPL_INFO, avec un RPL_ENDOFINFO pour indiquer la fin des réponses.
-# define RPL_INFO(user, arg) SERV_NAME + std::string(" 371 ") + user + std::string(" ") + arg // boucle sur les macro SERV a mettre en arg
+# define RPL_INFO(user, arg) SERV_NAME + std::string(" 371 ") + user + std::string(" ") + arg
 # define RPL_ENDOFINFO(user) SERV_NAME + std::string(" 374 ") + user + std::string(" :End of /INFO list")
 
 // RPL_YOUREOPER est renvoyé à un client qui vient d'émettre un message OPER et a obtenu le statut d'opérateur.
@@ -75,7 +75,7 @@
 
 // Lorsqu'il répond à un message ADMIN, un serveur doit renvoyer les réponses RLP_ADMINME à RPL_ADMINEMAIL et fournir un texte de message avec chacune.
 // Pour RPL_ADMINLOC1, on attend une description de la ville et de l'état où se trouve le serveur, suivie des détails de l'université et du département (RPL_ADMINLOC2), et finalement le contact administratif pour ce serveur (avec obligatoirement une adresse email) dans RPL_ADMINEMAIL.
-# define RPL_ADMINME(user) SERV_NAME + std::string(" 256 ") + user + std::string(" ") + SERV_NAME " :Administrative info")
+# define RPL_ADMINME(user) SERV_NAME + std::string(" 256 ") + user + std::string(" ") + SERV_NAME " :Administrative info"
 # define RPL_ADMINLOC1(user) SERV_NAME + std::string(" 257 ") + user + std::string(" :") + SERV_LOC1
 # define RPL_ADMINLOC2(user) SERV_NAME + std::string(" 258 ") + user + std::string(" :") + SERV_LOC2
 # define RPL_ADMINEMAIL(user) SERV_NAME + std::string(" 259 ") + user + std::string(" :") + SERV_ADMIN + std::string(" ") + SERV_ADMIN_EMAIL

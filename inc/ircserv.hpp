@@ -28,9 +28,9 @@
 # define USAGE						"usage: ircserv <port> <password>"
 
 // Server info
-# define SERV_NAME					"Potatoe's land"
-# define SERV_VERSION				4.2
-# define SERV_ADMIN					"pinkie_pie"
+# define SERV_NAME					"potatoes.land"
+# define SERV_VERSION				"4.2"
+# define SERV_ADMIN					"Pinkie Pie"
 # define SERV_ADMIN_EMAIL			"pinkie_pie@rainbow.dash"
 # define SERV_INFO					"Made with *LOUD TRUCK SOUND* by pthomas and mberne in 2022. Copyleft."
 # define SERV_LOC1					"Charbonniere-Les-Bains, France"
