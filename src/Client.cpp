@@ -105,6 +105,7 @@ std::string		Client::getMods() const
 		modsString += 'i';
 	if (isOperator() == true)
 		modsString += 'o';
+	return (modsString);
 }
 
 //~~ CHANNELS
@@ -139,21 +140,21 @@ std::string		Client::getLastChannelName() const
 		return (_channels.at(0)->getName());
 }
 
-std::string		Client::showChannelList()
-{
-	std::string		channelList;
+// std::string		Client::showChannelList()
+// {
+// 	std::string		channelList;
 
-	for(std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); it++)
-	{
-		if (it != _channels.begin())
-			channelList += " ";
-		if (it->second->isOperator(this))
-			channelList += "@";
-		else if (it->second->isModerated() && it->second->hasVoice(this))
-			channelList += "+";
-		channelList += it->second->getName();
-	}
-}
+// 	for(std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); it++)
+// 	{
+// 		if (it != _channels.begin())
+// 			channelList += " ";
+// 		if (it->second->isOperator(this))
+// 			channelList += "@";
+// 		else if (it->second->isModerated() && it->second->hasVoice(this))
+// 			channelList += "+";
+// 		channelList += it->second->getName();
+// 	}
+// }
 
 //~~ BUFFER
 
