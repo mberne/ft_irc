@@ -90,6 +90,7 @@ void	Server::addClient(int sock)
 {
 	Client *newClient = new Client(sock);
 	
+	newClient->setHost(inet_ntoa(_servSocket.sin_addr));
 	_clientsBySock.insert(std::make_pair(sock, newClient));
 }
 
