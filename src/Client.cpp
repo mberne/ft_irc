@@ -64,6 +64,11 @@ void			Client::setRealName(std::string realName)
 	_realName = realName;
 }
 
+std::string		Client::getPrefix() const
+{
+	return (":" + _nickname + "!" + _user + "@" + _host);
+}
+
 bool	Client::isRegistered() const
 {
 	return (_nickname.empty() == false && _user.empty() == false && _hasEnteredPassword == true);
