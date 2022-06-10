@@ -64,6 +64,8 @@ void		Server::initSupportedCommands()
 
 Server::~Server() {}
 
+//~~ ACCESSOR
+
 std::string	Server::getStartTime() const
 {
 	struct tm *timeinfo;
@@ -71,8 +73,6 @@ std::string	Server::getStartTime() const
 	timeinfo = localtime(&_startTime);
 	return asctime(timeinfo);
 }
-
-//~~ ACCESSOR
 
 Client*		Server::getClient(std::string name) const
 {
