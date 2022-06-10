@@ -41,9 +41,9 @@ class Server
 		Server(int port, std::string password);
 		~Server();
 
+		std::string	getStartTime() const;
 		Client*		getClient(std::string name) const;
 		Channel*	getChannel(std::string name) const;
-		std::string	getStartTime() const;
 
 		void		run();
 };
