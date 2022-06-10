@@ -32,12 +32,12 @@ class Client
 		std::string		getRealName() const;
 		void			setRealName(std::string realName);
 		bool			isRegistered() const;						// Return true if the client used the registrations commands (PASS, NICK, USER)
+		bool			isOperator() const;
+		bool			isInvisible() const;
 		// MODS
 		void			addMods(int mods);
 		void			removeMods(int mods);
 		std::string		getMods() const;
-		bool			isOperator() const;
-		bool			isInvisible() const;
 		// CHANNEL
 		void			joinChannel(Channel* channel);				// Add the Channel sent as paramater to the _channels map
 		void			leaveChannel(Channel* channel);				// Remove the Channel sent as paramater from the _channels map

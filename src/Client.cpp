@@ -69,6 +69,16 @@ bool	Client::isRegistered() const
 	return (_nickname.empty() == false && _user.empty() == false && _hasEnteredPassword == true);
 }
 
+bool			Client::isOperator() const
+{
+	return ((_mods | CLIENT_O) == _mods);
+}
+
+bool			Client::isInvisible() const
+{
+	return ((_mods | CLIENT_I) == _mods);
+}
+
 //~~ MODS
 
 void			Client::addMods(int mods)
@@ -89,16 +99,6 @@ std::string		Client::getMods() const
 		modsString += 'i';
 	if (isOperator() == true)
 		modsString += 'o';
-}
-
-bool			Client::isOperator() const
-{
-	return ((_mods | CLIENT_O) == _mods);
-}
-
-bool			Client::isInvisible() const
-{
-	return ((_mods | CLIENT_I) == _mods);
 }
 
 //~~ CHANNELS
