@@ -2,7 +2,7 @@
 
 //~~ CONSTRUCTOR
 
-Client::Client(int socket) : _sock(socket) {}
+Client::Client(int sock) : _sock(sock) {}
 
 //~~ DESTRUCTOR
 
@@ -72,6 +72,11 @@ int				Client::getNumberOfChannels() const
 	return (_channels.size());
 }
 
+Channel*	Client::getChannel(std::string name)
+{
+	return (_channels.find(name)->second);
+}
+
 char*		Client::getInputBuffer()
 {
 	return (_inputBuffer);
@@ -96,11 +101,6 @@ void	Client::joinChannel(Channel* channel)
 {
 	// Error handling needed!
 	_channels.insert(std::make_pair(channel->getName(), channel));
-}
-
-Channel*	Client::getChannel(std::string name)
-{
-	return (_channels.find(name)->second);
 }
 
 std::string		Client::getLastChannelName()
