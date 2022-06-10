@@ -2,7 +2,7 @@
 
 //~~ CONSTRUCTOR
 
-Client::Client(int sock) : _sock(sock) {}
+Client::Client(int sock) : _sock(sock), _mods(0), _op(false), _hasEnteredPassword(false) {}
 
 //~~ DESTRUCTOR
 
@@ -163,7 +163,7 @@ std::string		Client::getLastChannelName() const
 
 //~~ BUFFER
 
-char*		Client::getInputBuffer()
+std::string &	Client::getInputBuffer()
 {
 	return _inputBuffer;
 }

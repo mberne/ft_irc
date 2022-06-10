@@ -47,7 +47,8 @@ class Client
 		std::string		getLastChannelName() const;
 		std::string		showChannelList();
 		// BUFFER
-		char*			getInputBuffer();
+		std::string &	getInputBuffer();
+		void			addToInputBuffer(char* buf);		// Append the string sent as parameter to the output buffer
 		char const *	getOutputBuffer() const;
 		void			addToOutputBuffer(std::string output);		// Append the string sent as parameter to the output buffer
 		void			clearOutputBuffer();						// Clear the output buffer
@@ -66,7 +67,7 @@ class Client
 		std::map<std::string, Channel*>		_channels;				// List of channels the client is connected to
 		bool								_hasEnteredPassword;	// If true the client has entered the server password using PASS command
 
-		char								_inputBuffer[MAX_MESSAGE_LENGTH];	// Client's messages buffer
+		std::string							_inputBuffer;	// Client's messages buffer
 		std::string							_outputBuffer;						// Messages to Client buffer
 };
 
