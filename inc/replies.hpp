@@ -70,7 +70,7 @@
 
 // Pour répondre à une requête au sujet du mode du client, RPL_UMODEIS est renvoyé.
 # define RPL_STATSUPTIME(user, server) SERV_NAME + std::string(" 242 ") + user + std::string(" :Server Up ") + server->getStartTime()
-# define RPL_UMODEIS(user, client) SERV_NAME + std::string(" 221 ") + user + std::string(" ") + client->showModes()
+# define RPL_UMODEIS(user, client) SERV_NAME + std::string(" 221 ") + user + std::string(" ") + client->getMods()
 # define RPL_ENDOFSTATS(user, arg) SERV_NAME + std::string(" 219 ") + user + std::string(" ") + arg + std::string(" :End of /STATS report")
 
 // Lorsqu'il répond à un message ADMIN, un serveur doit renvoyer les réponses RLP_ADMINME à RPL_ADMINEMAIL et fournir un texte de message avec chacune.
