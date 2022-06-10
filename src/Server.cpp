@@ -133,7 +133,7 @@ void		Server::executeCommand(std::vector<std::string>	cmdArgs, Client* sender)
 	if (cmd == NULL)
 		sender->addToOutputBuffer(ERR_UNKNOWNCOMMAND(sender->getNickname(), cmdArgs.front()));
 	else
-		cmd->_fct(cmdArgs, sender, this);
+		cmd->fct(cmdArgs, sender, this);
 }
 
 void		Server::executeRequest(Client* sender)
