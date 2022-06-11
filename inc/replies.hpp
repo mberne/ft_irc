@@ -41,8 +41,8 @@
 // La paire RPL_WHOREPLY et RPL_ENDOFWHO est utilisée en réponse à un message WHO.
 // Le RPL_WHOREPLY n'est envoyé que s'il y a une correspondance à la requête WHO.
 // S'il y a une liste de paramètres fournie avec le message WHO, un RPL_ENDOFWHO doit être envoyé après le traitement de chaque élément de la liste, <nom> étant l'élément.
-# define RPL_WHOREPLY(user) SERV_NAME + std::string(" 352 ") + user + std::string(" ") + client->getLastChannelName() + std::string(" ") + client->getUser() + std::string(" ") + client->getHost() + std::string(" ") + SERV_NAME + std::string(" ") + client->getNickname() + std::string(" H") + (client->isOp() ? "*" : "" ) + (client->getChannel(client->getLastChannelName)->isOperator(client) ? "@" : (client->getChannel(client->getLastChannelName)->hasVoice(client) ? "+" : "")) + std::string(" :0 ") + client->getRealName()
-# define RPL_ENDOFWHO(user, name) SERV_NAME + std::string(" 315 ") + user + std::string(" ") + name " :End of /WHO list")
+# define RPL_WHOREPLY(user, client) SERV_NAME + std::string(" 352 ") + user + std::string(" ") + client->getLastChannelName() + std::string(" ") + client->getUser() + std::string(" ") + client->getHost() + std::string(" ") + SERV_NAME + std::string(" ") + client->getNickname() + std::string(" H") + (client->isOp() ? "*" : "" ) + (client->getChannel(client->getLastChannelName)->isOperator(client) ? "@" : (client->getChannel(client->getLastChannelName)->hasVoice(client) ? "+" : "")) + std::string(" :0 ") + client->getRealName()
+# define RPL_ENDOFWHO(user, name) SERV_NAME + std::string(" 315 ") + user + std::string(" ") + name + " :End of /WHO list"
 
 // En réponse à un message NAMES, une paire consistant de RPL_NAMREPLY et RPL_ENDOFNAMES est renvoyée par le serveur au client.
 // S'il n'y a pas de canal résultant de la requête, seul RPL_ENDOFNAMES est retourné.

@@ -66,6 +66,16 @@ Server::~Server() {}
 
 //~~ ACCESSOR
 
+int			Server::getPort() const
+{
+	return _port;
+}
+
+std::string	Server::getPassword() const
+{
+	return _password;
+}
+
 std::string	Server::getStartTime() const
 {
 	struct tm *timeinfo;
@@ -76,12 +86,12 @@ std::string	Server::getStartTime() const
 
 // Client*		Server::getClient(std::string name) const
 // {
-	
+// 	return _clientsByName[name];
 // }
 
 // Channel*	Server::getChannel(std::string name) const
 // {
-	
+// 	return _channels[name];
 // }
 
 //~~ METHODS

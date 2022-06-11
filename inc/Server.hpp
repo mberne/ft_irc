@@ -11,6 +11,20 @@
 
 class Server
 {
+	public:
+
+		Server(int port, std::string password);
+		~Server();
+
+		int			getPort() const;
+		std::string	getPassword() const;
+		std::string	getStartTime() const;
+		Client*		getClient(std::string name) const;
+		Channel*	getChannel(std::string name) const;
+
+		void		run();
+		std::string	currentTime();
+	
 	private:
 
 		int								_port;
@@ -37,18 +51,6 @@ class Server
 		void		executeCommand(std::vector<std::string>	cmd, Client* sender);
 		void		sendMessages();
 		void		stop(int status); // SIGNAL HANDLING
-	
-	public:
-
-		Server(int port, std::string password);
-		~Server();
-
-		std::string	getStartTime() const;
-		Client*		getClient(std::string name) const;
-		Channel*	getChannel(std::string name) const;
-
-		void		run();
-		std::string	currentTime();
 };
 
 #endif //~~ SERVER_H

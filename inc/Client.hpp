@@ -35,6 +35,8 @@ class Client
 		bool			isRegistered() const;						// Return true if the client used the registrations commands (PASS, NICK, USER)
 		bool			isOperator() const;
 		bool			isInvisible() const;
+		bool			getPasswordProof() const;
+		void			setPasswordProof(bool proof);	
 		// MODS
 		void			addMods(std::string mods);
 		void			removeMods(std::string mods);

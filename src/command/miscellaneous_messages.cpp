@@ -4,7 +4,7 @@ void	version(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	(void)serv;
 	if (!cmd[1].empty() && !cmd[1].compare(SERV_NAME))
-		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "VERSION", cmd[0]));
+		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "VERSION", cmd[1]));
 	else
 		sender->addToOutputBuffer(RPL_VERSION(sender->getNickname()));
 }
@@ -12,7 +12,7 @@ void	version(std::vector<std::string> cmd, Client* sender, Server* serv)
 void	stats(std::vector<std::string> cmd, Client* sender, Server* serv) // needtofix
 {
 	if (!cmd[2].empty() && !cmd[2].compare(SERV_NAME))
-		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "STATS", cmd[0]));
+		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "STATS", cmd[1]));
 	else if (cmd[2].empty())
 	{
 		if (cmd[1].empty())
@@ -23,14 +23,14 @@ void	stats(std::vector<std::string> cmd, Client* sender, Server* serv) // needto
 		else if (!cmd[1].empty() && !cmd[1].compare(SERV_NAME) && cmd[1].size() == 1)
 			sender->addToOutputBuffer(RPL_ENDOFSTATS(sender->getNickname(), cmd[1]));
 		else if (!cmd[1].empty() && !cmd[1].compare(SERV_NAME) && cmd[1].size() != 1)
-			sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "STATS", cmd[0]));
+			sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "STATS", cmd[1]));
 	}
 }
 
 void	time(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	if (!cmd[1].empty() && !cmd[1].compare(SERV_NAME))
-		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "TIME", cmd[0]));
+		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "TIME", cmd[1]));
 	else
 		sender->addToOutputBuffer(RPL_TIME(sender->getNickname(), serv->currentTime()));
 }
@@ -39,7 +39,7 @@ void	admin(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	(void)serv;
 	if (!cmd[1].empty() && !cmd[1].compare(SERV_NAME))
-		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "ADMIN", cmd[0]));
+		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "ADMIN", cmd[1]));
 	else
 	{
 		sender->addToOutputBuffer(RPL_ADMINME(sender->getNickname()));
@@ -53,7 +53,7 @@ void	info(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	(void)serv;
 	if (!cmd[1].empty() && !cmd[1].compare(SERV_NAME))
-		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "INFO", cmd[0]));
+		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "INFO", cmd[1]));
 	else
 	{
 		sender->addToOutputBuffer(RPL_INFO(sender->getNickname(), SERV_NAME));
