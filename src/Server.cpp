@@ -114,8 +114,8 @@ void	Server::sendMessages()
 		client = _clientsBySock.find(it->fd)->second;
 		if (client->hasOutput()) // request on this socket
 		{
-			// ret = send(it->fd, client->getOutputBuffer(), 10, 0);
-			ret = send(it->fd, "Response.\n", 10, 0); // test
+			ret = send(it->fd, client->getOutputBuffer(), strlen(client->getOutputBuffer()), 0);
+			client->clearOutputBuffer();
 			if (ret < 0 && errno == ECONNRESET) // deconnexion
 				removeClient(client, it);
 		}
@@ -139,49 +139,46 @@ void		Server::executeCommand(std::vector<std::string>	cmdArgs, Client* sender)
 
 void		Server::executeRequest(Client* sender)
 {
-	std::string inputBuffer(sender->getInputBuffer());
+	std::string inputBuffer = sender->getInputBuffer();
 
-	for(size_t	i = 0; i != std::string::npos; i = inputBuffer.find('\r'))
-	{
-		inputBuffer.erase(i, 1);
-		i = 0;
-	}
-	for(size_t	i = 0; i != std::string::npos; i = inputBuffer.find('\n'))
+	for(size_t i = 0; i != std::string::npos; i = inputBuffer.find(CRLF))
 	{
 		std::string					cmdLine = inputBuffer.substr(0, i);
 		std::vector<std::string>	cmdArgs;
 
-		for (i = cmdLine.find_first_of(' '); i != std::string::npos; i = cmdLine.find_first_of(' '))
+		if (cmdLine.front() == ':')
+			cmdLine.erase(0, cmdLine.find_first_not_of(' ', cmdLine.find_first_of(' ', 0)));
+		for (size_t j = cmdLine.find_first_of(' '); j != std::string::npos; j = cmdLine.find_first_of(' '))
 		{
-			cmdArgs.push_back(cmdLine.substr(0, i));
-			cmdLine.erase(0, i);
+			cmdArgs.push_back(cmdLine.substr(0, j));
+			cmdLine.erase(0, cmdLine.find_first_not_of(' ', j));
 		}
 		cmdArgs.push_back(cmdLine);
 		executeCommand(cmdArgs, sender);
-		inputBuffer.erase(0, i);
+		inputBuffer.erase(0, i + strlen(CRLF));
 	}
 }
 
 void	Server::receiveMessages()
 {
 	int 	ret;
-	char	*buf;
+	char	buf[TCP_MAXWIN + 1];
 	Client	*client;
 
 	for (std::vector<struct pollfd>::iterator it = _fds.begin() + 1; it < _fds.end(); it++)
 	{
 		client = _clientsBySock.find(it->fd)->second;
-		buf = client->getInputBuffer();
 		if ((it->revents | POLLHUP) == it->revents) // deconnexion
 			removeClient(client, it);
 		else if (it->revents == POLLIN)
 		{
-			ret = recv(it->fd, buf, MAX_MESSAGE_LENGTH, 0);
+			ret = recv(it->fd, buf, TCP_MAXWIN, 0);
 			if (ret > 0)
 			{
 				buf[ret] = '\0';
+				client->addToInputBuffer(buf);
 				std::cout << "Message from socket : " << it->fd << std::endl; // test
-				executeRequest(client);
+				// executeRequest(client);
 			}
 		}
 	}

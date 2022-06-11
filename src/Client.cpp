@@ -2,7 +2,7 @@
 
 //~~ CONSTRUCTOR
 
-Client::Client(int sock) : _sock(sock) {}
+Client::Client(int sock) : _sock(sock), _mods(0), _op(false), _hasEnteredPassword(false) {}
 
 //~~ DESTRUCTOR
 
@@ -62,6 +62,11 @@ std::string		Client::getRealName() const
 void			Client::setRealName(std::string realName)
 {
 	_realName = realName;
+}
+
+std::string		Client::getPrefix() const
+{
+	return (":" + _nickname + "!" + _user + "@" + _host);
 }
 
 bool	Client::isRegistered() const
@@ -158,9 +163,14 @@ std::string		Client::getLastChannelName() const
 
 //~~ BUFFER
 
-char*		Client::getInputBuffer()
+std::string &	Client::getInputBuffer()
 {
 	return _inputBuffer;
+}
+
+void			Client::addToInputBuffer(char* buf)
+{
+	_inputBuffer += buf;
 }
 
 const char*	Client::getOutputBuffer() const

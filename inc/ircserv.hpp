@@ -10,6 +10,7 @@
 # include <fcntl.h>
 # include <poll.h>
 # include <netdb.h>
+# include <netinet/tcp.h>
 # include <arpa/inet.h>
 # include <sys/stat.h>
 # include <sys/socket.h>
@@ -44,6 +45,7 @@
 # define MAX_CHANNEL_LENGTH			50
 # define MAX_TOPIC_LENGTH			390
 # define MAX_MESSAGE_LENGTH			512
+# define CRLF						"\r\n"
 
 /*** ~~ CLASSES ~~ ***/
 
