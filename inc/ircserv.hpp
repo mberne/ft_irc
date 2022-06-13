@@ -40,12 +40,13 @@
 # define SERV_LOC2					"42 Lyon"
 # define PROMPT(num, user)			SERV_NAME + std::string(num) + user
 
+# define SUPPORTED_NICKNAME_CHAR	"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789{}[]-_`"
 // Server specifications
 # define MAX_PORT					65536
 # define CHANNEL_LIMIT				1000
 # define CLIENT_LIMIT				100
 # define CHANNEL_LIMIT_PER_CLIENT	10
-# define MAX_NICKNAME_LENGTH		9
+# define MAX_NICKNAME_LENGTH		16
 # define MAX_CHANNEL_LENGTH			50
 # define MAX_TOPIC_LENGTH			390
 # define MAX_MESSAGE_LENGTH			512

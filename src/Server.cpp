@@ -84,15 +84,25 @@ std::string	Server::getStartTime() const
 	return asctime(timeinfo);
 }
 
-// Client*		Server::getClient(std::string name) const
-// {
-// 	return _clientsByName[name];
-// }
+Client*		Server::getClient(std::string name) const
+{
+	return _clientsByName.find(name)->second;
+}
 
-// Channel*	Server::getChannel(std::string name) const
-// {
-// 	return _channels[name];
-// }
+Channel*	Server::getChannel(std::string name) const
+{
+	return _channels.find(name)->second;
+}
+
+std::map<std::string, Client*> &	Server::getAllClients()
+{
+	return _clientsByName;
+}
+
+std::map<std::string, Channel*> &	Server::getAllChannels()
+{
+	return _channels;
+}
 
 //~~ METHODS
 
@@ -119,7 +129,7 @@ void	Server::sendMessages()
 	int		ret;
 	Client	*client;
 
-	for (std::vector<struct pollfd>::iterator it = _fds.begin() + 1; it < _fds.end(); it++)
+	for(std::vector<struct pollfd>::iterator it = _fds.begin() + 1; it < _fds.end(); it++)
 	{
 		client = _clientsBySock.find(it->fd)->second;
 		if (client->hasOutput()) // request on this socket
@@ -136,7 +146,7 @@ void		Server::executeCommand(std::vector<std::string>	cmdArgs, Client* sender)
 {
 	Command*	cmd;
 
-	for (std::vector<Command>::iterator it = _cmdList.begin(); it != _cmdList.end(); it++)
+	for(std::vector<Command>::iterator it = _cmdList.begin(); it != _cmdList.end(); it++)
 	{
 		if (!cmdArgs.front().compare(it->getName()))
 			cmd = &(*it);
@@ -158,7 +168,7 @@ void		Server::executeRequest(Client* sender)
 
 		if (cmdLine.at(0) == ':')
 			cmdLine.erase(0, cmdLine.find_first_not_of(' ', cmdLine.find_first_of(' ', 0)));
-		for (size_t j = cmdLine.find_first_of(' '); j != std::string::npos; j = cmdLine.find_first_of(' '))
+		for(size_t j = cmdLine.find_first_of(' '); j != std::string::npos; j = cmdLine.find_first_of(' '))
 		{
 			cmdArgs.push_back(cmdLine.substr(0, j));
 			cmdLine.erase(0, cmdLine.find_first_not_of(' ', j));
@@ -175,7 +185,7 @@ void	Server::receiveMessages()
 	char	buf[TCP_MAXWIN + 1];
 	Client	*client;
 
-	for (std::vector<struct pollfd>::iterator it = _fds.begin() + 1; it < _fds.end(); it++)
+	for(std::vector<struct pollfd>::iterator it = _fds.begin() + 1; it < _fds.end(); it++)
 	{
 		client = _clientsBySock.find(it->fd)->second;
 		if ((it->revents | POLLHUP) == it->revents) // deconnexion
@@ -255,13 +265,13 @@ void	Server::stop(int status)
 
 	std::for_each(_fds.begin(), _fds.end(), closeFd);
 	_fds.clear();
-	for (std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); ++it)
+	for(std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); ++it)
 		delete it->second;
 	_channels.clear();
-	for (std::map<int, Client*>::iterator it = _clientsBySock.begin(); it != _clientsBySock.end(); ++it)
+	for(std::map<int, Client*>::iterator it = _clientsBySock.begin(); it != _clientsBySock.end(); ++it)
 		delete it->second;
 	_clientsBySock.clear();
-	for (std::map<std::string, Client*>::iterator it = _oldClients.begin(); it != _oldClients.end(); ++it)
+	for(std::map<std::string, Client*>::iterator it = _oldClients.begin(); it != _oldClients.end(); ++it)
 		delete it->second;
    	_oldClients.clear();
 	exit(status);

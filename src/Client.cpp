@@ -2,7 +2,7 @@
 
 //~~ CONSTRUCTOR
 
-Client::Client(int sock) : _sock(sock), _mods(0), _op(false), _password(false) {}
+Client::Client(int sock) : _sock(sock), _mods(0), _password(false) {}
 
 //~~ DESTRUCTOR
 
@@ -17,6 +17,8 @@ int				Client::getSock() const
 
 std::string		Client::getNickname() const
 {
+	if (_nickname.empty())
+		return "*";
 	return _nickname;
 }
 
@@ -28,7 +30,7 @@ void			Client::setNickname(std::string nickname)
 
 bool	Client::isOldNickname(std::string nickname)
 {
-	for (std::vector<std::string>::iterator it = _oldNicknames.begin(); it != _oldNicknames.end(); it++)
+	for(std::vector<std::string>::iterator it = _oldNicknames.begin(); it != _oldNicknames.end(); it++)
 		if (!nickname.compare(*it))
 			return true;
 	return false;
@@ -66,7 +68,7 @@ void			Client::setRealName(std::string realName)
 
 std::string		Client::getPrefix() const
 {
-	return (":" + _nickname + "!" + _user + "@" + _host);
+	return (":" + getNickname() + "!" + getUser() + "@" + getHost());
 }
 
 bool	Client::isRegistered() const
@@ -150,21 +152,28 @@ std::string		Client::getLastChannelName() const
 		return _channels.at(0)->getName();
 }
 
-// std::string		Client::showChannelList()
-// {
-// 	std::string		channelList;
+std::string		Client::showChannelList()
+{
+	std::string		channelList;
 
-// 	for(std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); it++)
-// 	{
-// 		if (it != _channels.begin())
-// 			channelList += " ";
-// 		if (it->second->isOperator(this))
-// 			channelList += "@";
-// 		else if (it->second->isModerated() && it->second->hasVoice(this))
-// 			channelList += "+";
-// 		channelList += it->second->getName();
-// 	}
-// }
+	for(std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); it++)
+	{
+		if (it != _channels.begin())
+			channelList += " ";
+		if (it->second->isOperator(this))
+			channelList += "@";
+		else if (it->second->isModerated() && it->second->hasVoice(this))
+			channelList += "+";
+		channelList += it->second->getName();
+	}
+	return channelList;
+}
+
+void			Client::sendToAllChannels(std::string msg)
+{
+	for(std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); it++)
+		it->second->sendToClients(msg);
+}
 
 //~~ BUFFER
 

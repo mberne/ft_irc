@@ -74,6 +74,8 @@ class Channel
 		bool			isOperator(Client* client) const;
 		bool			hasVoice(Client* client) const;			// Return true if the client has voice permission
 		bool			isBanned(Client* client);
+		std::string		showClientsList();
+		void			sendToClients(std::string msg);
 
 
 

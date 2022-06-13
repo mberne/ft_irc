@@ -205,10 +205,33 @@ bool			Channel::hasVoice(Client* client) const
 
 bool			Channel::isBanned(Client* client)
 {
-	for (std::map<std::string, BanMask>::iterator it = _banList.begin(); it != _banList.end(); it++)
+	for(std::map<std::string, BanMask>::iterator it = _banList.begin(); it != _banList.end(); it++)
 		if (it->second.isClientBanned(client) == true)
 			return true;
 	return false;
+}
+
+std::string		Channel::showClientsList()
+{
+	std::string		clientList;
+
+	for(std::map<std::string, Client*>::iterator it = _clients.begin(); it != _clients.end(); it++)
+	{
+		if (it != _clients.begin())
+			clientList += " ";
+		if (this->isOperator(it->second))
+			clientList += "@";
+		else if (this->isModerated() && this->hasVoice(it->second))
+			clientList += "+";
+		clientList += it->second->getNickname();
+	}
+	return clientList;
+}
+
+void			Channel::sendToClients(std::string msg)
+{
+	for(std::map<std::string, Client*>::iterator it = _clients.begin(); it != _clients.end(); it++)
+		it->second->addToOutputBuffer(msg);
 }
 
 // t'es beau <3
