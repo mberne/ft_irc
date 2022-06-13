@@ -3,7 +3,7 @@
 void	pass(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	if (cmd.size() < 3)
-		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
+		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), "PASS"));
 	else if (sender->isRegistered())
 		sender->addToOutputBuffer(ERR_ALREADYREGISTRED(sender->getNickname(), cmd[0]));
 	else if (!cmd[1].compare(serv->getPassword()))

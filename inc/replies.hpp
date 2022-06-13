@@ -46,8 +46,9 @@
 # define RPL_WHOISUSER(user, client)				PROMPT(" 311 ", user) + std::string(" ") + client->getNickname() + std::string(" ") + client->getUser() + std::string(" ") + client->getHost() + std::string(" * :") + client->getRealName()
 # define RPL_WHOISSERVER(user, nickname)			PROMPT(" 312 ", user) + std::string(" ") + nickname + std::string(" ") + SERV_NAME + std::string(" ") + SERV_INFO
 # define RPL_WHOISOPERATOR(user, nickname)			PROMPT(" 313 ", user) + std::string(" ") + nickname + std::string(" :is an IRC operator")
+# define RPL_WHOISIDLE(user, client) 				PROMPT(" 317 ", user) + std::string(" ") + client->getNickname() + std::string(" ") + std::to_string(client->getSeconds()) + std::string(" ") + std::to_string(client->getSignon()) + std::string(" :seconds idle, signon time")
 # define RPL_ENDOFWHOIS(user, nickname)				PROMPT(" 318 ", user) + std::string(" ") + nickname + std::string(" :End of /WHOIS list")
-# define RPL_WHOISCHANNELS(user, nickname, client)	PROMPT(" 319 ", user) + std::string(" ") + nickname + std::string(" :") + client->showChannelList
+# define RPL_WHOISCHANNELS(user, nickname, client)	PROMPT(" 319 ", user) + std::string(" ") + nickname + std::string(" :") + client->showChannelList()
 
 // Les réponses RPL_LISTSTART, RPL_LIST, RPL_LISTEND marquent le début, les réponses proprement dites, et la fin du traitement d'une commande LIST.
 // S'il n'y a aucun canal disponible, seules les réponses de début et de fin sont envoyées.
