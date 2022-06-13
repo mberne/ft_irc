@@ -16,11 +16,13 @@ class Server
 		Server(int port, std::string password);
 		~Server();
 
-		int			getPort() const;
-		std::string	getPassword() const;
-		std::string	getStartTime() const;
-		Client*		getClient(std::string name) const;
-		Channel*	getChannel(std::string name) const;
+		int									getPort() const;
+		std::string							getPassword() const;
+		std::string							getStartTime() const;
+		Client*								getClient(std::string name) const;
+		Channel*							getChannel(std::string name) const;
+		std::map<std::string, Client*> &	getAllClients();
+		std::map<std::string, Channel*> &	getAllChannels();
 
 		void		run();
 		std::string	currentTime();
