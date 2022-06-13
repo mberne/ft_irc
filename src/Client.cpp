@@ -2,7 +2,7 @@
 
 //~~ CONSTRUCTOR
 
-Client::Client(int sock) : _sock(sock), _mods(0), _op(false), _password(false) {}
+Client::Client(int sock) : _sock(sock), _mods(0), _password(false) {}
 
 //~~ DESTRUCTOR
 
@@ -150,21 +150,22 @@ std::string		Client::getLastChannelName() const
 		return _channels.at(0)->getName();
 }
 
-// std::string		Client::showChannelList()
-// {
-// 	std::string		channelList;
+std::string		Client::showChannelList()
+{
+	std::string		channelList;
 
-// 	for(std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); it++)
-// 	{
-// 		if (it != _channels.begin())
-// 			channelList += " ";
-// 		if (it->second->isOperator(this))
-// 			channelList += "@";
-// 		else if (it->second->isModerated() && it->second->hasVoice(this))
-// 			channelList += "+";
-// 		channelList += it->second->getName();
-// 	}
-// }
+	for(std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); it++)
+	{
+		if (it != _channels.begin())
+			channelList += " ";
+		if (it->second->isOperator(this))
+			channelList += "@";
+		else if (it->second->isModerated() && it->second->hasVoice(this))
+			channelList += "+";
+		channelList += it->second->getName();
+	}
+	return channelList;
+}
 
 //~~ BUFFER
 

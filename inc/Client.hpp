@@ -64,7 +64,6 @@ class Client
 		std::string							_host;					// The real name of the host that the client is running on
 		std::string							_realName;				// The real name of the user
 		int									_mods;					// cf. comment at end of file
-		bool								_op;					// If true the client is a server operator
 		std::map<std::string, Channel*>		_channels;				// List of channels the client is connected to
 		bool								_password;				// If true the client has entered the server password using PASS command
 
