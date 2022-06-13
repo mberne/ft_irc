@@ -84,10 +84,9 @@ bool			Client::isInvisible() const
 	return ((_mods | CLIENT_FLAG_I) == _mods);
 }
 
-void	Client::hasEnteredPassword(bool proof)
+void	Client::setPassword(bool proof)
 {
-	if (proof == 1)
-		_password = proof;
+	_password = proof;
 }
 
 //~~ MODS
