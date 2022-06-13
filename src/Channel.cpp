@@ -211,4 +211,21 @@ bool			Channel::isBanned(Client* client)
 	return false;
 }
 
+std::string		Channel::showClientsList()
+{
+	std::string		clientList;
+
+	for(std::map<std::string, Client*>::iterator it = _clients.begin(); it != _clients.end(); it++)
+	{
+		if (it != _clients.begin())
+			clientList += " ";
+		if (this->isOperator(it->second))
+			clientList += "@";
+		else if (this->isModerated() && this->hasVoice(it->second))
+			clientList += "+";
+		clientList += it->second->getNickname();
+	}
+	return clientList;
+}
+
 // t'es beau <3
