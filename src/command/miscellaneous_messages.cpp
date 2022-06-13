@@ -1,9 +1,15 @@
 #include "ircserv.hpp"
 
+// Lors de la connexion à un serveur IRC, on envoie au client le MOTD (s'il est présent) ainsi que le nombre actuel d'utilisateurs et de serveurs (comme pour la commande LUSER).
+// Le serveur doit également envoyer un message non équivoque au client, qui stipule son nom, sa version, ainsi que tout autre message d'introduction qui lui semble approprié.
+// Après cela, le serveur doit envoyer le pseudo du nouvel utilisateur, et d'autres informations aussi bien fournies par lui-même (commande USER) que découvertes par le serveur (de la part des serveurs DNS et IDENT).
+// Le serveur doit envoyer ces informations à la première commande NICK suivie de USER.
+// void	motd(std::vector<std::string> cmd, Client* sender, Server* serv) {}
+
 void	version(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	(void)serv;
-	if (!cmd[1].empty() && !cmd[1].compare(SERV_NAME))
+	if (cmd.size() < 1 && !cmd[1].compare(SERV_NAME))
 		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "VERSION", cmd[1]));
 	else
 		sender->addToOutputBuffer(RPL_VERSION(sender->getNickname()));
@@ -11,25 +17,25 @@ void	version(std::vector<std::string> cmd, Client* sender, Server* serv)
 
 void	stats(std::vector<std::string> cmd, Client* sender, Server* serv) // needtofix
 {
-	if (!cmd[2].empty() && !cmd[2].compare(SERV_NAME))
+	if (cmd.size() < 1 && !cmd[2].compare(SERV_NAME))
 		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "STATS", cmd[1]));
-	else if (cmd[2].empty())
+	else if (cmd.size() < 2)
 	{
-		if (cmd[1].empty())
+		if (cmd.size() < 1)
 		{
 			sender->addToOutputBuffer(RPL_STATSUPTIME(sender->getNickname(), serv));
 			sender->addToOutputBuffer(RPL_ENDOFSTATS(sender->getNickname(), ""));
 		}
-		else if (!cmd[1].empty() && !cmd[1].compare(SERV_NAME) && cmd[1].size() == 1)
+		else if (cmd.size() < 1 && !cmd[1].compare(SERV_NAME) && cmd[1].size() == 1)
 			sender->addToOutputBuffer(RPL_ENDOFSTATS(sender->getNickname(), cmd[1]));
-		else if (!cmd[1].empty() && !cmd[1].compare(SERV_NAME) && cmd[1].size() != 1)
+		else if (cmd.size() < 1 && !cmd[1].compare(SERV_NAME) && cmd[1].size() != 1)
 			sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "STATS", cmd[1]));
 	}
 }
 
 void	time(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
-	if (!cmd[1].empty() && !cmd[1].compare(SERV_NAME))
+	if (cmd.size() < 1 && !cmd[1].compare(SERV_NAME))
 		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "TIME", cmd[1]));
 	else
 		sender->addToOutputBuffer(RPL_TIME(sender->getNickname(), serv->currentTime()));
@@ -38,7 +44,7 @@ void	time(std::vector<std::string> cmd, Client* sender, Server* serv)
 void	admin(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	(void)serv;
-	if (!cmd[1].empty() && !cmd[1].compare(SERV_NAME))
+	if (cmd.size() < 1 && !cmd[1].compare(SERV_NAME))
 		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "ADMIN", cmd[1]));
 	else
 	{
@@ -52,7 +58,7 @@ void	admin(std::vector<std::string> cmd, Client* sender, Server* serv)
 void	info(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	(void)serv;
-	if (!cmd[1].empty() && !cmd[1].compare(SERV_NAME))
+	if (cmd.size() < 1 && !cmd[1].compare(SERV_NAME))
 		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "INFO", cmd[1]));
 	else
 	{

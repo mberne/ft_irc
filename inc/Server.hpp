@@ -21,6 +21,10 @@ class Server
 		std::string	getStartTime() const;
 		Client*		getClient(std::string name) const;
 		Channel*	getChannel(std::string name) const;
+		// getAllClients();
+		// getAllChannels();
+		// getOpsNumber();
+		// getNonRegisteredNumber();
 
 		void		run();
 		std::string	currentTime();

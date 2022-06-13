@@ -4,7 +4,7 @@ void	who(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	(void)cmd; (void)sender; (void)serv;
 	// //RPL_WHOREPLY FOR CHANNEL TOO...
-	// if (cmd[1].empty())
+	// if (cmd.size() < 1)
 	// 	sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "WHO", cmd[1])); // ?
 	// else if (serv->getClient(cmd[1]))
 	// 	sender->addToOutputBuffer(RPL_WHOREPLY(sender->getNickname(), serv->getClient(cmd[1])));
@@ -17,11 +17,11 @@ void	whois(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	(void)cmd; (void)sender; (void)serv;
 	// // ERR_NONICKNAMEGIVEN gere ou ?
-	// if (!cmd[2].empty() && !cmd[1].compare(SERV_NAME))
+	// if (cmd.size() < 1 && !cmd[1].compare(SERV_NAME))
 	// 	sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "WHOIS", cmd[1]));
 	// else
 	// {
-	// 	if (cmd[2].empty())
+	// 	if (cmd.size() < 2)
 	// 	{
 	// 		if (serv->getClient(cmd[1]))
 	// 		{
@@ -57,7 +57,7 @@ void	whowas(std::vector<std::string> cmd, Client* sender, Server* serv)
 	// int count;
 	// int i;
 
-	// if (!cmd[2].empty())
+	// if (cmd.size() < 1)
 	// {
 	// 	count = std::stoi(cmd[2]);
 	// 	if (count < 1)

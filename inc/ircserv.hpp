@@ -32,11 +32,14 @@
 // Server info
 # define SERV_NAME					"potatoes.land"
 # define SERV_VERSION				"4.2"
+# define SERV_CREATION				"Thursday 9 June 2022 at 10:42:00 UTC"
 # define SERV_ADMIN					"Pinkie Pie"
 # define SERV_ADMIN_EMAIL			"pinkie_pie@rainbow.dash"
 # define SERV_INFO					"Made with *LOUD TRUCK SOUND* by pthomas and mberne in 2022. Copyleft."
 # define SERV_LOC1					"Charbonniere-Les-Bains, France"
 # define SERV_LOC2					"42 Lyon"
+# define PROMPT(num, user)			SERV_NAME + std::string(num) + user
+
 // Server specifications
 # define MAX_PORT					65536
 # define CHANNEL_LIMIT				1000
