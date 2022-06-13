@@ -9,7 +9,7 @@ void	pass(std::vector<std::string> cmd, Client* sender, Server* serv)
 	else if (!cmd[1].compare(serv->getPassword()))
 		sender->addToOutputBuffer(ERR_PASSWDMISMATCH(sender->getNickname(), cmd[0]));
 	else
-		sender->setPassword(1);
+		sender->setPassword(true);
 }
 
 void	nick(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
