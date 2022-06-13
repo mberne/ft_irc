@@ -3,18 +3,19 @@
 
 #include "ircserv.hpp"
 
+// Messages d'introduction après qu'un client soit entièrement register
 # define RPL_WELCOME(user)		PROMPT(" 001 ", user) + std::string(" :Welcome to the ") + SERV_NAME + std::string(" Network, ") + user
 # define RPL_YOURHOST(user)		PROMPT(" 002 ", user) + std::string(" :Your host is ") + SERV_NAME + std::string(", running version ") + SERV_VERSION
 # define RPL_CREATED(user)		PROMPT(" 003 ", user) + std::string(" :This server was created ") + SERV_CREATION
 # define RPL_MYINFO(user)		PROMPT(" 004 ", user) + std::string(" ") + SERV_NAME + std::string(" ") + SERV_VERSION + std::string(" io opsitnmlbvk")
-# define RPL_ISUPPORT(user)		PROMPT(" 005 ", user) + std::string(" MAX_PORT=") + MAX_PORT + \
-														std::string(" CHANNEL_LIMIT=") + CHANNEL_LIMIT + \
-														std::string(" CLIENT_LIMIT=") + CLIENT_LIMIT + \
-														std::string(" CHANNEL_LIMIT_PER_CLIENT=") + CHANNEL_LIMIT_PER_CLIENT + \
-														std::string(" MAX_NICKNAME_LENGTH=") + MAX_NICKNAME_LENGTH + \
-														std::string(" MAX_CHANNEL_LENGTH=") + MAX_CHANNEL_LENGTH + \
-														std::string(" MAX_TOPIC_LENGTH=") + MAX_TOPIC_LENGTH + \
-														std::string(" MAX_MESSAGE_LENGTH=") + MAX_MESSAGE_LENGTH
+# define RPL_ISUPPORT(user)		PROMPT(" 005 ", user) + std::string(" MAX_PORT=") + std::to_string(MAX_PORT) + \
+														std::string(" CHANNEL_LIMIT=") + std::to_string(CHANNEL_LIMIT) + \
+														std::string(" CLIENT_LIMIT=") + std::to_string(CLIENT_LIMIT) + \
+														std::string(" CHANNEL_LIMIT_PER_CLIENT=") + std::to_string(CHANNEL_LIMIT_PER_CLIENT) + \
+														std::string(" MAX_NICKNAME_LENGTH=") + std::to_string(MAX_NICKNAME_LENGTH) + \
+														std::string(" MAX_CHANNEL_LENGTH=") + std::to_string(MAX_CHANNEL_LENGTH) + \
+														std::string(" MAX_TOPIC_LENGTH=") + std::to_string(MAX_TOPIC_LENGTH) + \
+														std::string(" MAX_MESSAGE_LENGTH=") + std::to_string(MAX_MESSAGE_LENGTH)
 																	
 // Pour répondre à une requête au sujet du mode du client, RPL_UMODEIS est renvoyé.
 # define RPL_ENDOFSTATS(user, arg)		PROMPT(" 219 ", user) + std::string(" ") + arg + std::string(" :End of /STATS report")
@@ -22,10 +23,10 @@
 # define RPL_STATSUPTIME(user, server)	PROMPT(" 242 ", user) + std::string(" :Server Up ") + server->getStartTime()
 
 // Réponses à LUSERS
-# define RPL_LUSERCLIENT(user, server)		PROMPT(" 251 ", user) + std::string(" :There are ") + server->getAllClients().size() + std::string(" users")
-# define RPL_LUSEROP(user, server)			PROMPT(" 252 ", user) + std::string(" ") + server->opsNumber() + std::string(" :operator(s) online")
-# define RPL_LUSERUNKNOWN(user, server)		PROMPT(" 253 ", user) + std::string(" ") + server->nonRegisteredNumber() + std:string(" :unknown connection(s)")
-# define RPL_LUSERCHANNELS(user, server)	PROMPT(" 254 ", user) + std::string(" ") + server->getAllChannels().size() + std::string(":channels formed")
+# define RPL_LUSERCLIENT(user, server)		PROMPT(" 251 ", user) + std::string(" :There are ") + std::to_string(server->getAllClients().size()) + std::string(" users")
+# define RPL_LUSEROP(user, server)			PROMPT(" 252 ", user) + std::string(" ") + std::to_string(server->opsNumber()) + std::string(" :operator(s) online")
+# define RPL_LUSERUNKNOWN(user, server)		PROMPT(" 253 ", user) + std::string(" ") + std::to_string(server->nonRegisteredNumber()) + std::string(" :unknown connection(s)")
+# define RPL_LUSERCHANNELS(user, server)	PROMPT(" 254 ", user) + std::string(" ") + std::to_string(server->getAllChannels().size()) + std::string(":channels formed")
 
 // Lorsqu'il répond à un message ADMIN, un serveur doit renvoyer les réponses RLP_ADMINME à RPL_ADMINEMAIL et fournir un texte de message avec chacune.
 // Pour RPL_ADMINLOC1, on attend une description de la ville et de l'état où se trouve le serveur, suivie des détails de l'université et du département (RPL_ADMINLOC2), et finalement le contact administratif pour ce serveur (avec obligatoirement une adresse email) dans RPL_ADMINEMAIL.
@@ -52,6 +53,7 @@
 # define RPL_LIST(user, channel)	PROMPT(" 322 ", user) + std::string(" ") + channel->getName() + std::string(" ") + channel->clientCount() + std::string(" :") + channel->getTopic() // boucler dessus
 # define RPL_LISTEND(user)			PROMPT(" 323 ", user) + std::string(" :End of /LIST")
 
+// Mode du channel
 # define RPL_CHANNELMODEIS(user, channel, mode, modeParams)	PROMPT(" 324 ", user) + std::string(" ") + channel->getName() + std::string(" ") + mode + (modeParams.empty() ? "" : " " + modeParams)
 
 // Lors de l'envoi d'un message TOPIC pour déterminer le sujet d'un canal, une de ces deux réponses est envoyée.

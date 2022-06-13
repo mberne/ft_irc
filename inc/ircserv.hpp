@@ -4,6 +4,7 @@
 /*** ~~ LIBS ~~ ***/
 
 # include <cstdlib>
+# include <stdlib.h>
 # include <string>
 # include <cstring>
 # include <unistd.h>
@@ -86,6 +87,7 @@ void	stats(std::vector<std::string> cmd, Client* sender, Server* serv);
 void	time(std::vector<std::string> cmd, Client* sender, Server* serv);
 void	admin(std::vector<std::string> cmd, Client* sender, Server* serv);
 void	info(std::vector<std::string> cmd, Client* sender, Server* serv);
+void	lusers(std::vector<std::string> cmd, Client* sender, Server* serv);
 // Sending messages
 void	privmsg(std::vector<std::string> cmd, Client* sender, Server* serv);
 void	notice(std::vector<std::string> cmd, Client* sender, Server* serv);

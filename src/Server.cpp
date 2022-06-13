@@ -49,6 +49,7 @@ void		Server::initSupportedCommands()
 	_cmdList.push_back(Command("TIME",		0, &time));
 	_cmdList.push_back(Command("ADMIN",		0, &admin));
 	_cmdList.push_back(Command("INFO",		0, &info));
+	_cmdList.push_back(Command("LUSERS",	0, &lusers));
 	_cmdList.push_back(Command("PRIVMSG",	2, &privmsg));
 	_cmdList.push_back(Command("NOTICE",	2, &notice));
 	_cmdList.push_back(Command("WHO",		0, &who));

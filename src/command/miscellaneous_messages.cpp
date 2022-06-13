@@ -12,7 +12,10 @@ void	version(std::vector<std::string> cmd, Client* sender, Server* serv)
 	if (cmd.size() < 2 && !cmd[1].compare(SERV_NAME))
 		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "VERSION", cmd[1]));
 	else
+	{
 		sender->addToOutputBuffer(RPL_VERSION(sender->getNickname()));
+		sender->addToOutputBuffer(RPL_ISUPPORT(sender->getNickname()));
+	}
 }
 
 void	stats(std::vector<std::string> cmd, Client* sender, Server* serv) // needtofix
@@ -71,4 +74,13 @@ void	info(std::vector<std::string> cmd, Client* sender, Server* serv)
 		sender->addToOutputBuffer(RPL_INFO(sender->getNickname(), SERV_LOC2));
 		sender->addToOutputBuffer(RPL_ENDOFINFO(sender->getNickname()));
 	}
+}
+
+void	lusers(std::vector<std::string> cmd, Client* sender, Server* serv)
+{
+	(void)cmd;
+	sender->addToOutputBuffer(RPL_LUSERCLIENT(sender->getNickname(), serv));
+	sender->addToOutputBuffer(RPL_LUSEROP(sender->getNickname(), serv));
+	sender->addToOutputBuffer(RPL_LUSERUNKNOWN(sender->getNickname(), serv));
+	sender->addToOutputBuffer(RPL_LUSERCHANNELS(sender->getNickname(), serv));
 }
