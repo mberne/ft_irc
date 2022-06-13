@@ -2,7 +2,7 @@
 
 //~~ CONSTRUCTOR
 
-Client::Client(int sock) : _sock(sock), _mods(0), _op(false), _hasEnteredPassword(false) {}
+Client::Client(int sock) : _sock(sock), _mods(0), _op(false), _password(false) {}
 
 //~~ DESTRUCTOR
 
@@ -71,7 +71,7 @@ std::string		Client::getPrefix() const
 
 bool	Client::isRegistered() const
 {
-	return (_nickname.empty() == false && _user.empty() == false && _hasEnteredPassword == true);
+	return (_nickname.empty() == false && _user.empty() == false && _password == true);
 }
 
 bool			Client::isOperator() const
@@ -84,15 +84,10 @@ bool			Client::isInvisible() const
 	return ((_mods | CLIENT_FLAG_I) == _mods);
 }
 
-bool	Client::getPasswordProof() const
-{
-	return _hasEnteredPassword;
-}
-
-void	Client::setPasswordProof(bool proof)
+void	Client::hasEnteredPassword(bool proof)
 {
 	if (proof == 1)
-		_hasEnteredPassword = proof;
+		_password = proof;
 }
 
 //~~ MODS

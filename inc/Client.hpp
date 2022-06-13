@@ -35,8 +35,7 @@ class Client
 		bool			isRegistered() const;						// Return true if the client used the registrations commands (PASS, NICK, USER)
 		bool			isOperator() const;
 		bool			isInvisible() const;
-		bool			getPasswordProof() const;
-		void			setPasswordProof(bool proof);	
+		void			hasEnteredPassword(bool proof);	
 		// MODS
 		void			addMods(std::string mods);
 		void			removeMods(std::string mods);
@@ -67,10 +66,10 @@ class Client
 		int									_mods;					// cf. comment at end of file
 		bool								_op;					// If true the client is a server operator
 		std::map<std::string, Channel*>		_channels;				// List of channels the client is connected to
-		bool								_hasEnteredPassword;	// If true the client has entered the server password using PASS command
+		bool								_password;				// If true the client has entered the server password using PASS command
 
-		std::string							_inputBuffer;	// Client's messages buffer
-		std::string							_outputBuffer;						// Messages to Client buffer
+		std::string							_inputBuffer;			// Client's messages buffer
+		std::string							_outputBuffer;			// Messages to Client buffer
 };
 
 #endif //~~ CLIENT_H
