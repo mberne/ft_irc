@@ -45,11 +45,12 @@ void		Server::initSupportedCommands()
 	_cmdList.push_back(Command("LIST",		0, &list));
 	_cmdList.push_back(Command("KICK",		2, &kick));
 	_cmdList.push_back(Command("VERSION",	0, &version));
-	_cmdList.push_back(Command("STATS",		0, &stats));
+	_cmdList.push_back(Command("STATS",		1, &stats));
 	_cmdList.push_back(Command("TIME",		0, &time));
 	_cmdList.push_back(Command("ADMIN",		0, &admin));
 	_cmdList.push_back(Command("INFO",		0, &info));
 	_cmdList.push_back(Command("LUSERS",	0, &lusers));
+	_cmdList.push_back(Command("MOTD",		0, &motd));
 	_cmdList.push_back(Command("PRIVMSG",	2, &privmsg));
 	_cmdList.push_back(Command("NOTICE",	2, &notice));
 	_cmdList.push_back(Command("WHO",		0, &who));

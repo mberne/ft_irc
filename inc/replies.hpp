@@ -18,8 +18,10 @@
 														std::string(" MAX_MESSAGE_LENGTH=") + std::to_string(MAX_MESSAGE_LENGTH)
 																	
 // Pour répondre à une requête au sujet du mode du client, RPL_UMODEIS est renvoyé.
-# define RPL_ENDOFSTATS(user, arg)		PROMPT(" 219 ", user) + std::string(" ") + arg + std::string(" :End of /STATS report")
 # define RPL_UMODEIS(user, client)		PROMPT(" 221 ", user) + std::string(" ") + client->getMods()
+
+// Réponses à STATS
+# define RPL_ENDOFSTATS(user, arg)		PROMPT(" 219 ", user) + std::string(" ") + arg + std::string(" :End of /STATS report")
 # define RPL_STATSUPTIME(user, server)	PROMPT(" 242 ", user) + std::string(" :Server Up ") + server->getStartTime()
 
 // Réponses à LUSERS
