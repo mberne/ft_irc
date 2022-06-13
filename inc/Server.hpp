@@ -23,11 +23,11 @@ class Server
 		Channel*							getChannel(std::string name) const;
 		std::map<std::string, Client*> &	getAllClients();
 		std::map<std::string, Channel*> &	getAllChannels();
-		// getOpsNumber();
-		// getNonRegisteredNumber();
 
 		void		run();
 		std::string	currentTime();
+		int			opsNumber();
+		int			nonRegisteredNumber();
 	
 	private:
 

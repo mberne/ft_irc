@@ -285,3 +285,23 @@ std::string	Server::currentTime()
 	timeinfo = localtime(&time);
 	return asctime(timeinfo);
 }
+
+int	Server::opsNumber()
+{
+	int	num = 0;
+
+	for(std::map<std::string, Client*>::iterator it = _clientsByName.begin(); it != _clientsByName.end(); ++it)
+		if (it->second->isOperator())
+			num++;
+	return (num);
+}
+
+int	Server::nonRegisteredNumber()
+{
+	int	num = 0;
+
+	for(std::map<std::string, Client*>::iterator it = _clientsByName.begin(); it != _clientsByName.end(); ++it)
+		if (it->second->isRegistered())
+			num++;
+	return (num);
+}

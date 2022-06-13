@@ -22,10 +22,10 @@
 # define RPL_STATSUPTIME(user, server)	PROMPT(" 242 ", user) + std::string(" :Server Up ") + server->getStartTime()
 
 // Réponses à LUSERS
-# define RPL_LUSERCLIENT(user, server)	PROMPT(" 251 ", user) + std::string(" :There are ") + server->getAllClients().size() + std::string(" users")
-# define RPL_LUSEROP(user)				PROMPT(" 252 ", user) + std::string(" <ops> :operator(s) online") // getOpsNumber()
-# define RPL_LUSERUNKNOWN(user)			PROMPT(" 253 ", user) + std::string(" <connections> :unknown connection(s)") // getNonRegisteredNumber()
-# define RPL_LUSERCHANNELS(user)		PROMPT(" 254 ", user) + std::string(" ") + server->getAllChannels().size() + std::string(":channels formed")
+# define RPL_LUSERCLIENT(user, server)		PROMPT(" 251 ", user) + std::string(" :There are ") + server->getAllClients().size() + std::string(" users")
+# define RPL_LUSEROP(user, server)			PROMPT(" 252 ", user) + std::string(" ") + server->opsNumber() + std::string(" :operator(s) online")
+# define RPL_LUSERUNKNOWN(user, server)		PROMPT(" 253 ", user) + std::string(" ") + server->nonRegisteredNumber() + std:string(" :unknown connection(s)")
+# define RPL_LUSERCHANNELS(user, server)	PROMPT(" 254 ", user) + std::string(" ") + server->getAllChannels().size() + std::string(":channels formed")
 
 // Lorsqu'il répond à un message ADMIN, un serveur doit renvoyer les réponses RLP_ADMINME à RPL_ADMINEMAIL et fournir un texte de message avec chacune.
 // Pour RPL_ADMINLOC1, on attend une description de la ville et de l'état où se trouve le serveur, suivie des détails de l'université et du département (RPL_ADMINLOC2), et finalement le contact administratif pour ce serveur (avec obligatoirement une adresse email) dans RPL_ADMINEMAIL.
@@ -92,7 +92,7 @@
 # define RPL_ENDOFINFO(user)	PROMPT(" 374 ", user) + std::string(" :End of /INFO list")
 
 // MOTD (Message Of The Day)
-# define RPL_MOTD(user)	PROMPT(" 372 ", user) + std::string(" : WELCOME to Potatoe's Land !")
+# define RPL_MOTD(user)			PROMPT(" 372 ", user) + std::string(" : WELCOME to Potatoe's Land !")
 # define RPL_MOTDSTART(user)	PROMPT(" 375 ", user) + std::string(" :- ") + SERV_NAME + std::string("Message of the day - ")
 # define RPL_ENDOFMOTD(user)	PROMPT(" 376 ", user) + std::string(" :End of /MOTD command.")
 
