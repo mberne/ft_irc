@@ -2,21 +2,20 @@
 
 void	who(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
-	(void)cmd; (void)sender; (void)serv;
 	// manque -o
-	// (void)serv;
-	// if (cmd.size() < 2)
-	// 	sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), "WHO"));
-	// else
-	// {
-	// 	if (!cmd[1].compare(SERV_NAME))
-	// 		// sender->addToOutputBuffer(RPL_WHOREPLY(sender->getNickname(), SERV_NAME));
-	// 	else if (serv->getClient(cmd[1]))
-	// 		// sender->addToOutputBuffer(RPL_WHOREPLY(sender->getNickname(), serv->getClient(cmd[1])));
-	// 	else if (serv->getChannel(cmd[1]))
-	// 		// sender->addToOutputBuffer(RPL_WHOREPLY(sender->getNickname(), serv->getChannel(cmd[1])));
-	// 	sender->addToOutputBuffer(RPL_ENDOFWHO(sender->getNickname(), cmd[1]));
-	// }
+	(void)serv;
+	if (cmd.size() < 2)
+		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), "WHO"));
+	else
+	{
+		// if (!cmd[1].compare(SERV_NAME))
+		// 	// sender->addToOutputBuffer(RPL_WHOREPLY(sender->getNickname(), SERV_NAME));
+		// else if (serv->getClient(cmd[1]))
+		// 	// sender->addToOutputBuffer(RPL_WHOREPLY(sender->getNickname(), serv->getClient(cmd[1])));
+		// else if (serv->getChannel(cmd[1]))
+		// 	// sender->addToOutputBuffer(RPL_WHOREPLY(sender->getNickname(), serv->getChannel(cmd[1])));
+		sender->addToOutputBuffer(RPL_ENDOFWHO(sender->getNickname(), cmd[1]));
+	}
 }
 
 void	whois(std::vector<std::string> cmd, Client* sender, Server* serv)
@@ -78,5 +77,5 @@ void	whowas(std::vector<std::string> cmd, Client* sender, Server* serv)
 	// 	else
 	// 		sender->addToOutputBuffer(ERR_NOSUCHNICK(sender->getNickname(), cmd[0], cmd[1]));
 	// 	sender->addToOutputBuffer(RPL_ENDOFWHOWAS(sender->getNickname(), cmd[1]));
-	}
+	// }
 }
