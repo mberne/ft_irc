@@ -309,7 +309,7 @@ int	Server::opsNumber()
 	int	num = 0;
 
 	for(std::map<std::string, Client*>::iterator it = _clientsByName.begin(); it != _clientsByName.end(); ++it)
-		if (it->second->isOperator())
+		if (it->second->isServOperator())
 			num++;
 	return (num);
 }

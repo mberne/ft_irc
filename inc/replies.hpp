@@ -12,10 +12,10 @@
 														std::string(" CHANNEL_LIMIT=") + std::to_string(CHANNEL_LIMIT) + \
 														std::string(" CLIENT_LIMIT=") + std::to_string(CLIENT_LIMIT) + \
 														std::string(" CHANNEL_LIMIT_PER_CLIENT=") + std::to_string(CHANNEL_LIMIT_PER_CLIENT) + \
-														std::string(" MAX_NICKNAME_LENGTH=") + std::to_string(MAX_NICKNAME_LENGTH) + \
-														std::string(" MAX_CHANNEL_LENGTH=") + std::to_string(MAX_CHANNEL_LENGTH) + \
-														std::string(" MAX_TOPIC_LENGTH=") + std::to_string(MAX_TOPIC_LENGTH) + \
-														std::string(" MAX_MESSAGE_LENGTH=") + std::to_string(MAX_MESSAGE_LENGTH)
+														std::string(" NICKLEN=") + std::to_string(NICKLEN) + \
+														std::string(" CHANNELLEN=") + std::to_string(CHANNELLEN) + \
+														std::string(" TOPICLEN=") + std::to_string(TOPICLEN) + \
+														std::string(" MESSAGELEN=") + std::to_string(MESSAGELEN)
 																	
 // Pour répondre à une requête au sujet du mode du client, RPL_UMODEIS est renvoyé.
 # define RPL_UMODEIS(user, client)		PROMPT(" 221 ", user) + std::string(" ") + client->getMods()
@@ -68,7 +68,7 @@
 // La paire RPL_WHOREPLY et RPL_ENDOFWHO est utilisée en réponse à un message WHO.
 // Le RPL_WHOREPLY n'est envoyé que s'il y a une correspondance à la requête WHO.
 // S'il y a une liste de paramètres fournie avec le message WHO, un RPL_ENDOFWHO doit être envoyé après le traitement de chaque élément de la liste, <nom> étant l'élément.
-# define RPL_WHOREPLY(user, client)		PROMPT(" 352 ", user) + std::string(" ") + client->getLastChannelName() + std::string(" ") + client->getUser() + std::string(" ") + client->getHost() + std::string(" ") + SERV_NAME + std::string(" ") + client->getNickname() + std::string(" H") + (client->isOperator() ? "*" : "" ) + (client->getChannel(client->getLastChannelName())->isOperator(client) ? "@" : (client->getChannel(client->getLastChannelName())->hasVoice(client) ? "+" : "")) + std::string(" :0 ") + client->getRealName()
+# define RPL_WHOREPLY(user, client)		PROMPT(" 352 ", user) + std::string(" ") + client->getLastChannelName() + std::string(" ") + client->getUser() + std::string(" ") + client->getHost() + std::string(" ") + SERV_NAME + std::string(" ") + client->getNickname() + std::string(" H") + (client->isServOperator() ? "*" : "" ) + (client->getChannel(client->getLastChannelName())->isOperator(client) ? "@" : (client->getChannel(client->getLastChannelName())->hasVoice(client) ? "+" : "")) + std::string(" :0 ") + client->getRealName()
 # define RPL_ENDOFWHO(user, name)		PROMPT(" 315 ", user) + std::string(" ") + name + " :End of /WHO list"
 
 // Réponse du serveur indiquant les détails de sa version.
