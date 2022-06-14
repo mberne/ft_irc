@@ -32,32 +32,32 @@ Server::Server(int port, std::string password) : _port(port), _password(password
 
 void		Server::initSupportedCommands()
 {
-	_cmdList.push_back(Command("PASS",		1, &pass));
-	_cmdList.push_back(Command("NICK",		1, &nick));
-	_cmdList.push_back(Command("USER",		4, &user));
-	_cmdList.push_back(Command("OPER",		2, &oper));
-	_cmdList.push_back(Command("QUIT",		0, &quit));
-	_cmdList.push_back(Command("JOIN",		1, &join));
-	_cmdList.push_back(Command("PART",		1, &part));
-	_cmdList.push_back(Command("MODE",		1, &mode));
-	_cmdList.push_back(Command("TOPIC",		1, &topic));
-	_cmdList.push_back(Command("NAMES",		0, &names));
-	_cmdList.push_back(Command("LIST",		0, &list));
-	_cmdList.push_back(Command("KICK",		2, &kick));
-	_cmdList.push_back(Command("VERSION",	0, &version));
-	_cmdList.push_back(Command("STATS",		0, &stats));
-	_cmdList.push_back(Command("TIME",		0, &time));
-	_cmdList.push_back(Command("ADMIN",		0, &admin));
-	_cmdList.push_back(Command("INFO",		0, &info));
-	_cmdList.push_back(Command("PRIVMSG",	2, &privmsg));
-	_cmdList.push_back(Command("NOTICE",	2, &notice));
-	_cmdList.push_back(Command("WHO",		0, &who));
-	_cmdList.push_back(Command("WHOIS",		1, &whois));
-	_cmdList.push_back(Command("WHOWAS",	1, &whowas));
-	_cmdList.push_back(Command("KILL",		2, &kill));
-	_cmdList.push_back(Command("PING",		1, &ping));
-	_cmdList.push_back(Command("PONG",		1, &pong));
-	_cmdList.push_back(Command("ERROR",		1, &error));
+	_cmdList.push_back(Command("PASS",		2, &pass));
+	_cmdList.push_back(Command("NICK",		2, &nick));
+	_cmdList.push_back(Command("USER",		5, &user));
+	_cmdList.push_back(Command("OPER",		3, &oper));
+	_cmdList.push_back(Command("QUIT",		1, &quit));
+	_cmdList.push_back(Command("JOIN",		2, &join));
+	_cmdList.push_back(Command("PART",		2, &part));
+	_cmdList.push_back(Command("MODE",		2, &mode));
+	_cmdList.push_back(Command("TOPIC",		2, &topic));
+	_cmdList.push_back(Command("NAMES",		1, &names));
+	_cmdList.push_back(Command("LIST",		1, &list));
+	_cmdList.push_back(Command("KICK",		3, &kick));
+	_cmdList.push_back(Command("VERSION",	1, &version));
+	_cmdList.push_back(Command("STATS",		1, &stats));
+	_cmdList.push_back(Command("TIME",		1, &time));
+	_cmdList.push_back(Command("ADMIN",		1, &admin));
+	_cmdList.push_back(Command("INFO",		1, &info));
+	_cmdList.push_back(Command("PRIVMSG",	3, &privmsg));
+	_cmdList.push_back(Command("NOTICE",	3, &notice));
+	_cmdList.push_back(Command("WHO",		1, &who));
+	_cmdList.push_back(Command("WHOIS",		2, &whois));
+	_cmdList.push_back(Command("WHOWAS",	2, &whowas));
+	_cmdList.push_back(Command("KILL",		3, &kill));
+	_cmdList.push_back(Command("PING",		2, &ping));
+	_cmdList.push_back(Command("PONG",		2, &pong));
+	_cmdList.push_back(Command("ERROR",		2, &error));
 }
 
 //~~ DESTRUCTOR
@@ -78,10 +78,7 @@ std::string	Server::getPassword() const
 
 std::string	Server::getStartTime() const
 {
-	struct tm *timeinfo;
-
-	timeinfo = localtime(&_startTime);
-	return asctime(timeinfo);
+	return asctime(localtime(&_startTime));
 }
 
 Client*		Server::getClient(std::string name) const
@@ -117,9 +114,16 @@ void	Server::addClient(int sock)
 void	Server::removeClient(Client *src, std::vector<struct pollfd>::iterator it)
 {
 	std::cout << "Someone is disconnecting : " << it->fd << std::endl; // test
-	_oldClients.insert(std::make_pair(src->getNickname(), src));
-	_clientsByName.erase(src->getNickname());
-	_clientsBySock.erase(src->getSock());
+	if (src->isRegistered() == true)
+	{
+		_oldClients.insert(std::make_pair(src->getNickname(), src));
+		_clientsByName.erase(src->getNickname());
+	}
+	else
+	{
+		delete src;
+		_clientsBySock.erase(it->fd);
+	}
 	close(it->fd);
 	_fds.erase(it);
 }
@@ -144,7 +148,7 @@ void	Server::sendMessages()
 
 void		Server::executeCommand(std::vector<std::string>	cmdArgs, Client* sender)
 {
-	Command*	cmd;
+	Command*	cmd = NULL;
 
 	for(std::vector<Command>::iterator it = _cmdList.begin(); it != _cmdList.end(); it++)
 	{
@@ -153,29 +157,46 @@ void		Server::executeCommand(std::vector<std::string>	cmdArgs, Client* sender)
 	}
 	if (cmd == NULL)
 		sender->addToOutputBuffer(ERR_UNKNOWNCOMMAND(sender->getNickname(), cmdArgs.front()));
+	else if (sender->isRegistered() == false && cmd->getName().compare("USER") && cmd->getName().compare("PASS") && cmd->getName().compare("NICK"))
+		sender->addToOutputBuffer(ERR_NOTREGISTERED(sender->getNickname()));
 	else
+	{
 		cmd->fct(cmdArgs, sender, this);
+		if (_clientsByName.find(sender->getNickname()) == _clientsByName.end() && sender->isRegistered() == true)
+			_clientsByName.insert(std::make_pair(sender->getNickname(), sender));
+	}
 }
 
 void		Server::executeRequest(Client* sender)
 {
-	std::string inputBuffer = sender->getInputBuffer();
-
-	for(size_t i = 0; i != std::string::npos; i = inputBuffer.find(CRLF))
+	for(size_t i = sender->getInputBuffer().find(CRLF); i != std::string::npos; i = sender->getInputBuffer().find(CRLF))
 	{
-		std::string					cmdLine = inputBuffer.substr(0, i);
+		size_t						start = sender->getInputBuffer().find_first_not_of(" ");
+		std::string					cmdLine = sender->getInputBuffer().substr(start, i - start);
 		std::vector<std::string>	cmdArgs;
 
-		if (cmdLine.at(0) == ':')
-			cmdLine.erase(0, cmdLine.find_first_not_of(' ', cmdLine.find_first_of(' ', 0)));
-		for(size_t j = cmdLine.find_first_of(' '); j != std::string::npos; j = cmdLine.find_first_of(' '))
+		if (sender->getInputBuffer().find(CRLF) >= MESSAGELEN - CRLF.size())
+			cmdLine.erase(MESSAGELEN, cmdLine.size() - MESSAGELEN);
+		if (!cmdLine.empty())
 		{
-			cmdArgs.push_back(cmdLine.substr(0, j));
-			cmdLine.erase(0, cmdLine.find_first_not_of(' ', j));
+			if (cmdLine[0] == ':')
+				cmdLine.erase(0, cmdLine.find_first_not_of(' ', cmdLine.find_first_of(' ', 0)));
+			for(size_t j = cmdLine.find_first_of(' '); j != std::string::npos; j = cmdLine.find_first_of(' '))
+			{
+				if (cmdLine[0] == ':')
+					break;
+				cmdArgs.push_back(cmdLine.substr(0, j));
+				cmdLine.erase(0, cmdLine.find_first_not_of(' ', j));
+			}
+			cmdArgs.push_back(cmdLine);
+			executeCommand(cmdArgs, sender);
 		}
-		cmdArgs.push_back(cmdLine);
-		executeCommand(cmdArgs, sender);
-		inputBuffer.erase(0, i + strlen(CRLF));
+		sender->getInputBuffer().erase(0, i + CRLF.size());
+	}
+	if (sender->getInputBuffer().size() >= MESSAGELEN - CRLF.size())
+	{
+		sender->addToInputBuffer(CRLF.c_str());
+		executeRequest(sender);
 	}
 }
 
@@ -197,8 +218,7 @@ void	Server::receiveMessages()
 			{
 				buf[ret] = '\0';
 				client->addToInputBuffer(buf);
-				std::cout << "Message from socket : " << it->fd << std::endl; // test
-				// executeRequest(client);
+				executeRequest(client);
 			}
 		}
 	}

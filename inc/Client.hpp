@@ -33,7 +33,7 @@ class Client
 		void			setRealName(std::string realName);
 		std::string		getPrefix() const;
 		bool			isRegistered() const;						// Return true if the client used the registrations commands (PASS, NICK, USER)
-		bool			isOperator() const;
+		bool			isServOperator() const;
 		bool			isInvisible() const;
 		void			setPassword(bool proof);	
 		// MODS
@@ -51,7 +51,7 @@ class Client
 
 		// BUFFER
 		std::string &	getInputBuffer();
-		void			addToInputBuffer(char* buf);		// Append the string sent as parameter to the output buffer
+		void			addToInputBuffer(const char* buf);			// Append the string sent as parameter to the output buffer
 		char const *	getOutputBuffer() const;
 		void			addToOutputBuffer(std::string output);		// Append the string sent as parameter to the output buffer
 		void			clearOutputBuffer();						// Clear the output buffer
@@ -67,7 +67,7 @@ class Client
 		std::string							_realName;				// The real name of the user
 		int									_mods;					// cf. comment at end of file
 		std::map<std::string, Channel*>		_channels;				// List of channels the client is connected to
-		bool								_password;				// If true the client has entered the server password using PASS command
+		int									_password;				// If true the client has entered the server password using PASS command
 
 		std::string							_inputBuffer;			// Client's messages buffer
 		std::string							_outputBuffer;			// Messages to Client buffer

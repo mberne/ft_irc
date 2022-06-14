@@ -27,3 +27,8 @@ class Command
 };
 
 #endif //~~ COMMAND_H
+
+// ceci
+// NICK
+// un
+// test
