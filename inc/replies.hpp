@@ -99,7 +99,7 @@
 
 // MOTD (Message Of The Day)
 # define RPL_MOTD(user)			PROMPT(" 372 ", user) + std::string(" : WELCOME to Potatoe's Land !")
-# define RPL_MOTDSTART(user)	PROMPT(" 375 ", user) + std::string(" :- ") + SERV_NAME + std::string("Message of the day - ")
+# define RPL_MOTDSTART(user)	PROMPT(" 375 ", user) + std::string(" :- ") + SERV_NAME + std::string(" Message of the day - ")
 # define RPL_ENDOFMOTD(user)	PROMPT(" 376 ", user) + std::string(" :End of /MOTD command.")
 
 // RPL_YOUREOPER est renvoyé à un client qui vient d'émettre un message OPER et a obtenu le statut d'opérateur.

@@ -126,5 +126,7 @@ void	kill(std::vector<std::string> cmd, Client* sender, Server* serv);
 // void	ping(std::vector<std::string> cmd, Client* sender, Server* serv);
 void	pong(std::vector<std::string> cmd, Client* sender, Server* serv);
 // void	error(std::vector<std::string> cmd, Client* sender, Server* serv);
+// Welcome command
+void	sendWelcome(Client* sender, Server* serv);
 
 #endif //~~ IRCSERV_H

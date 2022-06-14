@@ -71,7 +71,7 @@ void	quit(std::vector<std::string> cmd, Client* sender, Server* serv) // mberne
 }
 
 // pas une commande, mais à envoyer une fois que le client est correctement connecté (pass, nick, user)
-void	registrationDone(Client* sender, Server* serv)
+void	sendWelcome(Client* sender, Server* serv)
 {
 	std::string name = sender->getNickname();
 
@@ -90,8 +90,3 @@ void	registrationDone(Client* sender, Server* serv)
 	sender->addToOutputBuffer(RPL_ENDOFMOTD(name));
 	sender->addToOutputBuffer(RPL_UMODEIS(name, sender));
 }
-
-// ERR_NONICKNAMEGIVEN
-// Renvoyé quand un paramètre pseudonyme attendu pour une commande n'est pas fourni.
-// ERR_ERRONEUSNICKNAME
-// Renvoyé après la réception d'un message NICK qui contient des caractères qui ne font pas partie du jeu autorisé. Voir les sections 1 et 2.2 pour les détails des pseudonymes valides.

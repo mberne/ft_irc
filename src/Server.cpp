@@ -160,7 +160,10 @@ void		Server::executeCommand(std::vector<std::string>	cmdArgs, Client* sender)
 	{
 		cmd->fct(cmdArgs, sender, this);
 		if (_clientsByName.find(sender->getNickname()) == _clientsByName.end() && sender->isRegistered() == true)
+		{
 			_clientsByName.insert(std::make_pair(sender->getNickname(), sender));
+			sendWelcome(sender, this);
+		}
 	}
 }
 
