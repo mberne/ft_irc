@@ -188,7 +188,8 @@ void		Server::executeRequest(Client* sender)
 				cmdArgs.push_back(cmdLine.substr(0, j));
 				cmdLine.erase(0, cmdLine.find_first_not_of(' ', j));
 			}
-			cmdArgs.push_back(cmdLine);
+			if (!cmdLine.empty())
+				cmdArgs.push_back(cmdLine);
 			executeCommand(cmdArgs, sender);
 		}
 		sender->getInputBuffer().erase(0, i + CRLF.size());
