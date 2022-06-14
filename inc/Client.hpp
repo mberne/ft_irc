@@ -39,6 +39,8 @@ class Client
 		time_t			getConnexionStartTime() const;
 		time_t			getLastCmdTime() const;
 		void			setLastCmdTime();
+		bool			getIsPing() const;
+		void			setIsPing(bool ping);
 		// MODS
 		void			addMods(std::string mods);
 		void			removeMods(std::string mods);
@@ -73,6 +75,7 @@ class Client
 		bool								_password;				// If true the client has entered the server password using PASS command
 		const time_t						_connexionStartTime;
 		time_t								_lastCmdTime;
+		bool								_isPing;
 
 		std::string							_inputBuffer;			// Client's messages buffer
 		std::string							_outputBuffer;			// Messages to Client buffer

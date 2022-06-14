@@ -10,7 +10,7 @@ void	who(std::vector<std::string> cmd, Client* sender, Server* serv)
 			option = 1;
 		std::map<std::string, Client*> allClients = serv->getAllClients();
 		for (std::map<std::string, Client*>::iterator it = allClients.begin(); it != allClients.end(); it++)
-			if (!it->second->isInvisible() && (!option || option && it->second->isOperator()))
+			if (!it->second->isInvisible() && (!option || (option && it->second->isOperator())))
 				sender->addToOutputBuffer(RPL_WHOREPLY(sender->getNickname(), it->second));
 	}
 	else
@@ -18,8 +18,8 @@ void	who(std::vector<std::string> cmd, Client* sender, Server* serv)
 		if (cmd.size() == 3)
 			option = 1;
 		Client *client = serv->getClient(cmd[1]);
-		Channel *chan = serv->getChannel(cmd[1]);
-		if ((client && !option) || client && option && client->isOperator())
+		// Channel *chan = serv->getChannel(cmd[1]);
+		if ((client && !option) || (client && option && client->isOperator()))
 			sender->addToOutputBuffer(RPL_WHOREPLY(sender->getNickname(), serv->getClient(cmd[1])));
 		// uncomment when getAllClients() in class channel is coded
 		// else if (chan)

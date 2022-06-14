@@ -57,9 +57,9 @@ void		Server::initSupportedCommands()
 	_cmdList.push_back(Command("WHOIS",		1, &whois));
 	_cmdList.push_back(Command("WHOWAS",	1, &whowas));
 	_cmdList.push_back(Command("KILL",		2, &kill));
-	_cmdList.push_back(Command("PING",		1, &ping));
+	// _cmdList.push_back(Command("PING",		1, &ping));
 	_cmdList.push_back(Command("PONG",		1, &pong));
-	_cmdList.push_back(Command("ERROR",		1, &error));
+	// _cmdList.push_back(Command("ERROR",		1, &error));
 }
 
 //~~ DESTRUCTOR

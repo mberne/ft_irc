@@ -106,6 +106,16 @@ void			Client::setLastCmdTime()
 	_lastCmdTime = time(NULL);
 }
 
+bool	Client::getIsPing() const
+{
+	return _isPing;
+}
+
+void	Client::setIsPing(bool ping)
+{
+	_isPing = ping;
+}
+
 //~~ MODS
 
 void			Client::addMods(std::string mods)

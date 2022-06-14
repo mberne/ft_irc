@@ -52,6 +52,8 @@
 # define MAX_TOPIC_LENGTH			390
 # define MAX_MESSAGE_LENGTH			512
 # define CRLF						"\r\n"
+# define MAX_TIME_AFK				300
+# define MAX_PING_TIME				60
 
 /*** ~~ CLASSES ~~ ***/
 
@@ -98,8 +100,8 @@ void	whois(std::vector<std::string> cmd, Client* sender, Server* serv);
 void	whowas(std::vector<std::string> cmd, Client* sender, Server* serv);
 // User based queries
 void	kill(std::vector<std::string> cmd, Client* sender, Server* serv);
-void	ping(std::vector<std::string> cmd, Client* sender, Server* serv);
+// void	ping(std::vector<std::string> cmd, Client* sender, Server* serv);
 void	pong(std::vector<std::string> cmd, Client* sender, Server* serv);
-void	error(std::vector<std::string> cmd, Client* sender, Server* serv);
+// void	error(std::vector<std::string> cmd, Client* sender, Server* serv);
 
 #endif //~~ IRCSERV_H

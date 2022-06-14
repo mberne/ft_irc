@@ -56,7 +56,7 @@ void	quit(std::vector<std::string> cmd, Client* sender, Server* serv) // mberne
 }
 
 // pas une commande, mais à envoyer une fois que le client est correctement connecté (pass, nick, user)
-void	registrationDone(std::vector<std::string> cmd, Client* sender, Server* serv)
+void	registrationDone(Client* sender, Server* serv)
 {
 	std::string name = sender->getNickname();
 
