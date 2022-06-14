@@ -35,7 +35,10 @@ class Client
 		bool			isRegistered() const;						// Return true if the client used the registrations commands (PASS, NICK, USER)
 		bool			isOperator() const;
 		bool			isInvisible() const;
-		void			setPassword(bool proof);	
+		void			setPassword(bool proof);
+		time_t			getConnexionStartTime() const;
+		time_t			getLastCmdTime() const;
+		void			setLastCmdTime();
 		// MODS
 		void			addMods(std::string mods);
 		void			removeMods(std::string mods);
@@ -68,6 +71,8 @@ class Client
 		int									_mods;					// cf. comment at end of file
 		std::map<std::string, Channel*>		_channels;				// List of channels the client is connected to
 		bool								_password;				// If true the client has entered the server password using PASS command
+		const time_t						_connexionStartTime;
+		time_t								_lastCmdTime;
 
 		std::string							_inputBuffer;			// Client's messages buffer
 		std::string							_outputBuffer;			// Messages to Client buffer

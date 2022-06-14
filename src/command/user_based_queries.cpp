@@ -2,20 +2,34 @@
 
 void	who(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
-	// manque -o
-	(void)serv;
-	if (cmd.size() < 2)
-		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), "WHO"));
+	bool	option = 0;
+
+	if (cmd.size() < 3)
+	{
+		if (cmd.size() == 2 && cmd[1].size() == 1 && !cmd[1].compare("o"))
+			option = 1;
+		std::map<std::string, Client*> allClients = serv->getAllClients();
+		for (std::map<std::string, Client*>::iterator it = allClients.begin(); it != allClients.end(); it++)
+			if (!it->second->isInvisible() && (!option || option && it->second->isOperator()))
+				sender->addToOutputBuffer(RPL_WHOREPLY(sender->getNickname(), it->second));
+	}
 	else
 	{
-		// if (!cmd[1].compare(SERV_NAME))
-		// 	// sender->addToOutputBuffer(RPL_WHOREPLY(sender->getNickname(), SERV_NAME));
-		// else if (serv->getClient(cmd[1]))
-		// 	// sender->addToOutputBuffer(RPL_WHOREPLY(sender->getNickname(), serv->getClient(cmd[1])));
-		// else if (serv->getChannel(cmd[1]))
-		// 	// sender->addToOutputBuffer(RPL_WHOREPLY(sender->getNickname(), serv->getChannel(cmd[1])));
-		sender->addToOutputBuffer(RPL_ENDOFWHO(sender->getNickname(), cmd[1]));
+		if (cmd.size() == 3)
+			option = 1;
+		Client *client = serv->getClient(cmd[1]);
+		Channel *chan = serv->getChannel(cmd[1]);
+		if ((client && !option) || client && option && client->isOperator())
+			sender->addToOutputBuffer(RPL_WHOREPLY(sender->getNickname(), serv->getClient(cmd[1])));
+		// uncomment when getAllClients() in class channel is coded
+		// else if (chan)
+		// {
+		// 	std::map<std::string, Client*> allClients = chan->getAllClients();
+		// 	for (std::map<std::string, Client*>::iterator it = allClients.begin(); it != allClients.end(); it++)
+		// 		sender->addToOutputBuffer(RPL_WHOREPLY(sender->getNickname(), it->second));
+		// }
 	}
+	sender->addToOutputBuffer(RPL_ENDOFWHO(sender->getNickname(), cmd[1]));
 }
 
 void	whois(std::vector<std::string> cmd, Client* sender, Server* serv)
@@ -41,7 +55,7 @@ void	whois(std::vector<std::string> cmd, Client* sender, Server* serv)
 			sender->addToOutputBuffer(RPL_WHOISUSER(sender->getNickname(), serv->getClient(cmd[mask])));
 			sender->addToOutputBuffer(RPL_WHOISSERVER(sender->getNickname(), cmd[mask]));
 			sender->addToOutputBuffer(RPL_WHOISOPERATOR(sender->getNickname(), cmd[mask]));
-			// sender->addToOutputBuffer(RPL_WHOISIDLE(sender->getNickname(), serv->getOldClient(cmd[mask]))); //getOldClient //getSeconds // getSignon
+			sender->addToOutputBuffer(RPL_WHOISIDLE(sender->getNickname(), serv->getClient(cmd[mask])));
 			sender->addToOutputBuffer(RPL_WHOISCHANNELS(sender->getNickname(), cmd[mask], serv->getClient(cmd[mask])));
 			sender->addToOutputBuffer(RPL_ENDOFWHOIS(sender->getNickname(), cmd[mask]));
 		}
@@ -50,8 +64,9 @@ void	whois(std::vector<std::string> cmd, Client* sender, Server* serv)
 	}
 }
 
-void	whowas(std::vector<std::string> cmd, Client* sender, Server* serv)
+void	whowas(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
 {
+	(void)serv; (void)cmd; (void)sender;
 	// (void)serv;
 	// int count;
 	// int i;

@@ -14,9 +14,10 @@ void	version(std::vector<std::string> cmd, Client* sender, Server* serv)
 
 void	stats(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
-	if (cmd.size() < 1)
+	// query pris en compte dans le code pour erreurs etc mais pas pour la réponse finale...
+	if (cmd.size() < 2)
 		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), "STATS"));
-	else if (cmd.size() == 1)
+	else if (cmd.size() == 2)
 	{
 		if (cmd[1].size() != 1 && cmd[1].compare(SERV_NAME))
 			sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "STATS", cmd[1]));
@@ -28,7 +29,7 @@ void	stats(std::vector<std::string> cmd, Client* sender, Server* serv)
 	}
 	else
 	{
-		if (!cmd[2].compare(SERV_NAME))
+		if (cmd[2].compare(SERV_NAME))
 			sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "STATS", cmd[2]));
 		else
 		{

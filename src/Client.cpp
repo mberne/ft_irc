@@ -2,7 +2,7 @@
 
 //~~ CONSTRUCTOR
 
-Client::Client(int sock) : _sock(sock), _mods(0), _password(false) {}
+Client::Client(int sock) : _sock(sock), _mods(0), _password(false), _connexionStartTime(time(NULL)) {}
 
 //~~ DESTRUCTOR
 
@@ -89,6 +89,21 @@ bool			Client::isInvisible() const
 void	Client::setPassword(bool proof)
 {
 	_password = proof;
+}
+
+time_t	Client::getConnexionStartTime() const
+{
+	return _connexionStartTime;
+}
+
+time_t			Client::getLastCmdTime() const
+{
+	return _lastCmdTime;
+}
+
+void			Client::setLastCmdTime()
+{
+	_lastCmdTime = time(NULL);
 }
 
 //~~ MODS

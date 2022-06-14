@@ -29,6 +29,7 @@
 # define RPL_LUSEROP(user, server)			PROMPT(" 252 ", user) + std::string(" ") + std::to_string(server->opsNumber()) + std::string(" :operator(s) online")
 # define RPL_LUSERUNKNOWN(user, server)		PROMPT(" 253 ", user) + std::string(" ") + std::to_string(server->nonRegisteredNumber()) + std::string(" :unknown connection(s)")
 # define RPL_LUSERCHANNELS(user, server)	PROMPT(" 254 ", user) + std::string(" ") + std::to_string(server->getAllChannels().size()) + std::string(":channels formed")
+# define RPL_LUSERME(user, server) 			PROMPT(" 255 ", user) + std::string(" :I have ") + std::to_string(server->getAllClients().size()) + std::string(" clients and 0 servers")
 
 // Lorsqu'il répond à un message ADMIN, un serveur doit renvoyer les réponses RLP_ADMINME à RPL_ADMINEMAIL et fournir un texte de message avec chacune.
 // Pour RPL_ADMINLOC1, on attend une description de la ville et de l'état où se trouve le serveur, suivie des détails de l'université et du département (RPL_ADMINLOC2), et finalement le contact administratif pour ce serveur (avec obligatoirement une adresse email) dans RPL_ADMINEMAIL.
@@ -46,7 +47,7 @@
 # define RPL_WHOISUSER(user, client)				PROMPT(" 311 ", user) + std::string(" ") + client->getNickname() + std::string(" ") + client->getUser() + std::string(" ") + client->getHost() + std::string(" * :") + client->getRealName()
 # define RPL_WHOISSERVER(user, nickname)			PROMPT(" 312 ", user) + std::string(" ") + nickname + std::string(" ") + SERV_NAME + std::string(" ") + SERV_INFO
 # define RPL_WHOISOPERATOR(user, nickname)			PROMPT(" 313 ", user) + std::string(" ") + nickname + std::string(" :is an IRC operator")
-# define RPL_WHOISIDLE(user, client) 				PROMPT(" 317 ", user) + std::string(" ") + client->getNickname() + std::string(" ") + std::to_string(client->getSeconds()) + std::string(" ") + std::to_string(client->getSignon()) + std::string(" :seconds idle, signon time")
+# define RPL_WHOISIDLE(user, client) 				PROMPT(" 317 ", user) + std::string(" ") + client->getNickname() + std::string(" ") + std::to_string(difftime(client->getLastCmdTime(), time(NULL))) + std::string(" ") + std::to_string(client->getConnexionStartTime()) + std::string(" :seconds idle, signon time")
 # define RPL_ENDOFWHOIS(user, nickname)				PROMPT(" 318 ", user) + std::string(" ") + nickname + std::string(" :End of /WHOIS list")
 # define RPL_WHOISCHANNELS(user, nickname, client)	PROMPT(" 319 ", user) + std::string(" ") + nickname + std::string(" :") + client->showChannelList()
 
@@ -67,7 +68,7 @@
 // La paire RPL_WHOREPLY et RPL_ENDOFWHO est utilisée en réponse à un message WHO.
 // Le RPL_WHOREPLY n'est envoyé que s'il y a une correspondance à la requête WHO.
 // S'il y a une liste de paramètres fournie avec le message WHO, un RPL_ENDOFWHO doit être envoyé après le traitement de chaque élément de la liste, <nom> étant l'élément.
-# define RPL_WHOREPLY(user, client)		PROMPT(" 352 ", user) + std::string(" ") + client->getLastChannelName() + std::string(" ") + client->getUser() + std::string(" ") + client->getHost() + std::string(" ") + SERV_NAME + std::string(" ") + client->getNickname() + std::string(" H") + (client->isOp() ? "*" : "" ) + (client->getChannel(client->getLastChannelName)->isOperator(client) ? "@" : (client->getChannel(client->getLastChannelName)->hasVoice(client) ? "+" : "")) + std::string(" :0 ") + client->getRealName()
+# define RPL_WHOREPLY(user, client)		PROMPT(" 352 ", user) + std::string(" ") + client->getLastChannelName() + std::string(" ") + client->getUser() + std::string(" ") + client->getHost() + std::string(" ") + SERV_NAME + std::string(" ") + client->getNickname() + std::string(" H") + (client->isOperator() ? "*" : "" ) + (client->getChannel(client->getLastChannelName())->isOperator(client) ? "@" : (client->getChannel(client->getLastChannelName())->hasVoice(client) ? "+" : "")) + std::string(" :0 ") + client->getRealName()
 # define RPL_ENDOFWHO(user, name)		PROMPT(" 315 ", user) + std::string(" ") + name + " :End of /WHO list"
 
 // Réponse du serveur indiquant les détails de sa version.
