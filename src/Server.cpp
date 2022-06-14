@@ -119,11 +119,8 @@ void	Server::removeClient(Client *src, std::vector<struct pollfd>::iterator it)
 		_oldClients.insert(std::make_pair(src->getNickname(), src));
 		_clientsByName.erase(src->getNickname());
 	}
-	else
-	{
-		delete src;
-		_clientsBySock.erase(it->fd);
-	}
+	delete src;
+	_clientsBySock.erase(it->fd);
 	close(it->fd);
 	_fds.erase(it);
 }
