@@ -41,17 +41,40 @@
 # define SERV_LOC2					"42 Lyon"
 # define PROMPT(num, user)			SERV_NAME + std::string(num) + user
 
-# define SUPPORTED_NICKNAME_CHAR	"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789{}[]-_`"
 // Server specifications
-# define MAX_PORT					65536
-# define CHANNEL_LIMIT				1000
-# define CLIENT_LIMIT				100
+// Required
+# define CASEMAPPING				"ascii"
+# define CHANLIMIT					10
+# define CHANMODES					"opsitnmlbvk"
+# define CHANNELLEN					50
+# define CHANTYPES					"#"
+# define ELIST //à faire
+# define EXECPTS
+# define EXTBAN
+# define HOSTLEN					10
+# define INVEX
+# define KICKLEN					256
+# define MAXLIST
+# define MAXTARGETS
+# define MODES
+# define NETWORK
+# define NICKLEN					20
+# define PREFIX
+# define SAFELIST
+# define SILENCE
+# define STATUSMSG
+# define TARGMAX
+# define TOPICLEN					400
+# define USERLEN					10
+// Others
+# define MESSAGELEN					512
+# define REALNAMELEN				50
+# define NICKNAME_CHARSET			"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+# define CRLF						std::string("\r\n")
 # define CHANNEL_LIMIT_PER_CLIENT	10
-# define MAX_NICKNAME_LENGTH		16
-# define MAX_CHANNEL_LENGTH			50
-# define MAX_TOPIC_LENGTH			390
-# define MAX_MESSAGE_LENGTH			512
-# define CRLF						"\r\n"
+# define CLIENT_LIMIT				100
+# define CHANNEL_LIMIT				1000
+# define MAX_PORT					65536
 # define MAX_TIME_AFK				300
 # define MAX_PING_TIME				60
 

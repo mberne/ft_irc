@@ -25,7 +25,7 @@ std::string		Client::getNickname() const
 void			Client::setNickname(std::string nickname)
 {
 	_oldNicknames.push_back(_nickname);
-	_nickname = nickname.substr(0, MAX_NICKNAME_LENGTH);
+	_nickname = nickname.substr(0, NICKLEN);
 }
 
 bool	Client::isOldNickname(std::string nickname)
@@ -76,7 +76,7 @@ bool	Client::isRegistered() const
 	return (_nickname.empty() == false && _user.empty() == false && _password == true);
 }
 
-bool			Client::isOperator() const
+bool			Client::isServOperator() const
 {
 	return ((_mods | CLIENT_FLAG_O) == _mods);
 }
@@ -140,7 +140,7 @@ std::string		Client::getMods() const
 
 	if (isInvisible() == true)
 		modsString += 'i';
-	if (isOperator() == true)
+	if (isServOperator() == true)
 		modsString += 'o';
 	return modsString;
 }
@@ -174,7 +174,7 @@ std::string		Client::getLastChannelName() const
 	if (!_channels.size())
 		return "*";
 	else
-		return _channels.at(0)->getName();
+		return _channels.begin()->second->getName();
 }
 
 std::string		Client::showChannelList()
@@ -207,7 +207,7 @@ std::string &	Client::getInputBuffer()
 	return _inputBuffer;
 }
 
-void			Client::addToInputBuffer(char* buf)
+void			Client::addToInputBuffer(const char* buf)
 {
 	_inputBuffer += buf;
 }
@@ -219,7 +219,7 @@ const char*	Client::getOutputBuffer() const
 
 void	Client::addToOutputBuffer(std::string output)
 {
-	_outputBuffer += output;
+	_outputBuffer += (output + "\n");
 }
 
 void	Client::clearOutputBuffer()

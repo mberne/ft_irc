@@ -33,7 +33,7 @@ class Client
 		void			setRealName(std::string realName);
 		std::string		getPrefix() const;
 		bool			isRegistered() const;						// Return true if the client used the registrations commands (PASS, NICK, USER)
-		bool			isOperator() const;
+		bool			isServOperator() const;
 		bool			isInvisible() const;
 		void			setPassword(bool proof);
 		time_t			getConnexionStartTime() const;
@@ -56,7 +56,7 @@ class Client
 
 		// BUFFER
 		std::string &	getInputBuffer();
-		void			addToInputBuffer(char* buf);		// Append the string sent as parameter to the output buffer
+		void			addToInputBuffer(const char* buf);			// Append the string sent as parameter to the output buffer
 		char const *	getOutputBuffer() const;
 		void			addToOutputBuffer(std::string output);		// Append the string sent as parameter to the output buffer
 		void			clearOutputBuffer();						// Clear the output buffer
