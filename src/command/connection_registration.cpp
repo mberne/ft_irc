@@ -2,12 +2,15 @@
 
 void	pass(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
-	if (cmd.size() < 2)
-		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
-	else if (sender->isRegistered())
+	if (sender->isRegistered() == true)
 		sender->addToOutputBuffer(ERR_ALREADYREGISTRED(sender->getNickname(), cmd[0]));
-	else if (!cmd[1].compare(serv->getPassword()))
+	else if (cmd.size() < 2)
+		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
+	else if (cmd[1].compare(serv->getPassword()))
+	{
 		sender->addToOutputBuffer(ERR_PASSWDMISMATCH(sender->getNickname(), cmd[0]));
+		sender->setPassword(false);
+	}
 	else
 		sender->setPassword(true);
 }
@@ -19,9 +22,9 @@ void	nick(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
 		sender->addToOutputBuffer(ERR_NONICKNAMEGIVEN(sender->getNickname(), cmd[0]));
 		return;
 	}
-	if (cmd[1].size() > MAX_NICKNAME_LENGTH)
-		cmd[1] = cmd[1].substr(0, MAX_NICKNAME_LENGTH);
-	if (cmd[1].find_first_of(SUPPORTED_NICKNAME_CHAR) != std::string::npos)
+	if (cmd[1].size() > NICKLEN)
+		cmd[1] = cmd[1].substr(0, NICKLEN);
+	if (cmd[1].find_first_not_of(NICKNAME_CHARSET) != std::string::npos)
 		sender->addToOutputBuffer(ERR_ERRONEUSNICKNAME(sender->getNickname(), cmd[0], cmd[1]));
 	else if (serv->getAllClients().find(cmd[1]) != serv->getAllClients().end())
 		sender->addToOutputBuffer(ERR_NICKNAMEINUSE(sender->getNickname(), cmd[0], cmd[1]));
@@ -32,6 +35,8 @@ void	nick(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
 			std::string		reply = sender->getPrefix() + " " + cmd[0] + " " + cmd[1];
 			sender->addToOutputBuffer(reply);
 			sender->sendToAllChannels(reply);
+			serv->getAllClients().erase(sender->getNickname());
+			serv->getAllClients().insert(std::make_pair(cmd[1], sender));
 		}
 		sender->setNickname(cmd[1]);
 	}
@@ -39,7 +44,20 @@ void	nick(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
 
 void	user(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
 {
-	(void)cmd; (void)sender; (void)serv;
+	(void)serv;
+	if (sender->isRegistered() == true)
+		sender->addToOutputBuffer(ERR_ALREADYREGISTRED(sender->getNickname(), cmd[0]));
+	else if (cmd.size() < 5)
+		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
+	else
+	{
+		if (cmd[1].size() > USERLEN)
+			cmd[1] = cmd[1].substr(0, USERLEN);
+		if (cmd[4].size() > REALNAMELEN)
+			cmd[4] = cmd[4].substr(0, REALNAMELEN);
+		sender->setUser("~" + cmd[1]);
+		sender->setRealName(cmd[4]);
+	}
 }
 
 void	oper(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
