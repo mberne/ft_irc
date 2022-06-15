@@ -32,7 +32,9 @@ INC			=	ircserv.hpp		\
 				Server.hpp		\
 				Client.hpp		\
 				Channel.hpp		\
-				Command.hpp
+				Command.hpp		\
+				replies.hpp		\
+				errors.hpp
 
 #~~~~ Macros ~~~~#
 
