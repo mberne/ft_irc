@@ -62,7 +62,23 @@ void	user(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
 
 void	oper(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
 {
-	(void)cmd; (void)sender; (void)serv;
+	if (cmd.size() < 3)
+		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
+	else if (cmd[1].compare(OPERATOR_USER))
+	{
+		sender->addToOutputBuffer(ERR_NOOPERHOST(sender->getNickname(), cmd[0]));
+		sender->removeMods("o");
+	}
+	else if (cmd[2].compare(OPERATOR_PASSWORD))
+	{
+		sender->addToOutputBuffer(ERR_PASSWDMISMATCH(sender->getNickname(), cmd[0]));
+		sender->removeMods("o");
+	}
+	else
+	{
+		sender->addMods("o");
+		sender->addToOutputBuffer(RPL_YOUREOPER(sender->getNickname()));
+	}
 }
 
 void	quit(std::vector<std::string> cmd, Client* sender, Server* serv) // mberne
