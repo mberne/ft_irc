@@ -48,7 +48,7 @@
 # define CHANMODES					"opsitnmlbvk"
 # define CHANNELLEN					50
 # define CHANTYPES					"#"
-# define ELIST //à faire
+# define ELIST
 # define EXECPTS
 # define EXTBAN
 # define HOSTLEN					10
@@ -77,6 +77,8 @@
 # define MAX_PORT					65536
 # define MAX_TIME_AFK				300
 # define MAX_PING_TIME				60
+# define OPERATOR_USER				"p1k13p13"
+# define OPERATOR_PASSWORD			"*_*SEGFAULT_11"
 
 /*** ~~ CLASSES ~~ ***/
 
