@@ -3,7 +3,7 @@
 void	version(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	(void)serv;
-	if (cmd.size() < 3 && cmd[1].compare(SERV_NAME))
+	if (cmd.size() > 1 && cmd[1].compare(SERV_NAME))
 		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "VERSION", cmd[1]));
 	else
 	{
@@ -42,7 +42,7 @@ void	stats(std::vector<std::string> cmd, Client* sender, Server* serv)
 
 void	time(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
-	if (cmd.size() < 3 && cmd[1].compare(SERV_NAME))
+	if (cmd.size() == 2 && cmd[1].compare(SERV_NAME))
 		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "TIME", cmd[1]));
 	else
 		sender->addToOutputBuffer(RPL_TIME(sender->getNickname(), serv->currentTime()));
@@ -51,7 +51,7 @@ void	time(std::vector<std::string> cmd, Client* sender, Server* serv)
 void	admin(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	(void)serv;
-	if (cmd.size() < 3 && cmd[1].compare(SERV_NAME))
+	if (cmd.size() == 2 && cmd[1].compare(SERV_NAME))
 		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "ADMIN", cmd[1]));
 	else
 	{
@@ -65,7 +65,7 @@ void	admin(std::vector<std::string> cmd, Client* sender, Server* serv)
 void	info(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	(void)serv;
-	if (cmd.size() < 3 && cmd[1].compare(SERV_NAME))
+	if (cmd.size() == 2 && cmd[1].compare(SERV_NAME))
 		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "INFO", cmd[1]));
 	else
 	{
@@ -92,12 +92,12 @@ void	lusers(std::vector<std::string> cmd, Client* sender, Server* serv)
 void	motd(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	(void)serv;
-	if (cmd.size() < 3 && cmd[1].compare(SERV_NAME))
+	if (cmd.size() == 2 && cmd[1].compare(SERV_NAME))
 		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "VERSION", cmd[1]));
 	else
 	{
-		sender->addToOutputBuffer(RPL_MOTD(sender->getNickname()));
 		sender->addToOutputBuffer(RPL_MOTDSTART(sender->getNickname()));
+		sender->addToOutputBuffer(RPL_MOTD(sender->getNickname()));
 		sender->addToOutputBuffer(RPL_ENDOFMOTD(sender->getNickname()));
 	}
 }

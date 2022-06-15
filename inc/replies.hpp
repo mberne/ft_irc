@@ -28,7 +28,7 @@
 # define RPL_LUSERCLIENT(user, server)		PROMPT(" 251 ", user) + std::string(" :There are ") + std::to_string(server->getAllClients().size()) + std::string(" users")
 # define RPL_LUSEROP(user, server)			PROMPT(" 252 ", user) + std::string(" ") + std::to_string(server->opsNumber()) + std::string(" :operator(s) online")
 # define RPL_LUSERUNKNOWN(user, server)		PROMPT(" 253 ", user) + std::string(" ") + std::to_string(server->nonRegisteredNumber()) + std::string(" :unknown connection(s)")
-# define RPL_LUSERCHANNELS(user, server)	PROMPT(" 254 ", user) + std::string(" ") + std::to_string(server->getAllChannels().size()) + std::string(":channels formed")
+# define RPL_LUSERCHANNELS(user, server)	PROMPT(" 254 ", user) + std::string(" ") + std::to_string(server->getAllChannels().size()) + std::string(" :channels formed")
 # define RPL_LUSERME(user, server) 			PROMPT(" 255 ", user) + std::string(" :I have ") + std::to_string(server->getAllClients().size()) + std::string(" clients and 0 servers")
 
 // Lorsqu'il répond à un message ADMIN, un serveur doit renvoyer les réponses RLP_ADMINME à RPL_ADMINEMAIL et fournir un texte de message avec chacune.
@@ -98,7 +98,7 @@
 # define RPL_ENDOFINFO(user)	PROMPT(" 374 ", user) + std::string(" :End of /INFO list")
 
 // MOTD (Message Of The Day)
-# define RPL_MOTD(user)			PROMPT(" 372 ", user) + std::string(" : WELCOME to Potatoe's Land !")
+# define RPL_MOTD(user)			PROMPT(" 372 ", user) + std::string(" :WELCOME to Potatoe's Land !")
 # define RPL_MOTDSTART(user)	PROMPT(" 375 ", user) + std::string(" :- ") + SERV_NAME + std::string(" Message of the day - ")
 # define RPL_ENDOFMOTD(user)	PROMPT(" 376 ", user) + std::string(" :End of /MOTD command.")
 
@@ -108,6 +108,6 @@
 // Lorsqu'il répond à un message TIME, un serveur doit répondre en utilisant le format RPL_TIME.
 // La chaîne montrant l'heure ne doit contenir que le jour et l'heure corrects.
 // Il n'y a pas d'obligation supplémentaire.
-# define RPL_TIME(user, currentTime)	PROMPT(" 391 ", user) + std::string(" ") + SERV_NAME + std::string(":") + currentTime
+# define RPL_TIME(user, currentTime)	PROMPT(" 391 ", user) + std::string(" ") + SERV_NAME + std::string(" :") + currentTime
 
 #endif

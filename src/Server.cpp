@@ -49,15 +49,15 @@ void		Server::initSupportedCommands()
 	_cmdList.push_back(Command("TIME",		1, &time));
 	_cmdList.push_back(Command("ADMIN",		1, &admin));
 	_cmdList.push_back(Command("INFO",		1, &info));
+	_cmdList.push_back(Command("LUSERS",	0, &lusers));
+	_cmdList.push_back(Command("MOTD",		0, &motd));
 	_cmdList.push_back(Command("PRIVMSG",	3, &privmsg));
 	_cmdList.push_back(Command("NOTICE",	3, &notice));
 	_cmdList.push_back(Command("WHO",		1, &who));
 	_cmdList.push_back(Command("WHOIS",		2, &whois));
 	_cmdList.push_back(Command("WHOWAS",	2, &whowas));
 	_cmdList.push_back(Command("KILL",		3, &kill));
-	// _cmdList.push_back(Command("PING",		2, &ping));
 	_cmdList.push_back(Command("PONG",		2, &pong));
-	// _cmdList.push_back(Command("ERROR",		2, &error));
 }
 
 //~~ DESTRUCTOR
@@ -300,11 +300,10 @@ void	Server::stop(int status)
 
 std::string	Server::currentTime()
 {
-	struct tm	*timeinfo;
-	time_t		time;
+	time_t	currentTime;
 	
-	timeinfo = localtime(&time);
-	return asctime(timeinfo);
+	currentTime = time(NULL);
+	return asctime(localtime(&currentTime));
 }
 
 int	Server::opsNumber()
@@ -322,7 +321,7 @@ int	Server::nonRegisteredNumber()
 	int	num = 0;
 
 	for(std::map<std::string, Client*>::iterator it = _clientsByName.begin(); it != _clientsByName.end(); ++it)
-		if (it->second->isRegistered())
+		if (!(it->second->isRegistered()))
 			num++;
 	return (num);
 }
