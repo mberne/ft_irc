@@ -1,32 +1,17 @@
 #include "ircserv.hpp"
 
-void	parseJoinCommand(std::vector<std::string> cmd, std::vector<std::string>& cmdChannels, std::vector<std::string>& cmdPasswords)
+void	parseArg(std::string cmdArg, std::vector<std::string>& argList)
 {
-	std::vector<std::string>	newcmd;
-	size_t						commaPos = cmd[1].find(',');
+	size_t						commaPos = cmdArg.find(',');
 	size_t						tmp = 0;
 
 	while (commaPos != std::string::npos)
 	{
-		cmdChannels.push_back(cmd[1].substr(tmp, commaPos - tmp));
+		argList.push_back(cmdArg.substr(tmp, commaPos - tmp));
 		tmp = commaPos + 1;
-		commaPos = cmd[1].find(',', tmp);
+		commaPos = cmdArg.find(',', tmp);
 	}
-	cmdChannels.push_back(cmd[1].substr(tmp, cmd[1].size() - tmp));
-	commaPos =cmd[2].find(',');
-	tmp = 0;
-	while (commaPos != std::string::npos || cmdPasswords.size() < cmdChannels.size())
-	{
-		if (commaPos == std::string::npos)
-			cmdPasswords.push_back("");
-		else
-		{
-			cmdPasswords.push_back(cmd[2].substr(tmp, commaPos - tmp));
-			tmp = commaPos + 1;
-			commaPos = cmd[2].find(',', tmp);
-		}
-	}
-	cmdPasswords.push_back(cmd[2].substr(tmp, cmd[2].size() - tmp));
+	argList.push_back(cmdArg.substr(tmp, cmdArg.size() - tmp));
 }
 
 void	irc_join(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
@@ -34,55 +19,58 @@ void	irc_join(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 	if (cmd.size() < 2)
 		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
 	else if (!cmd[1].compare("0"))
-		sender->leaveAllChannels();
+		sender->leaveAllChannels(serv);
 	else
 	{
-		std::vector<std::string>	cmdChannels, cmdPasswords;
+		std::vector<std::string>	channels, password;
 
-		parseJoinCommand(cmd, cmdChannels, cmdPasswords);
-		for(size_t i = 0; i < cmdChannels.size(); i++)
+		parseArg(cmd[1], channels);
+		parseArg(cmd[2], password);
+		while (password.size() < channels.size())
+			password.push_back("");
+		for(size_t i = 0; i < channels.size(); i++)
 		{
-			if (cmdChannels[i].size() > CHANNELLEN)
-				cmdChannels[i] = cmdChannels[i].substr(0, CHANNELLEN);
-			Channel* channel = serv->getChannel(cmdChannels[i]);
+			if (channels[i].size() > CHANNELLEN)
+				channels[i] = channels[i].substr(0, CHANNELLEN);
+			Channel* current = serv->getChannel(channels[i]);
 
-			if (cmdChannels[i][0] != '#')
-				sender->addToOutputBuffer(ERR_NOSUCHCHANNEL(sender->getNickname(), cmd[0], cmdChannels[i]));
+			if (channels[i][0] != '#')
+				sender->addToOutputBuffer(ERR_NOSUCHCHANNEL(sender->getNickname(), cmd[0], channels[i]));
 			else if (sender->getNumberOfChannels() >= CHANLIMIT)
 			{
-				sender->addToOutputBuffer(ERR_TOOMANYCHANNELS(sender->getNickname(), cmd[0], cmdChannels[i]));
+				sender->addToOutputBuffer(ERR_TOOMANYCHANNELS(sender->getNickname(), cmd[0], channels[i]));
 				return;	
 			}
-			else if (!channel)
+			else if (!current)
 			{
-				channel = serv->newChannel(cmdChannels[i], sender);
-				sender->joinChannel(channel);
-				sender->addToOutputBuffer(sender->getPrefix() + " " + cmd[0] + " " + cmdChannels[i]);
-				if (channel->hasTopic() == true)
-					sender->addToOutputBuffer(RPL_TOPIC(sender->getNickname(), channel));
-				sender->addToOutputBuffer(RPL_NAMREPLY(sender->getNickname(), channel));
-				sender->addToOutputBuffer(RPL_ENDOFNAMES(sender->getNickname(), channel->getName()));
+				current = serv->newChannel(channels[i], sender);
+				sender->joinChannel(current);
+				sender->addToOutputBuffer(sender->getPrefix() + " " + cmd[0] + " " + channels[i]);
+				if (current->hasTopic() == true)
+					sender->addToOutputBuffer(RPL_TOPIC(sender->getNickname(), current));
+				sender->addToOutputBuffer(RPL_NAMREPLY(sender->getNickname(), current));
+				sender->addToOutputBuffer(RPL_ENDOFNAMES(sender->getNickname(), channels[i]));
 			}
-			else if (!channel->getPassword().empty())
+			else if (!current->getPassword().empty())
 			{
-				if (channel->getPassword().compare(cmdPasswords[i]))
-					sender->addToOutputBuffer(ERR_BADCHANNELKEY(sender->getNickname(), cmd[0], cmdChannels[i]));
+				if (current->getPassword().compare(password[i]))
+					sender->addToOutputBuffer(ERR_BADCHANNELKEY(sender->getNickname(), cmd[0], channels[i]));
 			}
-			else if (channel->isBanned(sender))
-				sender->addToOutputBuffer(ERR_BANNEDFROMCHAN(sender->getNickname(), cmd[0], cmdChannels[i]));
-			else if (!channel->isInvited(sender))
-				sender->addToOutputBuffer(ERR_INVITEONLYCHAN(sender->getNickname(), cmd[0], cmdChannels[i]));
-			else if (channel->clientCount() >= channel->getUserLimit())
-				sender->addToOutputBuffer(ERR_CHANNELISFULL(sender->getNickname(), cmd[0], cmdChannels[i]));
+			else if (current->isBanned(sender))
+				sender->addToOutputBuffer(ERR_BANNEDFROMCHAN(sender->getNickname(), cmd[0], channels[i]));
+			else if (!current->isInvited(sender))
+				sender->addToOutputBuffer(ERR_INVITEONLYCHAN(sender->getNickname(), cmd[0], channels[i]));
+			else if (current->clientCount() >= current->getUserLimit())
+				sender->addToOutputBuffer(ERR_CHANNELISFULL(sender->getNickname(), cmd[0], channels[i]));
 			// ERR_BADCHANMASK
 			else
 			{
-				sender->joinChannel(channel);
-				channel->sendToClients(sender->getPrefix() + " " + cmd[0] + " " + cmdChannels[i]);
-				if (channel->hasTopic() == true)
-					sender->addToOutputBuffer(RPL_TOPIC(sender->getNickname(), channel));
-				sender->addToOutputBuffer(RPL_NAMREPLY(sender->getNickname(), channel));
-				sender->addToOutputBuffer(RPL_ENDOFNAMES(sender->getNickname(), channel->getName()));
+				sender->joinChannel(current);
+				current->sendToClients(sender->getPrefix() + " " + cmd[0] + " " + channels[i]);
+				if (current->hasTopic() == true)
+					sender->addToOutputBuffer(RPL_TOPIC(sender->getNickname(), current));
+				sender->addToOutputBuffer(RPL_NAMREPLY(sender->getNickname(), current));
+				sender->addToOutputBuffer(RPL_ENDOFNAMES(sender->getNickname(), channels[i]));
 			}
 		}
 	}
@@ -90,7 +78,28 @@ void	irc_join(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 
 void	irc_part(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
 {
-	(void)cmd; (void)sender; (void)serv;
+	if (cmd.size() < 2)
+		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
+	else
+	{
+		std::vector<std::string>	channels;
+
+		parseArg(cmd[1], channels);
+		for(size_t i = 0; i < channels.size(); i++)
+		{
+			Channel* current = serv->getChannel(channels[i]);
+
+			if (current == NULL)
+				sender->addToOutputBuffer(ERR_NOSUCHCHANNEL(sender->getNickname(), cmd[0], channels[i]));
+			else if (current->getClient(sender->getNickname()) == NULL)
+				sender->addToOutputBuffer(ERR_NOTONCHANNEL(sender->getNickname(), cmd[0], channels[i]));
+			else
+			{
+				current->sendToClients(sender->getPrefix() + " " + cmd[0] + " " + channels[i] + (cmd.size() > 2 ? " " + cmd[2] : "" ));
+				sender->leaveChannel(current);
+			}
+		}
+	}
 }
 
 void	irc_mode(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
