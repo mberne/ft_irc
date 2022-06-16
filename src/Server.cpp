@@ -310,7 +310,7 @@ void		Server::executeCommand(std::vector<std::string>	cmdArgs, Client* sender)
 		if (_clientsByName.find(sender->getNickname()) == _clientsByName.end() && sender->isRegistered() == true)
 		{
 			_clientsByName.insert(std::make_pair(sender->getNickname(), sender));
-			sendWelcome(sender, this);
+			sendWelcome(sender);
 		}
 		else if (_clientsByName.find(sender->getNickname()) != _clientsByName.end() && _clientsByName.find(sender->getNickname())->second != sender)
 		{
@@ -343,4 +343,24 @@ void	Server::removeClient(Client *src)
 	close(it->fd);
 	_fdList.erase(it);
 	delete src;
+}
+
+void	Server::sendWelcome(Client* sender)
+{
+	std::string name = sender->getNickname();
+
+	sender->addToOutputBuffer(RPL_WELCOME(name));
+	sender->addToOutputBuffer(RPL_YOURHOST(name));
+	sender->addToOutputBuffer(RPL_CREATED(name));
+	sender->addToOutputBuffer(RPL_MYINFO(name));
+	sender->addToOutputBuffer(RPL_ISUPPORT(name));
+	sender->addToOutputBuffer(RPL_LUSERCLIENT(name, this));
+	sender->addToOutputBuffer(RPL_LUSEROP(name, this));
+	sender->addToOutputBuffer(RPL_LUSERUNKNOWN(name, this));
+	sender->addToOutputBuffer(RPL_LUSERCHANNELS(name, this));
+	sender->addToOutputBuffer(RPL_LUSERME(name, this));
+	sender->addToOutputBuffer(RPL_MOTDSTART(name));
+	sender->addToOutputBuffer(RPL_MOTD(name));
+	sender->addToOutputBuffer(RPL_ENDOFMOTD(name));
+	sender->addToOutputBuffer(RPL_UMODEIS(name, sender));
 }

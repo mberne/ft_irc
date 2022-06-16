@@ -62,6 +62,7 @@ class Server
 		void		executeCommand(std::vector<std::string>	cmd, Client* sender);
 		void		addClient(int sock);
 		void		removeClient(Client *src);
+		void		sendWelcome(Client* sender);
 };
 
 #endif //~~ SERVER_H

@@ -89,22 +89,3 @@ void	irc_quit(std::vector<std::string> cmd, Client* sender, Server* serv) // mbe
 }
 
 // pas une commande, mais à envoyer une fois que le client est correctement connecté (pass, nick, user)
-void	sendWelcome(Client* sender, Server* serv)
-{
-	std::string name = sender->getNickname();
-
-	sender->addToOutputBuffer(RPL_WELCOME(name));
-	sender->addToOutputBuffer(RPL_YOURHOST(name));
-	sender->addToOutputBuffer(RPL_CREATED(name));
-	sender->addToOutputBuffer(RPL_MYINFO(name));
-	sender->addToOutputBuffer(RPL_ISUPPORT(name));
-	sender->addToOutputBuffer(RPL_LUSERCLIENT(name, serv));
-	sender->addToOutputBuffer(RPL_LUSEROP(name, serv));
-	sender->addToOutputBuffer(RPL_LUSERUNKNOWN(name, serv));
-	sender->addToOutputBuffer(RPL_LUSERCHANNELS(name, serv));
-	sender->addToOutputBuffer(RPL_LUSERME(name, serv));
-	sender->addToOutputBuffer(RPL_MOTDSTART(name));
-	sender->addToOutputBuffer(RPL_MOTD(name));
-	sender->addToOutputBuffer(RPL_ENDOFMOTD(name));
-	sender->addToOutputBuffer(RPL_UMODEIS(name, sender));
-}
