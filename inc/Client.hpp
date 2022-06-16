@@ -48,6 +48,7 @@ class Client
 		// CHANNEL
 		void			joinChannel(Channel* channel);				// Add the Channel sent as paramater to the _channels map
 		void			leaveChannel(Channel* channel);				// Remove the Channel sent as paramater from the _channels map
+		void			leaveAllChannels();
 		Channel*		getChannel(std::string name) const;
 		int				getNumberOfChannels() const;
 		std::string		getLastChannelName() const;

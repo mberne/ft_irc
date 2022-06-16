@@ -52,7 +52,7 @@ class Channel
 		int				clientCount() const;
 		int				getUserLimit() const;
 		bool			isModerated() const;
-		bool			isInvite() const;
+		bool			isInvited(Client* client) const;
 		bool			nonMembersCanTalk() const;
 		bool			isPrivate() const;
 		bool			isSecret() const;
@@ -70,6 +70,7 @@ class Channel
 		// CLIENTS
 		void			addClient(Client* client);				// Add the Client to the channel
 		void			removeClient(Client* client);			// Remove the Client from the channel
+		Client*			getClient(std::string name) const;
 		bool			isConnected(Client* client) const;
 		bool			isOperator(Client* client) const;
 		bool			hasVoice(Client* client) const;			// Return true if the client has voice permission
@@ -90,6 +91,7 @@ class Channel
 		std::map<std::string, Client*>		_clients;				// List of clients connected to the channel
 		std::map<std::string, Client*>		_operators;				// List of channel's operators
 		std::map<std::string, Client*>		_clientsWithVoicePerm;	// List of clients with voice permission on (only if flag m is on)
+		std::map<std::string, Client*>		_invitedClients;		// List of clients that are invited to the channel
 		std::map<std::string, BanMask>		_banList;				// List of ban masks
 };
 

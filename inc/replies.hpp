@@ -11,7 +11,7 @@
 # define RPL_ISUPPORT(user)		PROMPT(" 005 ", user) + std::string(" MAX_PORT=") + std::to_string(MAX_PORT) + \
 														std::string(" CHANNEL_LIMIT=") + std::to_string(CHANNEL_LIMIT) + \
 														std::string(" CLIENT_LIMIT=") + std::to_string(CLIENT_LIMIT) + \
-														std::string(" CHANNEL_LIMIT_PER_CLIENT=") + std::to_string(CHANNEL_LIMIT_PER_CLIENT) + \
+														std::string(" CHANLIMIT=") + std::to_string(CHANLIMIT) + \
 														std::string(" NICKLEN=") + std::to_string(NICKLEN) + \
 														std::string(" CHANNELLEN=") + std::to_string(CHANNELLEN) + \
 														std::string(" TOPICLEN=") + std::to_string(TOPICLEN) + \
@@ -79,7 +79,7 @@
 // En réponse à un message NAMES, une paire consistant de RPL_NAMREPLY et RPL_ENDOFNAMES est renvoyée par le serveur au client.
 // S'il n'y a pas de canal résultant de la requête, seul RPL_ENDOFNAMES est retourné.
 // L'exception à cela est lorsqu'un message NAMES est envoyé sans paramètre et que tous les canaux et contenus visibles sont renvoyés en une suite de message RPL_NAMEREPLY avec un RPL_ENDOFNAMES indiquant la fin.
-# define RPL_NAMREPLY(user, channel)	PROMPT(" 353 ", user) + std::string(" ") + channel->getName() + std::string(" :") + channel->showClientList()
+# define RPL_NAMREPLY(user, channel)	PROMPT(" 353 ", user) + std::string(" ") + channel->getName() + std::string(" :") + channel->showClientsList()
 # define RPL_ENDOFNAMES(user, name)		PROMPT(" 366 ", user) + std::string(" ") + name + std::string(" :End of /NAMES list")
 
 // Lorsqu'il répond à un message WHOWAS, un serveur doit utiliser RPL_WHOWASUSER, RPL_WHOISSERVER ou ERR_WASNOSUCHNICK pour chacun des pseudonymes de la liste fournie.

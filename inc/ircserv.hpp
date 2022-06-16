@@ -71,7 +71,6 @@
 # define REALNAMELEN				50
 # define NICKNAME_CHARSET			"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 # define CRLF						std::string("\r\n")
-# define CHANNEL_LIMIT_PER_CLIENT	10
 # define CLIENT_LIMIT				100
 # define CHANNEL_LIMIT				1000
 # define MAX_PORT					65536
@@ -79,6 +78,7 @@
 # define MAX_PING_TIME				60
 # define OPERATOR_USER				"p1k13p13"
 # define OPERATOR_PASSWORD			"*_*SEGFAULT_11"
+# define CLIENT_LIMIT_PER_CHANNEL	100
 
 /*** ~~ CLASSES ~~ ***/
 

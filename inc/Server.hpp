@@ -28,6 +28,7 @@ class Server
 		std::string	currentTime();
 		int			opsNumber();
 		int			nonRegisteredNumber();
+		Channel*	newChannel(std::string name, Client* founder);
 	
 	private:
 

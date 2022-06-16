@@ -8,7 +8,7 @@ BanMask::BanMask(std::string banMask, size_t firstSepPos, size_t secondSepPos) :
 				_ident(banMask.substr(firstSepPos + 1, secondSepPos - firstSepPos - 1)), \
 				_host(banMask.substr(secondSepPos + 1, banMask.size() - secondSepPos - 1)) {}
 
-Channel::Channel(std::string name) : _name(name), _userLimit(-1), _mods(0) {}
+Channel::Channel(std::string name) : _name(name), _userLimit(CLIENT_LIMIT_PER_CHANNEL), _mods(0) {}
 
 //~~ DESTRUCTOR
 
@@ -48,9 +48,9 @@ bool			Channel::isModerated() const
 	return ((_mods | CHANNEL_FLAG_M) == _mods);
 }
 
-bool			Channel::isInvite() const
+bool			Channel::isInvited(Client* client) const
 {
-	return ((_mods | CHANNEL_FLAG_I) == _mods);
+	return ((_mods | CHANNEL_FLAG_I) != _mods || _invitedClients.find(client->getNickname()) != _invitedClients.end());
 }
 
 bool			Channel::nonMembersCanTalk() const
@@ -130,17 +130,17 @@ std::string		Channel::getMods() const
 {
 	std::string modsString("+");
 
-	if (isPrivate() == true)
+	if ((_mods | CHANNEL_FLAG_P) == _mods)
 		modsString += 'p';
-	if (isSecret() == true)
+	if ((_mods | CHANNEL_FLAG_S) == _mods)
 		modsString += 's';
-	if (isInvite() == true)
+	if ((_mods | CHANNEL_FLAG_I) == _mods)
 		modsString += 'i';
-	if (hasTopic() == true)
+	if ((_mods | CHANNEL_FLAG_T) == _mods)
 		modsString += 't';
-	if (nonMembersCanTalk() == true)
+	if ((_mods | CHANNEL_FLAG_N) == _mods)
 		modsString += 'n';
-	if (isModerated() == true)
+	if ((_mods | CHANNEL_FLAG_M) == _mods)
 		modsString += 'm';
 	return modsString;
 }
@@ -179,13 +179,24 @@ void			Channel::removeBanMask(std::string banMask)
 
 void			Channel::addClient(Client* client)
 {
-	// Error handling needed!
 	_clients.insert(std::make_pair(client->getNickname(), client));
+	if (client->getChannel(_name) == NULL)
+		client->joinChannel(this);
 }
 
 void			Channel::removeClient(Client* client)
 {
 	_clients.erase(client->getNickname());
+	if (client->getChannel(_name) != NULL)
+		client->leaveChannel(this);
+}
+
+Client*			Channel::getClient(std::string name) const
+{
+	if (_clients.find(name) == _clients.end())
+		return (NULL);
+	else
+		return (_clients.find(name)->second);
 }
 
 bool			Channel::isConnected(Client* client) const

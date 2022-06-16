@@ -88,7 +88,10 @@ Client*		Server::getClient(std::string name) const
 
 Channel*	Server::getChannel(std::string name) const
 {
-	return _channels.find(name)->second;
+	if (_channels.find(name) == _channels.end())
+		return (NULL);
+	else
+		return (_channels.find(name)->second);
 }
 
 std::map<std::string, Client*> &	Server::getAllClients()
@@ -324,4 +327,12 @@ int	Server::nonRegisteredNumber()
 		if (!(it->second->isRegistered()))
 			num++;
 	return (num);
+}
+
+Channel*	Server::newChannel(std::string name, Client* founder)
+{
+	Channel* channel = new Channel(name);
+	_channels.insert(std::make_pair(name, channel));
+	channel->addOperator(founder);
+	return channel;
 }

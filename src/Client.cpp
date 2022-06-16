@@ -149,19 +149,30 @@ std::string		Client::getMods() const
 
 void	Client::joinChannel(Channel* channel)	
 {
-	// Error handling needed!
 	_channels.insert(std::make_pair(channel->getName(), channel));
+	if (channel->getClient(_nickname) == NULL)
+		channel->addClient(this);
 }
 
 void	Client::leaveChannel(Channel* channel)	
 {
-	// Error handling needed!
 	_channels.erase(channel->getName());
+	if (channel->getClient(_nickname) != NULL)
+		channel->removeClient(this);
+}
+
+void		Client::leaveAllChannels()
+{
+	for(std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); it++)
+		leaveChannel(it->second);
 }
 
 Channel*	Client::getChannel(std::string name) const
 {
-	return _channels.find(name)->second;
+	if (_channels.find(name) == _channels.end())
+		return (NULL);
+	else
+		return (_channels.find(name)->second);
 }
 
 int				Client::getNumberOfChannels() const
