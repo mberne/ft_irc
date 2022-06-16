@@ -1,6 +1,6 @@
 #include "ircserv.hpp"
 
-void	pass(std::vector<std::string> cmd, Client* sender, Server* serv)
+void	irc_pass(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	if (sender->isRegistered() == true)
 		sender->addToOutputBuffer(ERR_ALREADYREGISTRED(sender->getNickname(), cmd[0]));
@@ -16,7 +16,7 @@ void	pass(std::vector<std::string> cmd, Client* sender, Server* serv)
 		sender->setPassword(true);
 }
 
-void	nick(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
+void	irc_nick(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
 {
 	if (cmd.size() < 2)
 		sender->addToOutputBuffer(ERR_NONICKNAMEGIVEN(sender->getNickname(), cmd[0]));
@@ -43,7 +43,7 @@ void	nick(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
 	}
 }
 
-void	user(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
+void	irc_user(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
 {
 	(void)serv;
 	if (sender->isRegistered() == true)
@@ -61,7 +61,7 @@ void	user(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
 	}
 }
 
-void	oper(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
+void	irc_oper(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
 {
 	(void)serv;
 	if (cmd.size() < 3)
@@ -83,7 +83,7 @@ void	oper(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
 	}
 }
 
-void	quit(std::vector<std::string> cmd, Client* sender, Server* serv) // mberne
+void	irc_quit(std::vector<std::string> cmd, Client* sender, Server* serv) // mberne
 {
 	(void)cmd; (void)sender; (void)serv;
 }

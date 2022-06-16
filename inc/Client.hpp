@@ -65,7 +65,7 @@ class Client
 
 	private:
 
-		int									_sock;					// Socket of the client
+		int									_fd;					// Socket of the client
 		std::string							_nickname;				// Unique nickname
 		std::vector<std::string>			_oldNicknames;			// List of the old nicknames of the user
 		std::string							_user;					// The username of the client on that host

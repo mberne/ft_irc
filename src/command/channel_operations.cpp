@@ -29,7 +29,7 @@ void	parseJoinCommand(std::vector<std::string> cmd, std::vector<std::string>& cm
 	cmdPasswords.push_back(cmd[2].substr(tmp, cmd[2].size() - tmp));
 }
 
-void	join(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
+void	irc_join(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
 {
 	if (cmd.size() < 2)
 		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
@@ -88,32 +88,32 @@ void	join(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
 	}
 }
 
-void	part(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
+void	irc_part(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
 {
 	(void)cmd; (void)sender; (void)serv;
 }
 
-void	mode(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
+void	irc_mode(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
 {
 	(void)cmd; (void)sender; (void)serv;
 }
 
-void	topic(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
+void	irc_topic(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
 {
 	(void)cmd; (void)sender; (void)serv;
 }
 
-void	names(std::vector<std::string> cmd, Client* sender, Server* serv)
+void	irc_names(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	(void)cmd; (void)sender; (void)serv;
 }
 
-void	list(std::vector<std::string> cmd, Client* sender, Server* serv)
+void	irc_list(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	(void)cmd; (void)sender; (void)serv;
 }
 
-void	kick(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
+void	irc_kick(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
 {
 	(void)cmd; (void)sender; (void)serv;
 }

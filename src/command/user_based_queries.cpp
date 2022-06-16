@@ -1,6 +1,6 @@
 #include "ircserv.hpp"
 
-void	who(std::vector<std::string> cmd, Client* sender, Server* serv)
+void	irc_who(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	bool	option = 0;
 
@@ -32,7 +32,7 @@ void	who(std::vector<std::string> cmd, Client* sender, Server* serv)
 	sender->addToOutputBuffer(RPL_ENDOFWHO(sender->getNickname(), cmd[1]));
 }
 
-void	whois(std::vector<std::string> cmd, Client* sender, Server* serv)
+void	irc_whois(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	int	mask;
 	if (cmd.size() < 2)
@@ -64,7 +64,7 @@ void	whois(std::vector<std::string> cmd, Client* sender, Server* serv)
 	}
 }
 
-void	whowas(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
+void	irc_whowas(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
 {
 	(void)serv; (void)cmd; (void)sender;
 	// (void)serv;

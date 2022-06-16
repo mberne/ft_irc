@@ -2,7 +2,7 @@
 
 //~~ CONSTRUCTOR
 
-Client::Client(int sock) : _sock(sock), _mods(0), _password(false), _connexionStartTime(time(NULL)) {}
+Client::Client(int sock) : _fd(sock), _mods(0), _password(false), _connexionStartTime(time(NULL)) {}
 
 //~~ DESTRUCTOR
 
@@ -12,7 +12,7 @@ Client::~Client() {}
 
 int				Client::getSock() const
 {
-	return _sock;
+	return _fd;
 }
 
 std::string		Client::getNickname() const

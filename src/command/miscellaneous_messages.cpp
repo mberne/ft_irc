@@ -1,6 +1,6 @@
 #include "ircserv.hpp"
 
-void	version(std::vector<std::string> cmd, Client* sender, Server* serv)
+void	irc_version(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	(void)serv;
 	if (cmd.size() > 1 && cmd[1].compare(SERV_NAME))
@@ -12,7 +12,7 @@ void	version(std::vector<std::string> cmd, Client* sender, Server* serv)
 	}
 }
 
-void	stats(std::vector<std::string> cmd, Client* sender, Server* serv)
+void	irc_stats(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	// query pris en compte dans le code pour erreurs etc mais pas pour la réponse finale...
 	if (cmd.size() < 2)
@@ -40,15 +40,15 @@ void	stats(std::vector<std::string> cmd, Client* sender, Server* serv)
 
 }
 
-void	time(std::vector<std::string> cmd, Client* sender, Server* serv)
+void	irc_time(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	if (cmd.size() == 2 && cmd[1].compare(SERV_NAME))
 		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "TIME", cmd[1]));
 	else
-		sender->addToOutputBuffer(RPL_TIME(sender->getNickname(), serv->currentTime()));
+		sender->addToOutputBuffer(RPL_TIME(sender->getNickname(), serv->getCurrentTime()));
 }
 
-void	admin(std::vector<std::string> cmd, Client* sender, Server* serv)
+void	irc_admin(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	(void)serv;
 	if (cmd.size() == 2 && cmd[1].compare(SERV_NAME))
@@ -62,7 +62,7 @@ void	admin(std::vector<std::string> cmd, Client* sender, Server* serv)
 	}
 }
 
-void	info(std::vector<std::string> cmd, Client* sender, Server* serv)
+void	irc_info(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	(void)serv;
 	if (cmd.size() == 2 && cmd[1].compare(SERV_NAME))
@@ -80,7 +80,7 @@ void	info(std::vector<std::string> cmd, Client* sender, Server* serv)
 	}
 }
 
-void	lusers(std::vector<std::string> cmd, Client* sender, Server* serv)
+void	irc_lusers(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	(void)cmd;
 	sender->addToOutputBuffer(RPL_LUSERCLIENT(sender->getNickname(), serv));
@@ -89,7 +89,7 @@ void	lusers(std::vector<std::string> cmd, Client* sender, Server* serv)
 	sender->addToOutputBuffer(RPL_LUSERCHANNELS(sender->getNickname(), serv));
 }
 
-void	motd(std::vector<std::string> cmd, Client* sender, Server* serv)
+void	irc_motd(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	(void)serv;
 	if (cmd.size() == 2 && cmd[1].compare(SERV_NAME))

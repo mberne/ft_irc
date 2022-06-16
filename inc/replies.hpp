@@ -26,8 +26,8 @@
 
 // Réponses à LUSERS
 # define RPL_LUSERCLIENT(user, server)		PROMPT(" 251 ", user) + std::string(" :There are ") + std::to_string(server->getAllClients().size()) + std::string(" users")
-# define RPL_LUSEROP(user, server)			PROMPT(" 252 ", user) + std::string(" ") + std::to_string(server->opsNumber()) + std::string(" :operator(s) online")
-# define RPL_LUSERUNKNOWN(user, server)		PROMPT(" 253 ", user) + std::string(" ") + std::to_string(server->nonRegisteredNumber()) + std::string(" :unknown connection(s)")
+# define RPL_LUSEROP(user, server)			PROMPT(" 252 ", user) + std::string(" ") + std::to_string(server->getOpsNumber()) + std::string(" :operator(s) online")
+# define RPL_LUSERUNKNOWN(user, server)		PROMPT(" 253 ", user) + std::string(" ") + std::to_string(server->getNonRegisteredNumber()) + std::string(" :unknown connection(s)")
 # define RPL_LUSERCHANNELS(user, server)	PROMPT(" 254 ", user) + std::string(" ") + std::to_string(server->getAllChannels().size()) + std::string(" :channels formed")
 # define RPL_LUSERME(user, server) 			PROMPT(" 255 ", user) + std::string(" :I have ") + std::to_string(server->getAllClients().size()) + std::string(" clients and 0 servers")
 
