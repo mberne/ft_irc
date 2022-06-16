@@ -125,10 +125,10 @@ void	Server::removeClient(Client *src)
 		_oldClients.insert(std::make_pair(src->getNickname(), src));
 		_clientsByName.erase(src->getNickname());
 	}
-	delete src;
 	_clientsBySock.erase(it->fd);
 	close(it->fd);
 	_fds.erase(it);
+	delete src;
 }
 
 void	Server::sendMessages()

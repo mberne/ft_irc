@@ -39,7 +39,7 @@
 # define SERV_INFO					"Made with *LOUD TRUCK SOUND* by pthomas and mberne in 2022. Copyleft."
 # define SERV_LOC1					"Charbonniere-Les-Bains, France"
 # define SERV_LOC2					"42 Lyon"
-# define PROMPT(num, user)			SERV_NAME + std::string(num) + user
+# define PROMPT(num, user)			std::string(":") + SERV_NAME + std::string(num) + user
 
 // Server specifications
 // Required
