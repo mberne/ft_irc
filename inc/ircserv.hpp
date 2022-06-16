@@ -69,7 +69,7 @@
 // Others
 # define MESSAGELEN					512
 # define REALNAMELEN				50
-# define NICKNAME_CHARSET			"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+# define ASCII_CHARSET				"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 # define CRLF						std::string("\r\n")
 # define CLIENT_LIMIT				100
 # define CHANNEL_LIMIT				1000

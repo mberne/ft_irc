@@ -24,7 +24,7 @@ void	irc_nick(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 	{
 		if (cmd[1].size() > NICKLEN)
 			cmd[1] = cmd[1].substr(0, NICKLEN);
-		if (cmd[1].find_first_not_of(NICKNAME_CHARSET) != std::string::npos)
+		if (cmd[1].find_first_not_of(ASCII_CHARSET) != std::string::npos)
 			sender->addToOutputBuffer(ERR_ERRONEUSNICKNAME(sender->getNickname(), cmd[0], cmd[1]));
 		else if (serv->getAllClients().find(cmd[1]) != serv->getAllClients().end())
 			sender->addToOutputBuffer(ERR_NICKNAMEINUSE(sender->getNickname(), cmd[0], cmd[1]));
