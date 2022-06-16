@@ -234,4 +234,9 @@ void			Channel::sendToClients(std::string msg)
 		it->second->addToOutputBuffer(msg);
 }
 
-// t'es beau <3
+std::map<std::string, Client*> &	Channel::getAllClients()
+{
+	return _clients;
+}
+
+// t'es beau <3 // ah mais tu le push du coup, ça me fume, je savais pas dans quel fichier il était et il est là en fait xD

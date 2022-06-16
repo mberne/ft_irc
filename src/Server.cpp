@@ -53,7 +53,7 @@ void		Server::initSupportedCommands()
 	_cmdList.push_back(Command("MOTD",		0, &motd));
 	_cmdList.push_back(Command("PRIVMSG",	3, &privmsg));
 	_cmdList.push_back(Command("NOTICE",	3, &notice));
-	_cmdList.push_back(Command("WHO",		1, &who));
+	_cmdList.push_back(Command("WHO",		0, &who));
 	_cmdList.push_back(Command("WHOIS",		2, &whois));
 	_cmdList.push_back(Command("WHOWAS",	2, &whowas));
 	_cmdList.push_back(Command("KILL",		3, &kill));

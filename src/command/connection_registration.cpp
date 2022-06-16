@@ -62,6 +62,7 @@ void	user(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
 
 void	oper(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
 {
+	(void)serv;
 	if (cmd.size() < 3)
 		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
 	else if (cmd[1].compare(OPERATOR_USER))

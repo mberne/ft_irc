@@ -76,6 +76,7 @@ class Channel
 		bool			isBanned(Client* client);
 		std::string		showClientsList();
 		void			sendToClients(std::string msg);
+		std::map<std::string, Client*> &	getAllClients();
 
 
 

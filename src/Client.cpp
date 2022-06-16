@@ -2,7 +2,7 @@
 
 //~~ CONSTRUCTOR
 
-Client::Client(int sock) : _sock(sock), _mods(0), _password(false), _connexionStartTime(time(NULL)) {}
+Client::Client(int sock) : _sock(sock), _mods(0), _password(false), _connexionStartTime(time(NULL)), _lastCmdTime(time(NULL)) {}
 
 //~~ DESTRUCTOR
 

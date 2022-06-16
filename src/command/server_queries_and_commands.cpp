@@ -9,10 +9,10 @@ void	error(Client* sender, std::string reason)
 
 void	kill(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
-	if (cmd.size() != 3)
+	if (cmd.size() < 3)
 		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), "KILL"));
-	// else if (!sender->isServOperator()) // uncomment when isServOperator() is coded
-	// 	sender->addToOutputBuffer(ERR_NOPRIVILEGES(sender->getNickname(), "KILL"));
+	else if (!sender->isServOperator())
+		sender->addToOutputBuffer(ERR_NOPRIVILEGES(sender->getNickname(), "KILL"));
 	else
 	{
 		Client *client = serv->getClient(cmd[1]);
