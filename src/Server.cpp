@@ -114,10 +114,13 @@ void	Server::addClient(int sock)
 	_clientsBySock.insert(std::make_pair(sock, newClient));
 }
 
-void	Server::removeClient(Client *src, std::vector<struct pollfd>::iterator it)
+void	Server::removeClient(Client *src)
 {
+	std::vector<struct pollfd>::iterator it = _fds.begin();
+	while (it->fd != src->getSock())
+		it++;
 	std::cout << "Someone is disconnecting : " << it->fd << std::endl; // test
-	if (src->isRegistered() == true)
+	if (src->isRegistered() == true && _clientsByName.find(src->getNickname())->second == src)
 	{
 		_oldClients.insert(std::make_pair(src->getNickname(), src));
 		_clientsByName.erase(src->getNickname());
@@ -141,7 +144,7 @@ void	Server::sendMessages()
 			ret = send(it->fd, client->getOutputBuffer(), strlen(client->getOutputBuffer()), 0);
 			client->clearOutputBuffer();
 			if (ret < 0 && errno == ECONNRESET) // deconnexion
-				removeClient(client, it);
+				removeClient(client);
 		}
 	}
 }
@@ -166,6 +169,11 @@ void		Server::executeCommand(std::vector<std::string>	cmdArgs, Client* sender)
 		{
 			_clientsByName.insert(std::make_pair(sender->getNickname(), sender));
 			sendWelcome(sender, this);
+		}
+		else if (_clientsByName.find(sender->getNickname()) != _clientsByName.end() && _clientsByName.find(sender->getNickname())->second != sender)
+		{
+			//ERROR call
+			removeClient(sender);
 		}
 	}
 }
@@ -214,7 +222,7 @@ void	Server::receiveMessages()
 	{
 		client = _clientsBySock.find(it->fd)->second;
 		if ((it->revents | POLLHUP) == it->revents) // deconnexion
-			removeClient(client, it);
+			removeClient(client);
 		else if (it->revents == POLLIN)
 		{
 			ret = recv(it->fd, buf, TCP_MAXWIN, 0);

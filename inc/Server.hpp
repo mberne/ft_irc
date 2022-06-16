@@ -46,7 +46,7 @@ class Server
 		std::vector<Command>			_cmdList;
 
 		void		addClient(int sock);
-		void		removeClient(Client *src, std::vector<struct pollfd>::iterator it);
+		void		removeClient(Client *src);
 
 		void		initSupportedCommands();
 		void		acceptConnexions();
