@@ -24,7 +24,7 @@ class Client
 		int				getSock() const;
 		std::string		getNickname() const;
 		void			setNickname(std::string nickname);
-		bool			isOldNickname(std::string nickname);		// Return true if the string sent as parameter is an old client's nickname
+		// bool			isOldNickname(std::string nickname);		// Return true if the string sent as parameter is an old client's nickname
 		std::string		getUser() const;
 		void			setUser(std::string user);
 		std::string		getHost() const;

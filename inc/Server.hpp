@@ -13,6 +13,7 @@
 # define LOG_INFO		0
 # define LOG_LISTEN		1
 # define LOG_BROADCAST	2
+# define LOG_ERROR		3
 
 typedef void (*command_t)(std::vector<std::string> cmd, Client* sender, Server* serv);
 
@@ -29,15 +30,17 @@ class Server
 		std::string							getStartTime() const;
 		std::string							getCurrentTime() const;
 		// CLIENTS
-		Client*								getClient(std::string name) const;
-		std::map<std::string, Client*> &	getAllClients();
-		int									getOpsNumber();
-		int									getNonRegisteredNumber();
-		// std::map<std::string, Client*> &	getOldNickname();
+		Client*												getClient(std::string name) const;
+		std::map<std::string, Client*>&						getAllClients();
+		int													getOpsNumber();
+		int													getNonRegisteredNumber();
+		std::vector< std::pair<std::string, Client*> >&		getOldNicknames();
+		void												addOldNickname(std::string nickname, Client* client);
 		// CHANNELS
 		Channel*							getChannel(std::string name) const;
-		std::map<std::string, Channel*> &	getAllChannels();
+		std::map<std::string, Channel*>&	getAllChannels();
 		Channel*							newChannel(std::string name, Client* founder);
+		void								removeChannel(Channel* channel);
 		// SERVER MAIN
 		void								run();
 	
@@ -54,12 +57,10 @@ class Server
 		std::ofstream						_logFile;
 		std::map<std::string, command_t>	_commands;
 		// CONTENT
-		std::map<std::string, Client*>		_clientsByName;
-		std::map<int, Client*>				_clientsBySock;
-		std::map<std::string, Client*>		_oldClients;
-		std::map<std::string, Channel*>		_channels;
-		// std::map<std::string, Client*>		_oldNickname;
-
+		std::map<std::string, Client*>						_clientsByName;
+		std::map<int, Client*>								_clientsBySock;
+		std::vector< std::pair<std::string, Client*> >		_oldNicknames;
+		std::map<std::string, Channel*>						_channels;
 		// SERVER MAIN
 		void		acceptConnexions();
 		void		receiveMessages();
@@ -68,12 +69,10 @@ class Server
 		void		stop(int status); // SIGNAL HANDLING
 		// SERVER UTILS
 		void		initSupportedCommands();
-		void		createLogFile();
 		void		executeCommand(std::vector<std::string>	cmd, Client* sender);
 		void		addClient(int sock);
 		void		removeClient(Client *src);
 		void		sendWelcome(Client* sender);
-		// broadcast, listen
 		void		addLog(std::string message, int type);
 };
 

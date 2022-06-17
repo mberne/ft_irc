@@ -14,7 +14,7 @@ void	irc_join(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 		parseArg(cmd[2], password);
 		while (password.size() < channels.size())
 			password.push_back("");
-		for(size_t i = 0; i < channels.size(); i++)
+		for (size_t i = 0; i < channels.size(); i++)
 		{
 			if (channels[i].size() > CHANNELLEN)
 				channels[i] = channels[i].substr(0, CHANNELLEN);
@@ -71,7 +71,7 @@ void	irc_part(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 		std::vector<std::string>	channels;
 
 		parseArg(cmd[1], channels);
-		for(size_t i = 0; i < channels.size(); i++)
+		for (size_t i = 0; i < channels.size(); i++)
 		{
 			Channel* current = serv->getChannel(channels[i]);
 
