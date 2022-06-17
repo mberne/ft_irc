@@ -30,7 +30,7 @@ void			Client::setNickname(std::string nickname)
 
 // bool	Client::isOldNickname(std::string nickname)
 // {
-// 	for(std::vector<std::string>::iterator it = _oldNicknames.begin(); it != _oldNicknames.end(); it++)
+// 	for (std::vector<std::string>::iterator it = _oldNicknames.begin(); it != _oldNicknames.end(); it++)
 // 		if (!nickname.compare(*it))
 // 			return true;
 // 	return false;
@@ -169,7 +169,7 @@ void		Client::leaveAllChannels(Server* serv)
 
 	cmd.push_back("PART");
 	cmd.push_back("");
-	for(std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); it = _channels.begin())
+	for (std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); it = _channels.begin())
 	{
 		cmd[1] = it->first;
 		irc_part(cmd, this, serv);
@@ -201,7 +201,7 @@ std::string		Client::showChannelList()
 {
 	std::string		channelList;
 
-	for(std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); it++)
+	for (std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); it++)
 	{
 		if (it != _channels.begin())
 			channelList += " ";
@@ -216,7 +216,7 @@ std::string		Client::showChannelList()
 
 void			Client::sendToAllChannels(std::string msg)
 {
-	for(std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); it++)
+	for (std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); it++)
 		it->second->sendToClients(msg);
 }
 

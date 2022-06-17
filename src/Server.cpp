@@ -107,7 +107,7 @@ int	Server::getOpsNumber()
 {
 	int	num = 0;
 
-	for(std::map<std::string, Client*>::iterator it = _clientsByName.begin(); it != _clientsByName.end(); ++it)
+	for (std::map<std::string, Client*>::iterator it = _clientsByName.begin(); it != _clientsByName.end(); ++it)
 		if (it->second->isServOperator())
 			num++;
 	return num;
@@ -117,7 +117,7 @@ int	Server::getNonRegisteredNumber()
 {
 	int	num = 0;
 
-	for(std::map<std::string, Client*>::iterator it = _clientsByName.begin(); it != _clientsByName.end(); ++it)
+	for (std::map<std::string, Client*>::iterator it = _clientsByName.begin(); it != _clientsByName.end(); ++it)
 		if (!(it->second->isRegistered()))
 			num++;
 	return num;
@@ -213,7 +213,7 @@ void	Server::receiveMessages()
 	char	buf[TCP_MAXWIN + 1];
 	Client	*client;
 
-	for(std::vector<struct pollfd>::iterator it = _fdList.begin() + 1; it < _fdList.end(); it++)
+	for (std::vector<struct pollfd>::iterator it = _fdList.begin() + 1; it < _fdList.end(); it++)
 	{
 		client = _clientsBySock.find(it->fd)->second;
 		if ((it->revents | POLLHUP) == it->revents) // deconnexion
@@ -234,7 +234,7 @@ void	Server::receiveMessages()
 
 void		Server::executeRequest(Client* sender)
 {
-	for(size_t i = sender->getInputBuffer().find(CRLF); i != std::string::npos; i = sender->getInputBuffer().find(CRLF))
+	for (size_t i = sender->getInputBuffer().find(CRLF); i != std::string::npos; i = sender->getInputBuffer().find(CRLF))
 	{
 		size_t						start = sender->getInputBuffer().find_first_not_of(" ");
 		std::string					cmdLine = sender->getInputBuffer().substr(start, i - start);
@@ -246,7 +246,7 @@ void		Server::executeRequest(Client* sender)
 		{
 			if (cmdLine[0] == ':')
 				cmdLine.erase(0, cmdLine.find_first_not_of(' ', cmdLine.find_first_of(' ', 0)));
-			for(size_t j = cmdLine.find_first_of(' '); j != std::string::npos; j = cmdLine.find_first_of(' '))
+			for (size_t j = cmdLine.find_first_of(' '); j != std::string::npos; j = cmdLine.find_first_of(' '))
 			{
 				if (cmdLine[0] == ':')
 					break;
@@ -271,7 +271,7 @@ void	Server::sendMessages()
 	int		ret;
 	Client	*client;
 
-	for(std::vector<struct pollfd>::iterator it = _fdList.begin() + 1; it < _fdList.end(); it++)
+	for (std::vector<struct pollfd>::iterator it = _fdList.begin() + 1; it < _fdList.end(); it++)
 	{
 		client = _clientsBySock.find(it->fd)->second;
 		if (client->hasOutput()) // request on this socket
@@ -308,13 +308,13 @@ void	Server::stop(int status)
 
 	std::for_each(_fdList.begin(), _fdList.end(), closeFd);
 	_fdList.clear();
-	for(std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); ++it)
+	for (std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); ++it)
 		delete it->second;
 	_channels.clear();
-	for(std::map<int, Client*>::iterator it = _clientsBySock.begin(); it != _clientsBySock.end(); ++it)
+	for (std::map<int, Client*>::iterator it = _clientsBySock.begin(); it != _clientsBySock.end(); ++it)
 		delete it->second;
 	_clientsBySock.clear();
-	for(std::vector< std::pair<std::string, Client*> >::iterator it = _oldNicknames.begin(); it != _oldNicknames.end(); ++it)
+	for (std::vector< std::pair<std::string, Client*> >::iterator it = _oldNicknames.begin(); it != _oldNicknames.end(); ++it)
 		delete it->second;
    	_oldNicknames.clear();
 	exit(status);
@@ -412,9 +412,9 @@ void		Server::addLog(std::string message, int type)
 			break ;
 	}
 	size_t	start = 0;
-	for(size_t i = message.find('\r'); i != std::string::npos; i = message.find('\r'))
+	for (size_t i = message.find('\r'); i != std::string::npos; i = message.find('\r'))
 		message.erase(i);
-	for(size_t i = message.find('\n'); i != std::string::npos; i = message.find('\n', start))
+	for (size_t i = message.find('\n'); i != std::string::npos; i = message.find('\n', start))
 	{
 		std::string					line = message.substr(start, i - start);
 
