@@ -127,6 +127,6 @@ void	irc_ping(std::vector<std::string> cmd, Client* sender, Server* serv);
 void	irc_pong(std::vector<std::string> cmd, Client* sender, Server* serv);
 void	irc_error(std::vector<std::string> cmd, Client* sender, Server* serv);
 // utils
-void	sendWelcome(Client* sender, Server* serv);
+void	parseArg(std::string cmdArg, std::vector<std::string>& argList);
 
 #endif //~~ IRCSERV_H
