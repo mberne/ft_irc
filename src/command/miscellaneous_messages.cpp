@@ -26,6 +26,8 @@ void	irc_stats(std::vector<std::string> cmd, Client* sender, Server* serv)
 			sender->addToOutputBuffer(RPL_STATSUPTIME(sender->getNickname(), serv));
 			sender->addToOutputBuffer(RPL_ENDOFSTATS(sender->getNickname(), cmd[1][0]));
 		}
+		else
+			sender->addToOutputBuffer(RPL_ENDOFSTATS(sender->getNickname(), cmd[1][0]));
 	}
 	else
 	{
