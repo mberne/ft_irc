@@ -114,12 +114,45 @@ void	irc_topic(std::vector<std::string> cmd, Client* sender, Server* serv) // pt
 
 void	irc_names(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
-	(void)cmd; (void)sender; (void)serv;
+	if (cmd.size() == 1)
+	{
+		for (std::map<std::string, Channel*>::iterator itChan = serv->getAllChannels().begin(); itChan != serv->getAllChannels().end(); itChan++)
+			for (std::map<std::string, Client*>::iterator itCli = itChan->second->getAllClients().begin(); itCli != itChan->second->getAllClients().end(); itCli++)
+				sender->addToOutputBuffer(RPL_NAMREPLY(sender->getNickname(), itChan->second));
+		// afficher ceux sans canal
+	}
+	else // doublons à gérer ?
+		for (size_t i = 1; i != cmd.size(); i++)
+			for (std::map<std::string, Channel*>::iterator itChan = serv->getAllChannels().begin(); itChan != serv->getAllChannels().end(); itChan++)
+			{
+				if (!itChan->second->getName().compare(cmd[i]))
+				{
+					for (std::map<std::string, Client*>::iterator itCli = itChan->second->getAllClients().begin(); itCli != itChan->second->getAllClients().end(); itCli++)
+						sender->addToOutputBuffer(RPL_NAMREPLY(sender->getNickname(), itChan->second));
+				}
+			}
+	sender->addToOutputBuffer(RPL_ENDOFNAMES(sender->getNickname(), cmd[1]));
 }
 
 void	irc_list(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
-	(void)cmd; (void)sender; (void)serv;
+	// ERR_NOSUCHSERVER ??
+	// doublons à gérer... oskour
+	bool	arg = 0;
+	if (cmd.size() > 1)
+		arg = 1;
+	sender->addToOutputBuffer(RPL_LISTSTART(sender->getNickname()));
+	if (!arg)
+		for (std::map<std::string, Channel*>::iterator it = serv->getAllChannels().begin(); it != serv->getAllChannels().end(); it++)
+			sender->addToOutputBuffer(RPL_LIST(sender->getNickname(), it->second));
+	else
+		for (size_t i = 1; i != cmd.size(); i++)
+			for (std::map<std::string, Channel*>::iterator itChan = serv->getAllChannels().begin(); itChan != serv->getAllChannels().end(); itChan++)
+			{
+				if (!itChan->second->getName().compare(cmd[i]))
+					sender->addToOutputBuffer(RPL_LIST(sender->getNickname(), itChan->second));
+			}
+	sender->addToOutputBuffer(RPL_LISTEND(sender->getNickname()));
 }
 
 void	irc_kick(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas

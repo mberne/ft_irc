@@ -54,7 +54,7 @@
 // Les réponses RPL_LISTSTART, RPL_LIST, RPL_LISTEND marquent le début, les réponses proprement dites, et la fin du traitement d'une commande LIST.
 // S'il n'y a aucun canal disponible, seules les réponses de début et de fin sont envoyées.
 # define RPL_LISTSTART(user)		PROMPT(" 321 ", user) + std::string(" Channel :Users Name")
-# define RPL_LIST(user, channel)	PROMPT(" 322 ", user) + std::string(" ") + channel->getName() + std::string(" ") + channel->clientCount() + std::string(" :") + channel->getTopic() // boucler dessus
+# define RPL_LIST(user, channel)	PROMPT(" 322 ", user) + std::string(" ") + channel->getName() + std::string(" ") + std::to_string(channel->clientCount()) + std::string(" :") + channel->getTopic()
 # define RPL_LISTEND(user)			PROMPT(" 323 ", user) + std::string(" :End of /LIST")
 
 // Mode du channel
