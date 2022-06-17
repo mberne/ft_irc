@@ -87,5 +87,3 @@ void	irc_quit(std::vector<std::string> cmd, Client* sender, Server* serv) // mbe
 {
 	(void)cmd; (void)sender; (void)serv;
 }
-
-// pas une commande, mais à envoyer une fois que le client est correctement connecté (pass, nick, user)

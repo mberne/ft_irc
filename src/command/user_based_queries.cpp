@@ -1,18 +1,18 @@
 #include "ircserv.hpp"
 
-void	irc_who(std::vector<std::string> cmd, Client* sender, Server* serv) // need to fix WHO_REPLY and algo
+void	irc_who(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	bool	option = 0;
 
 	if ((cmd.size() == 2 && cmd[1].size() == 1 && !cmd[1].compare("o")) || (cmd.size() == 3 && cmd[2].size() == 1 && !cmd[2].compare("o")))
 		option = 1;
-	if ((cmd.size() == 2 && option) || cmd.size() == 1) // seulement option o possible
+	if ((cmd.size() == 2 && option) || cmd.size() == 1)
 	{
 		for (std::map<std::string, Client*>::iterator it = serv->getAllClients().begin(); it != serv->getAllClients().end(); it++)
 			if (!it->second->isInvisible() && (!option || it->second->isServOperator()))
 				sender->addToOutputBuffer(RPL_WHOREPLY(sender->getNickname(), it->second));
 	}
-	else if ((cmd.size() == 2 && !option) || cmd.size() > 2) // name + option o possible
+	else if ((cmd.size() == 2 && !option) || cmd.size() > 2)
 	{
 		if (serv->getClient(cmd[1]) && !serv->getClient(cmd[1])->isInvisible() && (!option || serv->getClient(cmd[1])->isServOperator()))
 			sender->addToOutputBuffer(RPL_WHOREPLY(sender->getNickname(), serv->getClient(cmd[1])));
@@ -57,34 +57,33 @@ void	irc_whois(std::vector<std::string> cmd, Client* sender, Server* serv)
 	}
 }
 
-void	irc_whowas(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
+void	irc_whowas(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
-	(void)serv; (void)cmd; (void)sender;
-	// ERR_NONICKNAMEGIVEN ERR_WASNOSUCHNICK RPL_WHOWASUSER RPL_WHOISSERVER RPL_WHOISACTUALLY RPL_ENDOFWHOWAS
-	// (void)serv;
-	// int count;
-	// int i;
+	int count;
+	int	i = 0;
 
-	// if (cmd.size() < 2)
-	// 	sender->addToOutputBuffer(ERR_NONICKNAMEGIVEN(sender->getNickname(), "WHOWAS"));
-	// else
-	// {
-	// 	if (cmd.size() == 3)
-	// 	{
-	// 		count = std::stoi(cmd[2]);
-	// 		if (count < 1)
-	// 			count = INT32_MAX;
-	// 	}
-	// 	if (getOldNickname(cmd[1]))
-	// 	{
-	// 		while (i < count)
-	// 		{
-	// 			// RPL_WHOWASUSER(sender->getNickname(), ?);
-	// 			i++;
-	// 		}
-	// 	}
-	// 	else
-	// 		sender->addToOutputBuffer(ERR_NOSUCHNICK(sender->getNickname(), cmd[0], cmd[1]));
-	// 	sender->addToOutputBuffer(RPL_ENDOFWHOWAS(sender->getNickname(), cmd[1]));
-	// }
+	if (cmd.size() < 2)
+		sender->addToOutputBuffer(ERR_NONICKNAMEGIVEN(sender->getNickname(), "WHOWAS"));
+	else
+	{
+		if (cmd.size() == 3)
+		{
+			count = std::stoi(cmd[2]);
+			if (count < 1)
+				count = INT32_MAX;
+		}
+		for (std::map<std::string, Client*>::iterator it = serv->getOldNickname().begin(); it != serv->getOldNickname().end(); it++)
+		{
+			if (!it->second->getNickname().compare(cmd[1]) && i < count)
+			{
+				sender->addToOutputBuffer(RPL_WHOWASUSER(sender->getNickname(), it->second));
+				sender->addToOutputBuffer(RPL_WHOISSERVER(sender->getNickname(), it->second->getNickname()));
+				sender->addToOutputBuffer(RPL_WHOISACTUALLY(sender->getNickname(), it->second));
+				i++;
+			}
+		}
+		if (!i)
+			sender->addToOutputBuffer(ERR_WASNOSUCHNICK(sender->getNickname(), cmd[0], cmd[1]));
+		sender->addToOutputBuffer(RPL_ENDOFWHOWAS(sender->getNickname(), cmd[1]));
+	}
 }
