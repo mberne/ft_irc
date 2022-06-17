@@ -5,8 +5,14 @@
 # include <vector>
 # include <map>
 # include <algorithm>
+# include <fstream>
+# include <sstream>
 # include "Client.hpp"
 # include "Channel.hpp"
+
+# define LOG_INFO		0
+# define LOG_LISTEN		1
+# define LOG_BROADCAST	2
 
 typedef void (*command_t)(std::vector<std::string> cmd, Client* sender, Server* serv);
 
@@ -44,6 +50,7 @@ class Server
 		int									_fd;
 		struct sockaddr_in					_servSocket;
 		std::vector<struct pollfd>			_fdList;
+		std::ofstream						_logFile;
 		std::map<std::string, command_t>	_commands;
 		// CONTENT
 		std::map<std::string, Client*>		_clientsByName;
@@ -59,10 +66,13 @@ class Server
 		void		stop(int status); // SIGNAL HANDLING
 		// SERVER UTILS
 		void		initSupportedCommands();
+		void		createLogFile();
 		void		executeCommand(std::vector<std::string>	cmd, Client* sender);
 		void		addClient(int sock);
 		void		removeClient(Client *src);
 		void		sendWelcome(Client* sender);
+		// broadcast, listen
+		void		addLog(std::string message, int type);
 };
 
 #endif //~~ SERVER_H

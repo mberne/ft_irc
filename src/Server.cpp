@@ -27,7 +27,13 @@ Server::Server(int port, std::string password) : _port(port), _password(password
 		stop(errno);
 	if (listen(_fd, SOMAXCONN) == -1) // SOMAXCONN = max value
 		stop(errno);
+
 	initSupportedCommands();
+}
+
+void		Server::createLogFile()
+{
+	
 }
 
 void		Server::initSupportedCommands()
@@ -149,6 +155,10 @@ void	Server::run()
 {
 	int	numberSockets; 
 	
+	_logFile.open( (std::string(SERV_NAME) + ".log").c_str() , std::ios_base::out | std::ios_base::trunc );
+	if ( _logFile.is_open() == false )
+		stop(errno);
+
 	_online = true;
 	while (_online)
 	{
@@ -363,4 +373,9 @@ void	Server::sendWelcome(Client* sender)
 	sender->addToOutputBuffer(RPL_MOTD(name));
 	sender->addToOutputBuffer(RPL_ENDOFMOTD(name));
 	sender->addToOutputBuffer(RPL_UMODEIS(name, sender));
+}
+
+void		addLog(std::string message, int type)
+{
+	// switch case
 }
