@@ -28,16 +28,18 @@ void			Client::setNickname(std::string nickname)
 	_nickname = nickname.substr(0, NICKLEN);
 }
 
-bool	Client::isOldNickname(std::string nickname)
-{
-	for(std::vector<std::string>::iterator it = _oldNicknames.begin(); it != _oldNicknames.end(); it++)
-		if (!nickname.compare(*it))
-			return true;
-	return false;
-}
+// bool	Client::isOldNickname(std::string nickname)
+// {
+// 	for(std::vector<std::string>::iterator it = _oldNicknames.begin(); it != _oldNicknames.end(); it++)
+// 		if (!nickname.compare(*it))
+// 			return true;
+// 	return false;
+// }
 
 std::string		Client::getUser() const
 {
+	if (_user.empty())
+		return "*";
 	return _user;
 }
 

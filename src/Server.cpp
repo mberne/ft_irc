@@ -31,11 +31,6 @@ Server::Server(int port, std::string password) : _port(port), _password(password
 	initSupportedCommands();
 }
 
-void		Server::createLogFile()
-{
-	
-}
-
 void		Server::initSupportedCommands()
 {
 	_commands.insert(std::make_pair("PASS", &irc_pass));
@@ -90,8 +85,10 @@ std::string	Server::getStartTime() const
 std::string	Server::getCurrentTime() const
 {
 	time_t	currentTime = time(NULL);
-	
-	return asctime(localtime(&currentTime));
+	char*	time = asctime(localtime(&currentTime));
+
+	time[strlen(time) - 1] = '\0'; // Remove '\n';
+	return time;
 }
 
 //~~ CLIENT
@@ -113,7 +110,7 @@ int	Server::getOpsNumber()
 	for(std::map<std::string, Client*>::iterator it = _clientsByName.begin(); it != _clientsByName.end(); ++it)
 		if (it->second->isServOperator())
 			num++;
-	return (num);
+	return num;
 }
 
 int	Server::getNonRegisteredNumber()
@@ -123,12 +120,17 @@ int	Server::getNonRegisteredNumber()
 	for(std::map<std::string, Client*>::iterator it = _clientsByName.begin(); it != _clientsByName.end(); ++it)
 		if (!(it->second->isRegistered()))
 			num++;
-	return (num);
+	return num;
 }
 
-std::map<std::string, Client*> &	Server::getOldNickname()
+std::vector< std::pair<std::string, Client*> >&		Server::getOldNicknames()
 {
-	return _oldNickname;
+	return _oldNicknames;
+}
+
+void		Server::addOldNickname(std::string nickname, Client* client)
+{
+	_oldNicknames.insert(_oldNicknames.begin(), std::make_pair(nickname, client));
 }
 
 //~~ CHANNEL
@@ -148,10 +150,18 @@ std::map<std::string, Channel*> &	Server::getAllChannels()
 
 Channel*	Server::newChannel(std::string name, Client* founder)
 {
+	addLog("New channel: " + name + " created by: " + founder->getPrefix(), LOG_INFO);
 	Channel* channel = new Channel(name);
 	_channels.insert(std::make_pair(name, channel));
 	channel->addOperator(founder);
 	return channel;
+}
+
+void	Server::removeChannel(Channel* channel)
+{
+	addLog("Channel deleted: " + channel->getName(), LOG_INFO);
+	_channels.erase(channel->getName());
+	delete channel;
 }
 
 //~~ SERVER MAIN
@@ -188,7 +198,6 @@ void	Server::acceptConnexions()
 		ret = accept(_fdList[0].fd, reinterpret_cast<struct sockaddr*>(&_servSocket), &addrlen);
 		if (ret > 0)
 		{
-			std::cout << "Someone is connecting: " << ret << std::endl; // test
 			tmp.fd = ret;
 			tmp.events = POLLIN;
 			fcntl(tmp.fd, F_SETFL, O_NONBLOCK); // client socket non blocking
@@ -216,6 +225,7 @@ void	Server::receiveMessages()
 			{
 				buf[ret] = '\0';
 				client->addToInputBuffer(buf);
+				addLog("from: " + client->getPrefix() + " to: :" + SERV_NAME + "\n" + buf, LOG_LISTEN);
 				executeRequest(client);
 			}
 		}
@@ -267,6 +277,7 @@ void	Server::sendMessages()
 		if (client->hasOutput()) // request on this socket
 		{
 			ret = send(it->fd, client->getOutputBuffer(), strlen(client->getOutputBuffer()), 0);
+			addLog("from: :" + std::string(SERV_NAME) + " to: " + client->getPrefix() + "\n" + client->getOutputBuffer(), LOG_BROADCAST);
 			client->clearOutputBuffer();
 			if (ret < 0 && errno == ECONNRESET) // deconnexion
 				removeClient(client);
@@ -292,8 +303,8 @@ void	Server::stop(int status)
 	//		envoyer des messages comme quoi le serv ferme aux clients
 	//		std::cout << SERVER_NAME << "server closed" << std::endl;
 	//	}
-	std::cout << "Clean exit with status : " << status << std::endl;
 	perror(SERV_NAME);
+	addLog("Server exited with code: " + std::to_string(errno) + ". " + SERV_NAME + ": " + strerror(errno), LOG_ERROR);
 
 	std::for_each(_fdList.begin(), _fdList.end(), closeFd);
 	_fdList.clear();
@@ -303,12 +314,11 @@ void	Server::stop(int status)
 	for(std::map<int, Client*>::iterator it = _clientsBySock.begin(); it != _clientsBySock.end(); ++it)
 		delete it->second;
 	_clientsBySock.clear();
-	for(std::map<std::string, Client*>::iterator it = _oldClients.begin(); it != _oldClients.end(); ++it)
+	for(std::vector< std::pair<std::string, Client*> >::iterator it = _oldNicknames.begin(); it != _oldNicknames.end(); ++it)
 		delete it->second;
-   	_oldClients.clear();
+   	_oldNicknames.clear();
 	exit(status);
 }
-
 //~~ SERVER UTILS
 
 void		Server::executeCommand(std::vector<std::string>	cmdArgs, Client* sender)
@@ -337,27 +347,29 @@ void		Server::executeCommand(std::vector<std::string>	cmdArgs, Client* sender)
 
 void	Server::addClient(int sock)
 {
-	Client *newClient = new Client(sock);
+	Client*		newClient = new Client(sock);
 	
 	newClient->setHost(inet_ntoa(_servSocket.sin_addr));
 	_clientsBySock.insert(std::make_pair(sock, newClient));
+	addLog("New connexion: " + newClient->getPrefix(), LOG_INFO);
 }
 
-void	Server::removeClient(Client *src)
+void	Server::removeClient(Client *client)
 {
+	addLog("Connexion closed: " + client->getPrefix(), LOG_INFO);
 	std::vector<struct pollfd>::iterator it = _fdList.begin();
-	while (it->fd != src->getSock())
+	while (it->fd != client->getSock())
 		it++;
-	std::cout << "Someone is disconnecting : " << it->fd << std::endl; // test
-	if (src->isRegistered() == true && _clientsByName.find(src->getNickname())->second == src)
-	{
-		_oldClients.insert(std::make_pair(src->getNickname(), src));
-		_clientsByName.erase(src->getNickname());
-	}
 	_clientsBySock.erase(it->fd);
+	if (client->isRegistered() == true && _clientsByName.find(client->getNickname())->second == client)
+	{
+		_clientsByName.erase(client->getNickname());
+		addOldNickname(client->getNickname(), client);
+	}
+	else
+		delete client;
 	close(it->fd);
 	_fdList.erase(it);
-	delete src;
 }
 
 void	Server::sendWelcome(Client* sender)
@@ -380,7 +392,34 @@ void	Server::sendWelcome(Client* sender)
 	sender->addToOutputBuffer(RPL_UMODEIS(name, sender));
 }
 
-void		addLog(std::string message, int type)
+void		Server::addLog(std::string message, int type)
 {
-	// switch case
+	std::string			logPrompt;
+
+	switch (type)
+	{
+		case LOG_INFO:
+			logPrompt = "[" + getCurrentTime() + "]: INFO:\t\t";
+			break ;
+		case LOG_LISTEN:
+			logPrompt = "[" + getCurrentTime() + "]: LISTEN:\t\t";
+			break ;
+		case LOG_BROADCAST:
+			logPrompt = "[" + getCurrentTime() + "]: BROADCAST:\t";
+			break ;
+		case LOG_ERROR:
+			logPrompt = "[" + getCurrentTime() + "]: ERROR:\t\t";
+			break ;
+	}
+	size_t	start = 0;
+	for(size_t i = message.find('\r'); i != std::string::npos; i = message.find('\r'))
+		message.erase(i);
+	for(size_t i = message.find('\n'); i != std::string::npos; i = message.find('\n', start))
+	{
+		std::string					line = message.substr(start, i - start);
+
+		_logFile << logPrompt + line << std::endl;
+		start = i + sizeof(char);
+	}
+	_logFile << logPrompt + message.substr(start, message.size() - start) << std::endl;
 }
