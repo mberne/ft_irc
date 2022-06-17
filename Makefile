@@ -8,7 +8,7 @@ NAME		=	ircserv
 
 #~~~~ Paths ~~~~#
 
-VPATH		=	src/:inc/:src/command/
+VPATH		=	src/:src/command/:inc/
 PATH_INC	=	inc/
 PATH_OBJ	=	obj/
 
@@ -23,7 +23,8 @@ SRC			=	main.cpp						\
 				miscellaneous_messages.cpp		\
 				sending_messages.cpp			\
 				server_queries_and_commands.cpp	\
-				user_based_queries.cpp
+				user_based_queries.cpp			\
+				utils.cpp
 
 OBJ			=	$(addprefix $(PATH_OBJ), $(SRC:.cpp=.o))
 

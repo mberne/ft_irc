@@ -1,19 +1,5 @@
 #include "ircserv.hpp"
 
-void	parseArg(std::string cmdArg, std::vector<std::string>& argList)
-{
-	size_t						commaPos = cmdArg.find(',');
-	size_t						tmp = 0;
-
-	while (commaPos != std::string::npos)
-	{
-		argList.push_back(cmdArg.substr(tmp, commaPos - tmp));
-		tmp = commaPos + 1;
-		commaPos = cmdArg.find(',', tmp);
-	}
-	argList.push_back(cmdArg.substr(tmp, cmdArg.size() - tmp));
-}
-
 void	irc_join(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
 {
 	if (cmd.size() < 2)
@@ -97,6 +83,8 @@ void	irc_part(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 			{
 				current->sendToClients(sender->getPrefix() + " " + cmd[0] + " " + channels[i] + (cmd.size() > 2 ? " " + cmd[2] : "" ));
 				sender->leaveChannel(current);
+				if (current->clientCount() == 0)
+					serv->removeChannel(current);
 			}
 		}
 	}
