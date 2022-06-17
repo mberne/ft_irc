@@ -120,10 +120,10 @@ int	Server::getNonRegisteredNumber()
 	return (num);
 }
 
-std::map<std::string, Client*> &	Server::getOldNickname()
-{
-	return _oldNickname;
-}
+// std::map<std::string, Client*> &	Server::getOldNickname()
+// {
+// 	return _oldNickname;
+// }
 
 //~~ CHANNEL
 
