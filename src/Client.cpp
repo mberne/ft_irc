@@ -2,7 +2,7 @@
 
 //~~ CONSTRUCTOR
 
-Client::Client(int sock) : _sock(sock), _mods(0), _password(false), _connexionStartTime(time(NULL)), _lastCmdTime(time(NULL)) {}
+Client::Client(int sock) : _fd(sock), _mods(0), _password(false), _connexionStartTime(time(NULL)), _lastCmdTime(time(NULL)) {}
 
 //~~ DESTRUCTOR
 
@@ -12,7 +12,7 @@ Client::~Client() {}
 
 int				Client::getSock() const
 {
-	return _sock;
+	return _fd;
 }
 
 std::string		Client::getNickname() const
@@ -149,19 +149,37 @@ std::string		Client::getMods() const
 
 void	Client::joinChannel(Channel* channel)	
 {
-	// Error handling needed!
 	_channels.insert(std::make_pair(channel->getName(), channel));
+	if (channel->getClient(_nickname) == NULL)
+		channel->addClient(this);
 }
 
 void	Client::leaveChannel(Channel* channel)	
 {
-	// Error handling needed!
 	_channels.erase(channel->getName());
+	if (channel->getClient(_nickname) != NULL)
+		channel->removeClient(this);
+}
+
+void		Client::leaveAllChannels(Server* serv)
+{
+	std::vector<std::string> cmd;
+
+	cmd.push_back("PART");
+	cmd.push_back("");
+	for(std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); it = _channels.begin())
+	{
+		cmd[1] = it->first;
+		irc_part(cmd, this, serv);
+	}
 }
 
 Channel*	Client::getChannel(std::string name) const
 {
-	return _channels.find(name)->second;
+	if (_channels.find(name) == _channels.end())
+		return (NULL);
+	else
+		return (_channels.find(name)->second);
 }
 
 int				Client::getNumberOfChannels() const

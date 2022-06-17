@@ -39,7 +39,7 @@
 # define SERV_INFO					"Made with *LOUD TRUCK SOUND* by pthomas and mberne in 2022. Copyleft."
 # define SERV_LOC1					"Charbonniere-Les-Bains, France"
 # define SERV_LOC2					"42 Lyon"
-# define PROMPT(num, user)			SERV_NAME + std::string(num) + user
+# define PROMPT(num, user)			std::string(":") + SERV_NAME + std::string(num) + user
 
 // Server specifications
 // Required
@@ -69,9 +69,8 @@
 // Others
 # define MESSAGELEN					512
 # define REALNAMELEN				50
-# define NICKNAME_CHARSET			"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+# define ASCII_CHARSET				"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 # define CRLF						std::string("\r\n")
-# define CHANNEL_LIMIT_PER_CLIENT	10
 # define CLIENT_LIMIT				100
 # define CHANNEL_LIMIT				1000
 # define MAX_PORT					65536
@@ -79,56 +78,55 @@
 # define MAX_PING_TIME				60
 # define OPERATOR_USER				"p1k13p13"
 # define OPERATOR_PASSWORD			"*_*SEGFAULT_11"
+# define CLIENT_LIMIT_PER_CHANNEL	100
 
 /*** ~~ CLASSES ~~ ***/
 
 class Server;
 class Client;
 class Channel;
-class Command;
 # include "Server.hpp"
 # include "Client.hpp"
 # include "Channel.hpp"
-# include "Command.hpp"
 
 /*** ~~ PROTOTYPES ~~ ***/
 
 // Server commands
 // Channel operations
-void	pass(std::vector<std::string> cmd, Client* sender, Server* serv);
-void	nick(std::vector<std::string> cmd, Client* sender, Server* serv);
-void	user(std::vector<std::string> cmd, Client* sender, Server* serv);
-void	oper(std::vector<std::string> cmd, Client* sender, Server* serv);
-void	quit(std::vector<std::string> cmd, Client* sender, Server* serv);
+void	irc_pass(std::vector<std::string> cmd, Client* sender, Server* serv);
+void	irc_nick(std::vector<std::string> cmd, Client* sender, Server* serv);
+void	irc_user(std::vector<std::string> cmd, Client* sender, Server* serv);
+void	irc_oper(std::vector<std::string> cmd, Client* sender, Server* serv);
+void	irc_quit(std::vector<std::string> cmd, Client* sender, Server* serv);
 // Connection registration
-void	join(std::vector<std::string> cmd, Client* sender, Server* serv);
-void	part(std::vector<std::string> cmd, Client* sender, Server* serv);
-void	mode(std::vector<std::string> cmd, Client* sender, Server* serv);
-void	topic(std::vector<std::string> cmd, Client* sender, Server* serv);
-void	names(std::vector<std::string> cmd, Client* sender, Server* serv);
-void	list(std::vector<std::string> cmd, Client* sender, Server* serv);
-void	kick(std::vector<std::string> cmd, Client* sender, Server* serv);
+void	irc_join(std::vector<std::string> cmd, Client* sender, Server* serv);
+void	irc_part(std::vector<std::string> cmd, Client* sender, Server* serv);
+void	irc_mode(std::vector<std::string> cmd, Client* sender, Server* serv);
+void	irc_topic(std::vector<std::string> cmd, Client* sender, Server* serv);
+void	irc_names(std::vector<std::string> cmd, Client* sender, Server* serv);
+void	irc_list(std::vector<std::string> cmd, Client* sender, Server* serv);
+void	irc_kick(std::vector<std::string> cmd, Client* sender, Server* serv);
 // Miscellaneous messages
-void	version(std::vector<std::string> cmd, Client* sender, Server* serv);
-void	stats(std::vector<std::string> cmd, Client* sender, Server* serv);
-void	time(std::vector<std::string> cmd, Client* sender, Server* serv);
-void	admin(std::vector<std::string> cmd, Client* sender, Server* serv);
-void	info(std::vector<std::string> cmd, Client* sender, Server* serv);
-void	lusers(std::vector<std::string> cmd, Client* sender, Server* serv);
-void	motd(std::vector<std::string> cmd, Client* sender, Server* serv);
+void	irc_version(std::vector<std::string> cmd, Client* sender, Server* serv);
+void	irc_stats(std::vector<std::string> cmd, Client* sender, Server* serv);
+void	irc_time(std::vector<std::string> cmd, Client* sender, Server* serv);
+void	irc_admin(std::vector<std::string> cmd, Client* sender, Server* serv);
+void	irc_info(std::vector<std::string> cmd, Client* sender, Server* serv);
+void	irc_lusers(std::vector<std::string> cmd, Client* sender, Server* serv);
+void	irc_motd(std::vector<std::string> cmd, Client* sender, Server* serv);
 // Sending messages
-void	privmsg(std::vector<std::string> cmd, Client* sender, Server* serv);
-void	notice(std::vector<std::string> cmd, Client* sender, Server* serv);
+void	irc_privmsg(std::vector<std::string> cmd, Client* sender, Server* serv);
+void	irc_notice(std::vector<std::string> cmd, Client* sender, Server* serv);
 // Server queries and commands
-void	who(std::vector<std::string> cmd, Client* sender, Server* serv);
-void	whois(std::vector<std::string> cmd, Client* sender, Server* serv);
-void	whowas(std::vector<std::string> cmd, Client* sender, Server* serv);
+void	irc_who(std::vector<std::string> cmd, Client* sender, Server* serv);
+void	irc_whois(std::vector<std::string> cmd, Client* sender, Server* serv);
+void	irc_whowas(std::vector<std::string> cmd, Client* sender, Server* serv);
 // User based queries
-void	kill(std::vector<std::string> cmd, Client* sender, Server* serv);
-// void	ping(std::vector<std::string> cmd, Client* sender, Server* serv);
-void	pong(std::vector<std::string> cmd, Client* sender, Server* serv);
-// void	error(std::vector<std::string> cmd, Client* sender, Server* serv);
-// Welcome command
+void	irc_kill(std::vector<std::string> cmd, Client* sender, Server* serv);
+void	irc_ping(std::vector<std::string> cmd, Client* sender, Server* serv);
+void	irc_pong(std::vector<std::string> cmd, Client* sender, Server* serv);
+void	irc_error(std::vector<std::string> cmd, Client* sender, Server* serv);
+// utils
 void	sendWelcome(Client* sender, Server* serv);
 
 #endif //~~ IRCSERV_H

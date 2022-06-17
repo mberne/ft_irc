@@ -48,6 +48,7 @@ class Client
 		// CHANNEL
 		void			joinChannel(Channel* channel);				// Add the Channel sent as paramater to the _channels map
 		void			leaveChannel(Channel* channel);				// Remove the Channel sent as paramater from the _channels map
+		void			leaveAllChannels(Server* serv);
 		Channel*		getChannel(std::string name) const;
 		int				getNumberOfChannels() const;
 		std::string		getLastChannelName() const;
@@ -64,7 +65,7 @@ class Client
 
 	private:
 
-		int									_sock;					// Socket of the client
+		int									_fd;					// Socket of the client
 		std::string							_nickname;				// Unique nickname
 		std::vector<std::string>			_oldNicknames;			// List of the old nicknames of the user
 		std::string							_user;					// The username of the client on that host

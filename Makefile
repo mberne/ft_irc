@@ -18,7 +18,6 @@ SRC			=	main.cpp						\
 				Server.cpp						\
 				Client.cpp						\
 				Channel.cpp						\
-				Command.cpp						\
 				channel_operations.cpp			\
 				connection_registration.cpp		\
 				miscellaneous_messages.cpp		\
@@ -32,7 +31,6 @@ INC			=	ircserv.hpp		\
 				Server.hpp		\
 				Client.hpp		\
 				Channel.hpp		\
-				Command.hpp		\
 				replies.hpp		\
 				errors.hpp
 

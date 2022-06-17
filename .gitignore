@@ -4,6 +4,7 @@
 obj/
 ircserv
 bircd
+*.log
 
 # Prerequisites
 *.d
