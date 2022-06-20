@@ -127,14 +127,14 @@ void	irc_list(std::vector<std::string> cmd, Client* sender, Server* serv)
 		for (std::vector<std::string>::iterator it = channels.begin(); it < channels.end(); it++)
 		{
 			Channel* current = serv->getChannel(*it);
-			if (current != NULL && (current->hasMod(CHANNEL_FLAG_S) || current->getClient(sender->getNickname()) != NULL))
+			if (current != NULL && (!current->hasMod(CHANNEL_FLAG_S) || current->getClient(sender->getNickname()) != NULL))
 				sender->addToOutputBuffer(RPL_LIST(sender->getNickname(), current));
 		}
 	}
 	else
 	{
 		for (std::map<std::string, Channel*>::iterator it = serv->getAllChannels().begin(); it != serv->getAllChannels().end(); it++)
-			if (it->second->hasMod(CHANNEL_FLAG_S) || it->second->getClient(sender->getNickname()) != NULL)
+			if (!it->second->hasMod(CHANNEL_FLAG_S) || it->second->getClient(sender->getNickname()) != NULL)
 				sender->addToOutputBuffer(RPL_LIST(sender->getNickname(), it->second));
 	}
 	sender->addToOutputBuffer(RPL_LISTEND(sender->getNickname()));
