@@ -14,7 +14,7 @@ void	irc_kill(std::vector<std::string> cmd, Client* sender, Server* serv)
 		else
 		{
 			irc_error(sender, "Closing Link: " + std::string(SERV_NAME) + " (Killed (" + sender->getNickname() + " (" + cmd[2] + ")))");
-			// + deco le gars
+			// removeClient(sender, "Closing Link: " + std::string(SERV_NAME) + " (Killed (" + sender->getNickname() + " (" + cmd[2] + ")))");
 		}
 	}
 }
@@ -38,7 +38,7 @@ void	irc_ping(Client* client)
 		}
 		if (differenceTime > TIME_AFK + PING_TIME)
 		{
-			// couper la connexion
+			// removeClient(sender, "Ping timeout:" + std::to_string(PING_TIME) + " seconds");
 		}
 	}
 

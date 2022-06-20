@@ -222,7 +222,7 @@ void	Server::receiveMessages()
 	{
 		client = _clientsBySock.find(it->fd)->second;
 		if ((it->revents | POLLHUP) == it->revents) // deconnexion
-			removeClient(client);
+			removeClient(client, "Remote host closed the connection");
 		else
 		{
 			if (it->revents == POLLIN)
@@ -290,7 +290,7 @@ void	Server::sendMessages()
 			addLog("from: :" + std::string(SERV_NAME) + " to: " + client->getPrefix() + "\n" + client->getOutputBuffer(), LOG_BROADCAST);
 			client->clearOutputBuffer();
 			if (ret < 0 && errno == ECONNRESET) // deconnexion
-				removeClient(client);
+				removeClient(client, "Remote host closed the connection");
 		}
 	}
 }
@@ -348,10 +348,7 @@ void		Server::executeCommand(std::vector<std::string>	cmdArgs, Client* sender)
 			sendWelcome(sender);
 		}
 		else if (_clientsByName.find(sender->getNickname()) != _clientsByName.end() && _clientsByName.find(sender->getNickname())->second != sender)
-		{
-			//ERROR call
-			removeClient(sender);
-		}
+			removeClient(sender, "Remote host closed the connection");
 	}
 }
 
@@ -364,7 +361,7 @@ void	Server::addClient(int sock)
 	addLog("New connexion: " + newClient->getPrefix(), LOG_INFO);
 }
 
-void	Server::removeClient(Client *client)
+void	Server::removeClient(Client *client, std::string reason)
 {
 	addLog("Connexion closed: " + client->getPrefix(), LOG_INFO);
 	std::vector<struct pollfd>::iterator it = _fdList.begin();
@@ -373,11 +370,19 @@ void	Server::removeClient(Client *client)
 	_clientsBySock.erase(it->fd);
 	if (client->isRegistered() == true && _clientsByName.find(client->getNickname())->second == client)
 	{
+		client->addToOutputBuffer(client->getPrefix() + " QUIT :" + reason);
+		irc_error(client, "Closing Link: " + client->getHost() + " (" + reason + ")");
+		send(client->getSock(), client->getOutputBuffer(), strlen(client->getOutputBuffer()), 0);
+		client->sendToAllChannels(client->getPrefix() + " QUIT :" + reason);
 		_clientsByName.erase(client->getNickname());
 		addOldNickname(client->getNickname(), client);
 	}
 	else
+	{
+		irc_error(client, "Closing Link: " + client->getHost() + " (" + reason + ")");
+		send(client->getSock(), client->getOutputBuffer(), strlen(client->getOutputBuffer()), 0);
 		delete client;
+	}
 	close(it->fd);
 	_fdList.erase(it);
 }
