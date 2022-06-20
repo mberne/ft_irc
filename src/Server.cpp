@@ -228,7 +228,8 @@ void	Server::receiveMessages()
 			{
 				buf[ret] = '\0';
 				client->addToInputBuffer(buf);
-				addLog("from: " + client->getPrefix() + " to: :" + SERV_NAME + "\n" + buf, LOG_LISTEN);
+				if (CRLF.compare(buf))
+					addLog("from: " + client->getPrefix() + " to: :" + SERV_NAME + "\n" + buf, LOG_LISTEN);
 				executeRequest(client);
 			}
 		}
@@ -415,8 +416,7 @@ void		Server::addLog(std::string message, int type)
 			break ;
 	}
 	size_t	start = 0;
-	for (size_t i = message.find('\r'); i != std::string::npos; i = message.find('\r'))
-		message.erase(i);
+	message.erase(remove(message.begin(), message.end(), '\r'), message.end());
 	for (size_t i = message.find('\n'); i != std::string::npos; i = message.find('\n', start))
 	{
 		std::string					line = message.substr(start, i - start);
@@ -424,5 +424,6 @@ void		Server::addLog(std::string message, int type)
 		_logFile << logPrompt + line << std::endl;
 		start = i + sizeof(char);
 	}
-	_logFile << logPrompt + message.substr(start, message.size() - start) << std::endl;
+	if (message[message.size() - 1] != '\n')
+		_logFile << logPrompt + message.substr(start, message.size() - start) << std::endl;
 }
