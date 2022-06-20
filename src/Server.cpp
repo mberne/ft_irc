@@ -27,7 +27,7 @@ Server::Server(int port, std::string password) : _port(port), _password(password
 		stop(errno);
 	if (listen(_fd, SOMAXCONN) == -1) // SOMAXCONN = max value
 		stop(errno);
-
+	// parseConfig();
 	initSupportedCommands();
 }
 
@@ -79,7 +79,10 @@ std::string	Server::getPassword() const
 
 std::string	Server::getStartTime() const
 {
-	return asctime(localtime(&_startTime));
+	char*	time = asctime(localtime(&_startTime));
+
+	time[strlen(time) - 1] = '\0'; // Remove '\n';
+	return time;
 }
 
 std::string	Server::getCurrentTime() const

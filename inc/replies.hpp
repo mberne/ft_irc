@@ -18,11 +18,11 @@
 														std::string(" MESSAGELEN=") + std::to_string(MESSAGELEN)
 																	
 // Pour répondre à une requête au sujet du mode du client, RPL_UMODEIS est renvoyé.
-# define RPL_UMODEIS(user, client)		PROMPT(" 221 ", user) + std::string(" ") + client->getMods()
+# define RPL_UMODEIS(user, client)	PROMPT(" 221 ", user) + std::string(" ") + client->getMods()
 
 // Réponses à STATS
-# define RPL_ENDOFSTATS(user, arg)		PROMPT(" 219 ", user) + std::string(" ") + arg + std::string(" :End of /STATS report")
-# define RPL_STATSUPTIME(user, server)	PROMPT(" 242 ", user) + std::string(" :Server Up ") + server->getStartTime()
+# define RPL_STATSUPTIME(user, server)		PROMPT(" 242 ", user) + std::string(" :Server Up ") + server->getStartTime()
+# define RPL_ENDOFSTATS(user)				PROMPT(" 219 ", user) + std::string(" :End of /STATS report")
 
 // Réponses à LUSERS
 # define RPL_LUSERCLIENT(user, server)		PROMPT(" 251 ", user) + std::string(" :There are ") + std::to_string(server->getAllClients().size()) + std::string(" users")

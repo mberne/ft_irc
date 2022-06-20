@@ -14,32 +14,18 @@ void	irc_version(std::vector<std::string> cmd, Client* sender, Server* serv)
 
 void	irc_stats(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
-	// query pris en compte dans le code pour erreurs etc mais pas pour la réponse finale...
 	if (cmd.size() < 2)
 		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
-	else if (cmd.size() == 2)
-	{
-		if (cmd[1].size() != 1 && cmd[1].compare(SERV_NAME))
-			sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), cmd[1]));
-		else if (cmd[1].size() == 1)
-		{
-			sender->addToOutputBuffer(RPL_STATSUPTIME(sender->getNickname(), serv));
-			sender->addToOutputBuffer(RPL_ENDOFSTATS(sender->getNickname(), cmd[1][0]));
-		}
-		else
-			sender->addToOutputBuffer(RPL_ENDOFSTATS(sender->getNickname(), cmd[1][0]));
-	}
 	else
 	{
-		if (cmd[2].compare(SERV_NAME))
-			sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), cmd[2]));
+		if (cmd[1].compare(SERV_NAME))
+			sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), cmd[1]));
 		else
 		{
 			sender->addToOutputBuffer(RPL_STATSUPTIME(sender->getNickname(), serv));
-			sender->addToOutputBuffer(RPL_ENDOFSTATS(sender->getNickname(), cmd[1][0]));
+			sender->addToOutputBuffer(RPL_ENDOFSTATS(sender->getNickname()));
 		}
 	}
-
 }
 
 void	irc_time(std::vector<std::string> cmd, Client* sender, Server* serv)
