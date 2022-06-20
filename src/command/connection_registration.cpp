@@ -10,13 +10,13 @@ void	irc_pass(std::vector<std::string> cmd, Client* sender, Server* serv)
 	{
 		sender->addToOutputBuffer(ERR_PASSWDMISMATCH(sender->getNickname()));
 		sender->setPassword(false);
-		// déconnecter le client
+		// removeClient(sender, "Wrong Password")
 	}
 	else
 		sender->setPassword(true);
 }
 
-void	irc_nick(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
+void	irc_nick(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	if (cmd.size() < 2)
 		sender->addToOutputBuffer(ERR_NONICKNAMEGIVEN(sender->getNickname()));
@@ -44,7 +44,7 @@ void	irc_nick(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 	}
 }
 
-void	irc_user(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
+void	irc_user(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	(void)serv;
 	if (sender->isRegistered() == true)
@@ -62,7 +62,7 @@ void	irc_user(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 	}
 }
 
-void	irc_oper(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
+void	irc_oper(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	(void)serv;
 	if (cmd.size() < 3)
@@ -84,7 +84,14 @@ void	irc_oper(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 	}
 }
 
-void	irc_quit(std::vector<std::string> cmd, Client* sender, Server* serv) // mberne
+void	irc_quit(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
-	(void)cmd; (void)sender; (void)serv;
+	(void)serv;
+	std::string	leaveMsg;
+
+	if (cmd.size() == 1)
+		leaveMsg = sender->getPrefix() + " " + cmd[0] + " :Client Quit";
+	else
+		leaveMsg = sender->getPrefix() + " " + cmd[0] + " :" + cmd[1];
+	// removeClient(sender, leaveMsg);
 }

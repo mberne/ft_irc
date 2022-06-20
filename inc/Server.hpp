@@ -71,7 +71,7 @@ class Server
 		void		initSupportedCommands();
 		void		executeCommand(std::vector<std::string>	cmd, Client* sender);
 		void		addClient(int sock);
-		void		removeClient(Client *src);
+		void		removeClient(Client *src, std::string reason);
 		void		sendWelcome(Client* sender);
 		void		addLog(std::string message, int type);
 };

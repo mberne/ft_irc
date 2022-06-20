@@ -27,7 +27,6 @@ Server::Server(int port, std::string password) : _port(port), _password(password
 		stop(errno);
 	if (listen(_fd, SOMAXCONN) == -1) // SOMAXCONN = max value
 		stop(errno);
-
 	initSupportedCommands();
 }
 
@@ -58,6 +57,7 @@ void		Server::initSupportedCommands()
 	_commands.insert(std::make_pair("WHOIS", &irc_whois));
 	_commands.insert(std::make_pair("WHOWAS", &irc_whowas));
 	_commands.insert(std::make_pair("KILL", &irc_kill));
+	_commands.insert(std::make_pair("PING", &irc_ping));
 	_commands.insert(std::make_pair("PONG", &irc_pong));
 }
 
@@ -79,7 +79,10 @@ std::string	Server::getPassword() const
 
 std::string	Server::getStartTime() const
 {
-	return asctime(localtime(&_startTime));
+	char*	time = asctime(localtime(&_startTime));
+
+	time[strlen(time) - 1] = '\0'; // Remove '\n';
+	return time;
 }
 
 std::string	Server::getCurrentTime() const
@@ -220,18 +223,23 @@ void	Server::receiveMessages()
 	{
 		client = _clientsBySock.find(it->fd)->second;
 		if ((it->revents | POLLHUP) == it->revents) // deconnexion
-			removeClient(client);
-		else if (it->revents == POLLIN)
+			removeClient(client, "Remote host closed the connection");
+		else
 		{
-			ret = recv(it->fd, buf, TCP_MAXWIN, 0);
-			if (ret > 0)
+			if (it->revents == POLLIN)
 			{
-				buf[ret] = '\0';
-				client->addToInputBuffer(buf);
-				if (CRLF.compare(buf))
-					addLog("from: " + client->getPrefix() + " to: :" + SERV_NAME + "\n" + buf, LOG_LISTEN);
-				executeRequest(client);
+				ret = recv(it->fd, buf, TCP_MAXWIN, 0);
+				if (ret > 0)
+				{
+					client->setLastCmdTime();
+					buf[ret] = '\0';
+					client->addToInputBuffer(buf);
+					if (CRLF.compare(buf))
+						addLog("from: " + client->getPrefix() + " to: :" + SERV_NAME + "\n" + buf, LOG_LISTEN);
+					executeRequest(client);
+				}
 			}
+			pingClients(client);
 		}
 	}
 }
@@ -284,7 +292,7 @@ void	Server::sendMessages()
 			addLog("from: :" + std::string(SERV_NAME) + " to: " + client->getPrefix() + "\n" + client->getOutputBuffer(), LOG_BROADCAST);
 			client->clearOutputBuffer();
 			if (ret < 0 && errno == ECONNRESET) // deconnexion
-				removeClient(client);
+				removeClient(client, "Remote host closed the connection");
 		}
 	}
 }
@@ -342,10 +350,7 @@ void		Server::executeCommand(std::vector<std::string>	cmdArgs, Client* sender)
 			sendWelcome(sender);
 		}
 		else if (_clientsByName.find(sender->getNickname()) != _clientsByName.end() && _clientsByName.find(sender->getNickname())->second != sender)
-		{
-			//ERROR call
-			removeClient(sender);
-		}
+			removeClient(sender, "Remote host closed the connection");
 	}
 }
 
@@ -358,7 +363,7 @@ void	Server::addClient(int sock)
 	addLog("New connexion: " + newClient->getPrefix(), LOG_INFO);
 }
 
-void	Server::removeClient(Client *client)
+void	Server::removeClient(Client *client, std::string reason)
 {
 	addLog("Connexion closed: " + client->getPrefix(), LOG_INFO);
 	std::vector<struct pollfd>::iterator it = _fdList.begin();
@@ -367,11 +372,19 @@ void	Server::removeClient(Client *client)
 	_clientsBySock.erase(it->fd);
 	if (client->isRegistered() == true && _clientsByName.find(client->getNickname())->second == client)
 	{
+		client->addToOutputBuffer(client->getPrefix() + " QUIT :" + reason);
+		irc_error(client, "Closing Link: " + client->getHost() + " (" + reason + ")");
+		send(client->getSock(), client->getOutputBuffer(), strlen(client->getOutputBuffer()), 0);
+		client->sendToAllChannels(client->getPrefix() + " QUIT :" + reason);
 		_clientsByName.erase(client->getNickname());
 		addOldNickname(client->getNickname(), client);
 	}
 	else
+	{
+		irc_error(client, "Closing Link: " + client->getHost() + " (" + reason + ")");
+		send(client->getSock(), client->getOutputBuffer(), strlen(client->getOutputBuffer()), 0);
 		delete client;
+	}
 	close(it->fd);
 	_fdList.erase(it);
 }

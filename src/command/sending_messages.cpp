@@ -18,7 +18,7 @@ void	irc_privmsg(std::vector<std::string> cmd, Client* sender, Server* serv)
 			}
 			else
 			{
-				if (serv->getChannel(target[i]) && serv->getChannel(target[i])->isBanned(sender))
+				if (serv->getChannel(target[i]) && !serv->getChannel(target[i])->isBanned(sender))
 					serv->getChannel(target[i])->sendToClients(sender->getPrefix() + " PRIVMSG " + serv->getChannel(target[i])->getName() + " :" + cmd[2]);
 				else
 					sender->addToOutputBuffer(ERR_CANNOTSENDTOCHAN(sender->getNickname(), target[i]));
@@ -42,7 +42,7 @@ void	irc_notice(std::vector<std::string> cmd, Client* sender, Server* serv)
 		{
 			if (target[i][0] != '#' && serv->getClient(target[i]))
 				serv->getClient(target[i])->addToOutputBuffer(sender->getPrefix() + " NOTICE " + serv->getClient(target[i])->getNickname() + " :" + cmd[2]);
-			else if (target[i][0] == '#' && serv->getChannel(target[i]) && serv->getChannel(target[i])->isBanned(sender))
+			else if (target[i][0] == '#' && serv->getChannel(target[i]) && !serv->getChannel(target[i])->isBanned(sender))
 				serv->getChannel(target[i])->sendToClients(sender->getPrefix() + " NOTICE " + serv->getChannel(target[i])->getName() + " :" + cmd[2]);
 		}
 	}

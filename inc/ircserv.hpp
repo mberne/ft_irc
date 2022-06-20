@@ -113,8 +113,9 @@ void	irc_whowas(std::vector<std::string> cmd, Client* sender, Server* serv);
 void	irc_kill(std::vector<std::string> cmd, Client* sender, Server* serv);
 void	irc_ping(std::vector<std::string> cmd, Client* sender, Server* serv);
 void	irc_pong(std::vector<std::string> cmd, Client* sender, Server* serv);
-void	irc_error(std::vector<std::string> cmd, Client* sender, Server* serv);
+void	irc_error(Client* sender, std::string reason);
 // utils
+void	pingClients(Client* client);
 void	parseArg(std::string cmdArg, std::vector<std::string>& argList);
 
 #endif //~~ IRCSERV_H
