@@ -25,7 +25,13 @@ void	irc_pong(std::vector<std::string> cmd, Client* sender, Server* serv)
 	sender->setIsPing(0);
 }
 
-void	irc_ping(Client* client)
+void	irc_ping(std::vector<std::string> cmd, Client* sender, Server* serv)
+{
+	(void)cmd; (void)serv;
+	sender->addToOutputBuffer("PONG");
+}
+
+void	pingClients(Client* client)
 {
 	time_t	differenceTime = time(NULL) - client->getLastCmdTime();
 

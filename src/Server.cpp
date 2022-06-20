@@ -57,6 +57,7 @@ void		Server::initSupportedCommands()
 	_commands.insert(std::make_pair("WHOIS", &irc_whois));
 	_commands.insert(std::make_pair("WHOWAS", &irc_whowas));
 	_commands.insert(std::make_pair("KILL", &irc_kill));
+	_commands.insert(std::make_pair("PING", &irc_ping));
 	_commands.insert(std::make_pair("PONG", &irc_pong));
 }
 
@@ -237,7 +238,7 @@ void	Server::receiveMessages()
 					executeRequest(client);
 				}
 			}
-			irc_ping(client);
+			pingClients(client);
 		}
 	}
 }
