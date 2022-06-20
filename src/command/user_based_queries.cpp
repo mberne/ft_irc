@@ -37,7 +37,7 @@ void	irc_whois(std::vector<std::string> cmd, Client* sender, Server* serv)
 			if (cmd[1].compare(SERV_NAME))
 			{
 				sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), cmd[1]));
-				return ;
+				return;
 			}
 			mask = 2;
 		}

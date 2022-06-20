@@ -153,7 +153,7 @@ void	irc_mode(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 						if (cmd.size() == argIndex)
 						{
 							sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
-							return ;
+							return;
 						}
 						if (serv->getClient(cmd[argIndex]) == NULL)
 							sender->addToOutputBuffer(ERR_NOSUCHNICK(sender->getNickname(), cmd[argIndex]));
@@ -171,7 +171,7 @@ void	irc_mode(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 						if (sign == '+' && cmd.size() == argIndex)
 						{
 							sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
-							return ;
+							return;
 						}
 						size_t limit = std::atoi(cmd[argIndex].c_str());
 						if (limit)
@@ -187,7 +187,7 @@ void	irc_mode(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 						if (cmd.size() == argIndex)
 						{
 							sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
-							return ;
+							return;
 						}
 						mods.push_back(sign);
 						mods += CHANNEL_MODS[i];
@@ -255,7 +255,7 @@ void	irc_kick(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 	if (cmd.size() < 3)
 	{
 		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
-		return ;
+		return;
 	}
 	Channel*	channel = serv->getChannel(cmd[1]);
 	Client*		client = serv->getClient(cmd[2]);
