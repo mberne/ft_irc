@@ -27,7 +27,7 @@ void	irc_whois(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	int	mask;
 	if (cmd.size() < 2)
-		sender->addToOutputBuffer(ERR_NONICKNAMEGIVEN(sender->getNickname(), "WHOIS"));
+		sender->addToOutputBuffer(ERR_NONICKNAMEGIVEN(sender->getNickname()));
 	else
 	{
 		if (cmd.size() == 2)
@@ -36,7 +36,7 @@ void	irc_whois(std::vector<std::string> cmd, Client* sender, Server* serv)
 		{
 			if (cmd[1].compare(SERV_NAME))
 			{
-				sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "WHOIS", cmd[1]));
+				sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), cmd[1]));
 				return ;
 			}
 			mask = 2;
@@ -53,7 +53,7 @@ void	irc_whois(std::vector<std::string> cmd, Client* sender, Server* serv)
 			sender->addToOutputBuffer(RPL_ENDOFWHOIS(sender->getNickname(), cmd[mask]));
 		}
 		else
-			ERR_NOSUCHNICK(sender->getNickname(), cmd[0], cmd[mask]);
+			ERR_NOSUCHNICK(sender->getNickname(), cmd[mask]);
 	}
 }
 
@@ -64,7 +64,7 @@ void	irc_whowas(std::vector<std::string> cmd, Client* sender, Server* serv)
 	// int	i = 0;
 
 	// if (cmd.size() < 2)
-	// 	sender->addToOutputBuffer(ERR_NONICKNAMEGIVEN(sender->getNickname(), "WHOWAS"));
+	// 	sender->addToOutputBuffer(ERR_NONICKNAMEGIVEN(sender->getNickname()));
 	// else
 	// {
 	// 	if (cmd.size() == 3)
@@ -84,7 +84,7 @@ void	irc_whowas(std::vector<std::string> cmd, Client* sender, Server* serv)
 	// 		}
 	// 	}
 	// 	if (!i)
-	// 		sender->addToOutputBuffer(ERR_WASNOSUCHNICK(sender->getNickname(), cmd[0], cmd[1]));
+	// 		sender->addToOutputBuffer(ERR_WASNOSUCHNICK(sender->getNickname(), cmd[1]));
 	// 	sender->addToOutputBuffer(RPL_ENDOFWHOWAS(sender->getNickname(), cmd[1]));
 	// }
 }

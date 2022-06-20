@@ -4,7 +4,7 @@ void	irc_version(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	(void)serv;
 	if (cmd.size() > 1 && cmd[1].compare(SERV_NAME))
-		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "VERSION", cmd[1]));
+		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), cmd[1]));
 	else
 	{
 		sender->addToOutputBuffer(RPL_VERSION(sender->getNickname()));
@@ -20,7 +20,7 @@ void	irc_stats(std::vector<std::string> cmd, Client* sender, Server* serv)
 	else if (cmd.size() == 2)
 	{
 		if (cmd[1].size() != 1 && cmd[1].compare(SERV_NAME))
-			sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "STATS", cmd[1]));
+			sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), cmd[1]));
 		else if (cmd[1].size() == 1)
 		{
 			sender->addToOutputBuffer(RPL_STATSUPTIME(sender->getNickname(), serv));
@@ -32,7 +32,7 @@ void	irc_stats(std::vector<std::string> cmd, Client* sender, Server* serv)
 	else
 	{
 		if (cmd[2].compare(SERV_NAME))
-			sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "STATS", cmd[2]));
+			sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), cmd[2]));
 		else
 		{
 			sender->addToOutputBuffer(RPL_STATSUPTIME(sender->getNickname(), serv));
@@ -45,7 +45,7 @@ void	irc_stats(std::vector<std::string> cmd, Client* sender, Server* serv)
 void	irc_time(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	if (cmd.size() == 2 && cmd[1].compare(SERV_NAME))
-		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "TIME", cmd[1]));
+		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), cmd[1]));
 	else
 		sender->addToOutputBuffer(RPL_TIME(sender->getNickname(), serv->getCurrentTime()));
 }
@@ -54,7 +54,7 @@ void	irc_admin(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	(void)serv;
 	if (cmd.size() == 2 && cmd[1].compare(SERV_NAME))
-		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "ADMIN", cmd[1]));
+		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), cmd[1]));
 	else
 	{
 		sender->addToOutputBuffer(RPL_ADMINME(sender->getNickname()));
@@ -68,7 +68,7 @@ void	irc_info(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	(void)serv;
 	if (cmd.size() == 2 && cmd[1].compare(SERV_NAME))
-		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "INFO", cmd[1]));
+		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), cmd[1]));
 	else
 	{
 		sender->addToOutputBuffer(RPL_INFO(sender->getNickname(), SERV_NAME));
@@ -95,7 +95,7 @@ void	irc_motd(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	(void)serv;
 	if (cmd.size() == 2 && cmd[1].compare(SERV_NAME))
-		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), "VERSION", cmd[1]));
+		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), cmd[1]));
 	else
 	{
 		sender->addToOutputBuffer(RPL_MOTDSTART(sender->getNickname()));
