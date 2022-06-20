@@ -104,7 +104,7 @@ class Channel
 *	a control G (^G or ASCII 7)
 *	or a comma (',' which is used as a list item separator by the protocol).
 *	
-*	CHANNEL MODES:
+*	CHANNEL MODS:
 *	i - toggle the invite-only channel flag;
 *	m - toggle the moderated channel flag;
 *	n - toggle the no messages to channel from clients on the outside flag;

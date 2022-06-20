@@ -84,7 +84,7 @@ class Client
 #endif //~~ CLIENT_H
 
 /*
-*	USER MODES:
+*	USER MODS:
 *   i - marks a users as invisible;
 *   o - operator flag.
 */

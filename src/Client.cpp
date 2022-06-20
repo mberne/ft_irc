@@ -25,7 +25,7 @@ std::string		Client::getNickname() const
 void			Client::setNickname(std::string nickname)
 {
 	_oldNicknames.push_back(_nickname);
-	_nickname = nickname.substr(0, NICKLEN);
+	_nickname = nickname.substr(0, NICK_LEN);
 }
 
 // bool	Client::isOldNickname(std::string nickname)
