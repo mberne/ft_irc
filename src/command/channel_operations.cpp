@@ -38,7 +38,6 @@ void	irc_join(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 				sender->addToOutputBuffer(ERR_INVITEONLYCHAN(sender->getNickname(), channels[i]));
 			else if (current && current->clientCount() >= current->getUserLimit())
 				sender->addToOutputBuffer(ERR_CHANNELISFULL(sender->getNickname(), channels[i]));
-			// ERR_BADCHANMASK
 			else
 			{
 				if (!current)
