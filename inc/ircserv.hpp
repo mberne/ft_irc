@@ -43,42 +43,30 @@
 
 // Server specifications
 // Required
-# define CASEMAPPING				"ascii"
-# define CHANLIMIT					10
-# define CHANMODES					"opsitnmlbvk"
-# define CHANNELLEN					50
-# define CHANTYPES					"#"
-# define ELIST						""
-# define EXECPTS
-# define EXTBAN
-# define HOSTLEN					10
-# define INVEX
-# define KICKLEN					256
-# define MAXLIST
-# define MAXTARGETS
-# define MODES
-# define NETWORK
-# define NICKLEN					20
-# define PREFIX
-# define SAFELIST
-# define SILENCE
-# define STATUSMSG
-# define TARGMAX					512
-# define TOPICLEN					400
-# define USERLEN					10
-// Others
-# define MESSAGELEN					512
-# define REALNAMELEN				50
-# define ASCII_CHARSET				"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-# define CRLF						std::string("\r\n")
-# define CLIENT_LIMIT				100
-# define CHANNEL_LIMIT				1000
+# define CASE_MAPPING				std::string("ascii")
+# define CLIENT_CHANNEL_LIMIT		10
+# define USER_MODS					std::string("i")
+# define CHAN_MODS					std::string("opsitnmlbvk")
+# define CHANNEL_LEN				50
+# define CHAN_TYPES					"#"
+# define HOST_LEN					10
+# define KICK_LEN					256
+# define NICK_LEN					20
+# define TOPIC_LEN					400
+# define USER_LEN					10
+# define MESSAGE_LEN				512
+# define REALNAME_LEN				50
+# define CLIENT_LIMIT				500
+# define CHANNEL_LIMIT				2000
 # define MAX_PORT					65536
-# define MAX_TIME_AFK				300
-# define MAX_PING_TIME				60
-# define OPERATOR_USER				"p1k13p13"
-# define OPERATOR_PASSWORD			"*_*SEGFAULT_11"
+# define MAXTIME_AFK				300
+# define MAXPING_TIME				60
+// Sensitive or useless
 # define CLIENT_LIMIT_PER_CHANNEL	100
+# define ASCII_CHARSET				std::string("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+# define CRLF						std::string("\r\n")
+# define OPERATOR_USER				std::string("p1k13p13")
+# define OPERATOR_PASSWORD			std::string("*_*SEGFAULT_11")
 
 /*** ~~ CLASSES ~~ ***/
 
