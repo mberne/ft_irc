@@ -60,7 +60,7 @@
 # define ERR_NICKCOLLISION(user, name) PROMPT(" 436 ", user) + std::string(" ") + std::string(" ") + name + std::string(" :Nickname collision KILL")
 // Renvoyé par un serveur à un client lorsqu'il détecte une collision de pseudonymes (enregistrement d'un pseudonyme qui existe déjà sur un autre serveur).
 
-# define ERR_USERNOTINCHANNEL(user, nickname, channel) PROMPT(" 441 ", user) + std::string(" ") + std::string(" ") + nickname + std::string(" ") + channel " :They aren't on that channel")
+# define ERR_USERNOTINCHANNEL(user, nickname, channel) PROMPT(" 441 ", user) + std::string(" ") + std::string(" ") + nickname + std::string(" ") + channel + std::string(" :They aren't on that channel")
 // Renvoyé par un serveur pour indiquer que l'utilisateur donné n'est pas dans le canal spécifié.
 
 # define ERR_NOTONCHANNEL(user, name) PROMPT(" 442 ", user) + std::string(" ") + std::string(" ") + name + std::string(" :You're not on that channel")

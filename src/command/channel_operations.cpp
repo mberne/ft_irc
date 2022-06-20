@@ -142,5 +142,30 @@ void	irc_list(std::vector<std::string> cmd, Client* sender, Server* serv)
 
 void	irc_kick(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
 {
-	(void)cmd; (void)sender; (void)serv;
+
+	if (cmd.size() < 3)
+	{
+		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
+		return ;
+	}
+	Channel*	channel = serv->getChannel(cmd[1]);
+	Client*		client = serv->getClient(cmd[2]);
+	
+	if (channel == NULL)
+		sender->addToOutputBuffer(ERR_NOSUCHCHANNEL(sender->getNickname(), cmd[1]));
+	else if (channel->getClient(sender->getNickname()) == NULL)
+		sender->addToOutputBuffer(ERR_NOTONCHANNEL(sender->getNickname(), cmd[1]));
+	else if (channel->isOperator(sender) == false)
+		sender->addToOutputBuffer(ERR_CHANOPRIVSNEEDED(sender->getNickname(), cmd[1]));
+	else if (client == NULL)
+		sender->addToOutputBuffer(ERR_NOSUCHNICK(sender->getNickname(), cmd[2]));
+	else if (channel->getClient(cmd[2]) == NULL)
+		sender->addToOutputBuffer(ERR_USERNOTINCHANNEL(sender->getNickname(), cmd[2], cmd[1]));
+	else
+	{
+		channel->sendToClients(sender->getPrefix() + " " + cmd[0] + " " + cmd[1] + " " + cmd[2] + " :" + (cmd.size() > 3 ? cmd[3] : "Kicked by operator." ));
+		client->leaveChannel(channel);
+		if (channel->clientCount() == 0)
+			serv->removeChannel(channel);
+	}
 }
