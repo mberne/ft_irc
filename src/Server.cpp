@@ -261,7 +261,10 @@ void		Server::executeRequest(Client* sender)
 			for (size_t j = cmdLine.find_first_of(' '); j != std::string::npos; j = cmdLine.find_first_of(' '))
 			{
 				if (cmdLine[0] == ':')
+				{
+					cmdLine.erase(0, 1);
 					break;
+				}
 				cmdArgs.push_back(cmdLine.substr(0, j));
 				cmdLine.erase(0, cmdLine.find_first_not_of(' ', j));
 			}
@@ -372,17 +375,17 @@ void	Server::removeClient(Client *client, std::string reason)
 	_clientsBySock.erase(it->fd);
 	if (client->isRegistered() == true && _clientsByName.find(client->getNickname())->second == client)
 	{
-		client->addToOutputBuffer(client->getPrefix() + " QUIT :" + reason);
-		irc_error(client, "Closing Link: " + client->getHost() + " (" + reason + ")");
-		send(client->getSock(), client->getOutputBuffer(), strlen(client->getOutputBuffer()), 0);
-		client->sendToAllChannels(client->getPrefix() + " QUIT :" + reason);
+		client->addToOutputBuffer(client->getPrefix() + " QUIT :" + reason); // padakor
+		irc_error(client, "Closing Link: " + client->getHost() + " (" + reason + ")"); // moyendakor
+		send(client->getSock(), client->getOutputBuffer(), strlen(client->getOutputBuffer()), 0); // moyendakor
+		client->sendToAllChannels(client->getPrefix() + " QUIT :" + reason); // padakor
 		_clientsByName.erase(client->getNickname());
 		addOldNickname(client->getNickname(), client);
 	}
 	else
 	{
-		irc_error(client, "Closing Link: " + client->getHost() + " (" + reason + ")");
-		send(client->getSock(), client->getOutputBuffer(), strlen(client->getOutputBuffer()), 0);
+		irc_error(client, "Closing Link: " + client->getHost() + " (" + reason + ")"); // padakor
+		send(client->getSock(), client->getOutputBuffer(), strlen(client->getOutputBuffer()), 0); // moyendakor
 		delete client;
 	}
 	close(it->fd);

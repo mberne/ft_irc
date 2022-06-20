@@ -71,7 +71,7 @@ class Channel
 		bool			isBanned(Client* client);
 		bool			isInvited(Client* client) const;
 		std::string		showClientsList();
-		void			sendToClients(std::string msg);
+		void			sendToClients(std::string msg, Client* sender);
 		std::map<std::string, Client*> &	getAllClients();
 
 

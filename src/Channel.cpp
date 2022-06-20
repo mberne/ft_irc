@@ -301,10 +301,13 @@ std::string		Channel::showClientsList()
 	return clientList;
 }
 
-void			Channel::sendToClients(std::string msg)
+void			Channel::sendToClients(std::string msg, Client* sender)
 {
 	for (std::map<std::string, Client*>::iterator it = _clients.begin(); it != _clients.end(); it++)
-		it->second->addToOutputBuffer(msg);
+	{
+		if (it->second != sender)
+			it->second->addToOutputBuffer(msg);
+	}
 }
 
 std::map<std::string, Client*> &	Channel::getAllClients()

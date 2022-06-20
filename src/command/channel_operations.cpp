@@ -48,7 +48,7 @@ void	irc_join(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 				namesCmd.push_back(current->getName());
 
 				sender->joinChannel(current);
-				current->sendToClients(sender->getPrefix() + " " + cmd[0] + " " + channels[i]);
+				current->sendToClients(sender->getPrefix() + " " + cmd[0] + " " + channels[i], NULL);
 				if (current->hasMod(CHANNEL_FLAG_T) == true)
 					sender->addToOutputBuffer(RPL_TOPIC(sender->getNickname(), current));
 				irc_names(namesCmd, sender, serv);
@@ -76,7 +76,7 @@ void	irc_part(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 				sender->addToOutputBuffer(ERR_NOTONCHANNEL(sender->getNickname(), channels[i]));
 			else
 			{
-				current->sendToClients(sender->getPrefix() + " " + cmd[0] + " " + channels[i] + (cmd.size() > 2 ? " " + cmd[2] : "" ));
+				current->sendToClients(sender->getPrefix() + " " + cmd[0] + " " + channels[i] + (cmd.size() > 2 ? " " + cmd[2] : "" ), NULL);
 				sender->leaveChannel(current);
 				if (current->clientCount() == 0)
 					serv->removeChannel(current);
@@ -196,7 +196,7 @@ void	irc_mode(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 				}
 			}
 			if (!mods.empty())
-				channel->sendToClients(sender->getPrefix() + " " + cmd[0] + " " + channel->getName() + " " + channel->setMods(mods, modsArgs));
+				channel->sendToClients(sender->getPrefix() + " " + cmd[0] + " " + channel->getName() + " " + channel->setMods(mods, modsArgs), NULL);
 		}
 	}
 }
@@ -273,7 +273,7 @@ void	irc_kick(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 	else
 	{
 		if (cmd.size() > 3)
-		channel->sendToClients(sender->getPrefix() + " " + cmd[0] + " " + cmd[1] + " " + cmd[2] + " :" + (cmd.size() > 3 ? cmd[3] : "Kicked by operator." ));
+		channel->sendToClients(sender->getPrefix() + " " + cmd[0] + " " + cmd[1] + " " + cmd[2] + " :" + (cmd.size() > 3 ? cmd[3] : "Kicked by operator." ), NULL);
 		client->leaveChannel(channel);
 		if (channel->clientCount() == 0)
 			serv->removeChannel(channel);
