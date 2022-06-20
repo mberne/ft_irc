@@ -27,36 +27,32 @@ void	irc_join(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 				sender->addToOutputBuffer(ERR_TOOMANYCHANNELS(sender->getNickname(), cmd[0], channels[i]));
 				return;	
 			}
-			else if (!current)
-			{
-				current = serv->newChannel(channels[i], sender);
-				sender->joinChannel(current);
-				sender->addToOutputBuffer(sender->getPrefix() + " " + cmd[0] + " " + channels[i]);
-				if (current->hasTopic() == true)
-					sender->addToOutputBuffer(RPL_TOPIC(sender->getNickname(), current));
-				sender->addToOutputBuffer(RPL_NAMREPLY(sender->getNickname(), current));
-				sender->addToOutputBuffer(RPL_ENDOFNAMES(sender->getNickname(), channels[i]));
-			}
-			else if (!current->getPassword().empty())
+			else if (current && !current->getPassword().empty())
 			{
 				if (current->getPassword().compare(password[i]))
 					sender->addToOutputBuffer(ERR_BADCHANNELKEY(sender->getNickname(), cmd[0], channels[i]));
 			}
-			else if (current->isBanned(sender))
+			else if (current && current->isBanned(sender))
 				sender->addToOutputBuffer(ERR_BANNEDFROMCHAN(sender->getNickname(), cmd[0], channels[i]));
-			else if (!current->isInvited(sender))
+			else if (current && !current->isInvited(sender))
 				sender->addToOutputBuffer(ERR_INVITEONLYCHAN(sender->getNickname(), cmd[0], channels[i]));
-			else if (current->clientCount() >= current->getUserLimit())
+			else if (current && current->clientCount() >= current->getUserLimit())
 				sender->addToOutputBuffer(ERR_CHANNELISFULL(sender->getNickname(), cmd[0], channels[i]));
 			// ERR_BADCHANMASK
 			else
 			{
+				if (!current)
+					current = serv->newChannel(channels[i], sender);
+
+				std::vector<std::string> namesCmd;
+				namesCmd.push_back("NAMES");
+				namesCmd.push_back(current->getName());
+
 				sender->joinChannel(current);
 				current->sendToClients(sender->getPrefix() + " " + cmd[0] + " " + channels[i]);
-				if (current->hasTopic() == true)
+				if (current->hasMod(CHANNEL_FLAG_T) == true)
 					sender->addToOutputBuffer(RPL_TOPIC(sender->getNickname(), current));
-				sender->addToOutputBuffer(RPL_NAMREPLY(sender->getNickname(), current));
-				sender->addToOutputBuffer(RPL_ENDOFNAMES(sender->getNickname(), channels[i]));
+				irc_names(namesCmd, sender, serv);
 			}
 		}
 	}
@@ -102,24 +98,22 @@ void	irc_topic(std::vector<std::string> cmd, Client* sender, Server* serv) // pt
 
 void	irc_names(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
-	if (cmd.size() == 1)
+	if (cmd.size() < 2)
+		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
+	else
 	{
-		for (std::map<std::string, Channel*>::iterator itChan = serv->getAllChannels().begin(); itChan != serv->getAllChannels().end(); itChan++)
-			for (std::map<std::string, Client*>::iterator itCli = itChan->second->getAllClients().begin(); itCli != itChan->second->getAllClients().end(); itCli++)
-				sender->addToOutputBuffer(RPL_NAMREPLY(sender->getNickname(), itChan->second));
-		// afficher ceux sans canal
+		std::vector<std::string>	channels;
+
+		parseArg(cmd[1], channels);
+		for (size_t i = 0; i < channels.size(); i++)
+		{
+			Channel* current = serv->getChannel(channels[i]);
+
+			if (current != NULL && (!current->hasMod(CHANNEL_FLAG_S) || current->getClient(sender->getNickname()) != NULL))
+				sender->addToOutputBuffer(RPL_NAMREPLY(sender->getNickname(), current));
+			sender->addToOutputBuffer(RPL_ENDOFNAMES(sender->getNickname(), channels[i]));
+		}
 	}
-	else // doublons à gérer ?
-		for (size_t i = 1; i != cmd.size(); i++)
-			for (std::map<std::string, Channel*>::iterator itChan = serv->getAllChannels().begin(); itChan != serv->getAllChannels().end(); itChan++)
-			{
-				if (!itChan->second->getName().compare(cmd[i]))
-				{
-					for (std::map<std::string, Client*>::iterator itCli = itChan->second->getAllClients().begin(); itCli != itChan->second->getAllClients().end(); itCli++)
-						sender->addToOutputBuffer(RPL_NAMREPLY(sender->getNickname(), itChan->second));
-				}
-			}
-	sender->addToOutputBuffer(RPL_ENDOFNAMES(sender->getNickname(), cmd[1]));
 }
 
 void	irc_list(std::vector<std::string> cmd, Client* sender, Server* serv)

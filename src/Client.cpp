@@ -78,16 +78,6 @@ bool	Client::isRegistered() const
 	return (_nickname.empty() == false && _user.empty() == false && _password == true);
 }
 
-bool			Client::isServOperator() const
-{
-	return ((_mods | CLIENT_FLAG_O) == _mods);
-}
-
-bool			Client::isInvisible() const
-{
-	return ((_mods | CLIENT_FLAG_I) == _mods);
-}
-
 void	Client::setPassword(bool proof)
 {
 	_password = proof;
@@ -140,11 +130,16 @@ std::string		Client::getMods() const
 {
 	std::string modsString("+");
 
-	if (isInvisible() == true)
+	if (hasMod(CLIENT_FLAG_I) == true)
 		modsString += 'i';
-	if (isServOperator() == true)
+	if (hasMod(CLIENT_FLAG_O) == true)
 		modsString += 'o';
 	return modsString;
+}
+
+bool			Client::hasMod(int mode) const
+{
+	return ((_mods | mode) == _mods);
 }
 
 //~~ CHANNELS
@@ -207,7 +202,7 @@ std::string		Client::showChannelList()
 			channelList += " ";
 		if (it->second->isOperator(this))
 			channelList += "@";
-		else if (it->second->isModerated() && it->second->hasVoice(this))
+		else if (it->second->hasMod(CHANNEL_FLAG_M) && it->second->hasVoice(this))
 			channelList += "+";
 		channelList += it->second->getName();
 	}

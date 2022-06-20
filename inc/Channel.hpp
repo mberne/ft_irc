@@ -51,15 +51,10 @@ class Channel
 		std::string		getPassword() const;
 		int				clientCount() const;
 		int				getUserLimit() const;
-		bool			isModerated() const;
-		bool			isInvited(Client* client) const;
-		bool			nonMembersCanTalk() const;
-		bool			isPrivate() const;
-		bool			isSecret() const;
-		bool			hasTopic() const;
 		// MODS
 		// void			addMods(int mods, ...);
 		// void			removeMods(int mods);
+		bool			hasMod(int mode) const;
 		std::string		getMods() const;
 		void			addOperator(Client* client);			// Add the Client to the list of channel operators
 		void			removeOperator(Client* client);			// Remove the Client from the list of channel operators
@@ -75,6 +70,7 @@ class Channel
 		bool			isOperator(Client* client) const;
 		bool			hasVoice(Client* client) const;			// Return true if the client has voice permission
 		bool			isBanned(Client* client);
+		bool			isInvited(Client* client) const;
 		std::string		showClientsList();
 		void			sendToClients(std::string msg);
 		std::map<std::string, Client*> &	getAllClients();

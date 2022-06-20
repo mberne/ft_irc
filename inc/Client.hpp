@@ -33,8 +33,6 @@ class Client
 		void			setRealName(std::string realName);
 		std::string		getPrefix() const;
 		bool			isRegistered() const;						// Return true if the client used the registrations commands (PASS, NICK, USER)
-		bool			isServOperator() const;
-		bool			isInvisible() const;
 		void			setPassword(bool proof);
 		time_t			getConnexionStartTime() const;
 		time_t			getLastCmdTime() const;
@@ -45,6 +43,7 @@ class Client
 		void			addMods(std::string mods);
 		void			removeMods(std::string mods);
 		std::string		getMods() const;
+		bool			hasMod(int mode) const;
 		// CHANNEL
 		void			joinChannel(Channel* channel);				// Add the Channel sent as paramater to the _channels map
 		void			leaveChannel(Channel* channel);				// Remove the Channel sent as paramater from the _channels map

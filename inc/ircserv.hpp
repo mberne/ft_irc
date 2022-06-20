@@ -63,7 +63,7 @@
 # define SAFELIST
 # define SILENCE
 # define STATUSMSG
-# define TARGMAX
+# define TARGMAX					512
 # define TOPICLEN					400
 # define USERLEN					10
 // Others

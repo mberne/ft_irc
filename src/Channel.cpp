@@ -43,36 +43,6 @@ int				Channel::getUserLimit() const
 	return _userLimit;
 }
 
-bool			Channel::isModerated() const
-{
-	return ((_mods | CHANNEL_FLAG_M) == _mods);
-}
-
-bool			Channel::isInvited(Client* client) const
-{
-	return ((_mods | CHANNEL_FLAG_I) != _mods || _invitedClients.find(client->getNickname()) != _invitedClients.end());
-}
-
-bool			Channel::nonMembersCanTalk() const
-{
-	return ((_mods | CHANNEL_FLAG_N) == _mods);
-}
-
-bool			Channel::isPrivate() const
-{
-	return ((_mods | CHANNEL_FLAG_P) == _mods);
-}
-
-bool			Channel::isSecret() const
-{
-	return ((_mods | CHANNEL_FLAG_S) == _mods);
-}
-
-bool			Channel::hasTopic() const
-{
-	return ((_mods | CHANNEL_FLAG_T) == _mods);
-}
-
 //~~ BanMask METHODS
 
 bool		BanMask::isClientBanned(Client* client) const
@@ -143,6 +113,11 @@ std::string		Channel::getMods() const
 	if ((_mods | CHANNEL_FLAG_M) == _mods)
 		modsString += 'm';
 	return modsString;
+}
+
+bool			Channel::hasMod(int mode) const
+{
+	return ((_mods | mode) == _mods);
 }
 
 void			Channel::addOperator(Client* client)
@@ -222,19 +197,27 @@ bool			Channel::isBanned(Client* client)
 	return false;
 }
 
+bool			Channel::isInvited(Client* client) const
+{
+	return ((_mods | CHANNEL_FLAG_I) != _mods || _invitedClients.find(client->getNickname()) != _invitedClients.end());
+}
+
 std::string		Channel::showClientsList()
 {
 	std::string		clientList;
 
 	for (std::map<std::string, Client*>::iterator it = _clients.begin(); it != _clients.end(); it++)
 	{
-		if (it != _clients.begin())
-			clientList += " ";
-		if (this->isOperator(it->second))
-			clientList += "@";
-		else if (this->isModerated() && this->hasVoice(it->second))
-			clientList += "+";
-		clientList += it->second->getNickname();
+		if (!it->second->hasMod(CLIENT_FLAG_I))
+		{
+			if (it != _clients.begin())
+				clientList += " ";
+			if (this->isOperator(it->second))
+				clientList += "@";
+			else if (this->hasMod(CHANNEL_FLAG_M) && this->hasVoice(it->second))
+				clientList += "+";
+			clientList += it->second->getNickname();
+		}
 	}
 	return clientList;
 }

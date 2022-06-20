@@ -71,7 +71,7 @@
 // La paire RPL_WHOREPLY et RPL_ENDOFWHO est utilisée en réponse à un message WHO.
 // Le RPL_WHOREPLY n'est envoyé que s'il y a une correspondance à la requête WHO.
 // S'il y a une liste de paramètres fournie avec le message WHO, un RPL_ENDOFWHO doit être envoyé après le traitement de chaque élément de la liste, <nom> étant l'élément.
-# define RPL_WHOREPLY(user, client)		PROMPT(" 352 ", user) + std::string(" ") + client->getLastChannelName() + std::string(" ") + client->getUser() + std::string(" ") + client->getHost() + std::string(" ") + SERV_NAME + std::string(" ") + client->getNickname() + std::string(" H") + (client->isServOperator() ? "*" : "" ) + (client->getLastChannelName().compare("*") && client->getChannel(client->getLastChannelName())->isOperator(client) ? "@" : (client->getLastChannelName().compare("*") && client->getChannel(client->getLastChannelName())->hasVoice(client) ? "+" : "")) + std::string(" :0 ") + client->getRealName()
+# define RPL_WHOREPLY(user, client)		PROMPT(" 352 ", user) + std::string(" ") + client->getLastChannelName() + std::string(" ") + client->getUser() + std::string(" ") + client->getHost() + std::string(" ") + SERV_NAME + std::string(" ") + client->getNickname() + std::string(" H") + (client->hasMod(CLIENT_FLAG_O) ? "*" : "" ) + (client->getLastChannelName().compare("*") && client->getChannel(client->getLastChannelName())->isOperator(client) ? "@" : (client->getLastChannelName().compare("*") && client->getChannel(client->getLastChannelName())->hasVoice(client) ? "+" : "")) + std::string(" :0 ") + client->getRealName()
 # define RPL_ENDOFWHO(user, name)		PROMPT(" 315 ", user) + std::string(" ") + name + " :End of /WHO list"
 
 // Réponse du serveur indiquant les détails de sa version.

@@ -108,7 +108,7 @@ int	Server::getOpsNumber()
 	int	num = 0;
 
 	for (std::map<std::string, Client*>::iterator it = _clientsByName.begin(); it != _clientsByName.end(); ++it)
-		if (it->second->isServOperator())
+		if (it->second->hasMod(CLIENT_FLAG_O))
 			num++;
 	return num;
 }

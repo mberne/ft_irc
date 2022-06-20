@@ -11,7 +11,7 @@ void	irc_kill(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	if (cmd.size() < 3)
 		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), "KILL"));
-	else if (!sender->isServOperator())
+	else if (!sender->hasMod(CLIENT_FLAG_O))
 		sender->addToOutputBuffer(ERR_NOPRIVILEGES(sender->getNickname(), "KILL"));
 	else
 	{
