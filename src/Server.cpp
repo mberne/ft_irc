@@ -223,20 +223,22 @@ void	Server::receiveMessages()
 		client = _clientsBySock.find(it->fd)->second;
 		if ((it->revents | POLLHUP) == it->revents) // deconnexion
 			removeClient(client);
-		else if (it->revents == POLLIN)
+		else
 		{
-			ret = recv(it->fd, buf, TCP_MAXWIN, 0);
-			if (ret > 0)
+			if (it->revents == POLLIN)
 			{
-				buf[ret] = '\0';
-				client->addToInputBuffer(buf);
-				addLog("from: " + client->getPrefix() + " to: :" + SERV_NAME + "\n" + buf, LOG_LISTEN);
-				executeRequest(client);
+				ret = recv(it->fd, buf, TCP_MAXWIN, 0);
+				if (ret > 0)
+				{
+					client->setLastCmdTime();
+					buf[ret] = '\0';
+					client->addToInputBuffer(buf);
+					addLog("from: " + client->getPrefix() + " to: :" + SERV_NAME + "\n" + buf, LOG_LISTEN);
+					executeRequest(client);
+				}
 			}
 			irc_ping(client);
 		}
-		else
-			irc_ping(client);
 	}
 }
 
@@ -340,7 +342,6 @@ void		Server::executeCommand(std::vector<std::string>	cmdArgs, Client* sender)
 	{
 		command_t fct = it->second;
 		fct(cmdArgs, sender, this);
-		sender->setLastCmdTime();
 		if (_clientsByName.find(sender->getNickname()) == _clientsByName.end() && sender->isRegistered() == true)
 		{
 			_clientsByName.insert(std::make_pair(sender->getNickname(), sender));

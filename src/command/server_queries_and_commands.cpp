@@ -11,8 +11,11 @@ void	irc_kill(std::vector<std::string> cmd, Client* sender, Server* serv)
 		Client *client = serv->getClient(cmd[1]);
 		if (!client)
 			sender->addToOutputBuffer(ERR_NOSUCHNICK(sender->getNickname(), cmd[1]));
-		else // + deco le gars
+		else
+		{
 			irc_error(sender, "Closing Link: " + std::string(SERV_NAME) + " (Killed (" + sender->getNickname() + " (" + cmd[2] + ")))");
+			// + deco le gars
+		}
 	}
 }
 
@@ -26,7 +29,6 @@ void	irc_ping(Client* client)
 {
 	time_t	differenceTime = time(NULL) - client->getLastCmdTime();
 
-	std::cout << differenceTime << std::endl;
 	if (differenceTime > TIME_AFK)
 	{
 		if (!client->getIsPing())
@@ -34,14 +36,15 @@ void	irc_ping(Client* client)
 			client->addToOutputBuffer("PING :" + std::string(SERV_NAME));
 			client->setIsPing(1);
 		}
-		// if (differenceTime > TIME_AFK + PING_TIME)
-		// 	// couper la connexion avec quit
+		if (differenceTime > TIME_AFK + PING_TIME)
+		{
+			// couper la connexion
+		}
 	}
 
 }
 
 void	irc_error(Client* sender, std::string reason)
 {
-	sender->addToOutputBuffer("Error :");
-	sender->addToOutputBuffer(reason);	
+	sender->addToOutputBuffer("Error :" + reason);
 }
