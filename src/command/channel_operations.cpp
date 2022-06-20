@@ -21,23 +21,23 @@ void	irc_join(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 			Channel* current = serv->getChannel(channels[i]);
 
 			if (channels[i][0] != '#')
-				sender->addToOutputBuffer(ERR_NOSUCHCHANNEL(sender->getNickname(), cmd[0], channels[i]));
+				sender->addToOutputBuffer(ERR_NOSUCHCHANNEL(sender->getNickname(), channels[i]));
 			else if (sender->getNumberOfChannels() >= CHANLIMIT)
 			{
-				sender->addToOutputBuffer(ERR_TOOMANYCHANNELS(sender->getNickname(), cmd[0], channels[i]));
+				sender->addToOutputBuffer(ERR_TOOMANYCHANNELS(sender->getNickname(), channels[i]));
 				return;	
 			}
 			else if (current && !current->getPassword().empty())
 			{
 				if (current->getPassword().compare(password[i]))
-					sender->addToOutputBuffer(ERR_BADCHANNELKEY(sender->getNickname(), cmd[0], channels[i]));
+					sender->addToOutputBuffer(ERR_BADCHANNELKEY(sender->getNickname(), channels[i]));
 			}
 			else if (current && current->isBanned(sender))
-				sender->addToOutputBuffer(ERR_BANNEDFROMCHAN(sender->getNickname(), cmd[0], channels[i]));
+				sender->addToOutputBuffer(ERR_BANNEDFROMCHAN(sender->getNickname(), channels[i]));
 			else if (current && !current->isInvited(sender))
-				sender->addToOutputBuffer(ERR_INVITEONLYCHAN(sender->getNickname(), cmd[0], channels[i]));
+				sender->addToOutputBuffer(ERR_INVITEONLYCHAN(sender->getNickname(), channels[i]));
 			else if (current && current->clientCount() >= current->getUserLimit())
-				sender->addToOutputBuffer(ERR_CHANNELISFULL(sender->getNickname(), cmd[0], channels[i]));
+				sender->addToOutputBuffer(ERR_CHANNELISFULL(sender->getNickname(), channels[i]));
 			// ERR_BADCHANMASK
 			else
 			{
@@ -72,9 +72,9 @@ void	irc_part(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 			Channel* current = serv->getChannel(channels[i]);
 
 			if (current == NULL)
-				sender->addToOutputBuffer(ERR_NOSUCHCHANNEL(sender->getNickname(), cmd[0], channels[i]));
+				sender->addToOutputBuffer(ERR_NOSUCHCHANNEL(sender->getNickname(), channels[i]));
 			else if (current->getClient(sender->getNickname()) == NULL)
-				sender->addToOutputBuffer(ERR_NOTONCHANNEL(sender->getNickname(), cmd[0], channels[i]));
+				sender->addToOutputBuffer(ERR_NOTONCHANNEL(sender->getNickname(), channels[i]));
 			else
 			{
 				current->sendToClients(sender->getPrefix() + " " + cmd[0] + " " + channels[i] + (cmd.size() > 2 ? " " + cmd[2] : "" ));

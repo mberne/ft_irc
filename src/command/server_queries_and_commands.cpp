@@ -10,14 +10,14 @@ void	irc_error(Client* sender, std::string reason)
 void	irc_kill(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	if (cmd.size() < 3)
-		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), "KILL"));
+		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
 	else if (!sender->hasMod(CLIENT_FLAG_O))
-		sender->addToOutputBuffer(ERR_NOPRIVILEGES(sender->getNickname(), "KILL"));
+		sender->addToOutputBuffer(ERR_NOPRIVILEGES(sender->getNickname()));
 	else
 	{
 		Client *client = serv->getClient(cmd[1]);
 		if (!client)
-			sender->addToOutputBuffer(ERR_NOSUCHNICK(sender->getNickname(), "KILL", cmd[1]));
+			sender->addToOutputBuffer(ERR_NOSUCHNICK(sender->getNickname(), cmd[1]));
 		else // + deco le gars
 			irc_error(sender, "Closing Link: " + std::string(SERV_NAME) + " (Killed (" + sender->getNickname() + " (" + cmd[2] + ")))");
 	}
