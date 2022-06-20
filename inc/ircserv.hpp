@@ -48,7 +48,7 @@
 # define CHANMODES					"opsitnmlbvk"
 # define CHANNELLEN					50
 # define CHANTYPES					"#"
-# define ELIST
+# define ELIST						""
 # define EXECPTS
 # define EXTBAN
 # define HOSTLEN					10

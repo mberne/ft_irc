@@ -16,7 +16,7 @@ void	irc_stats(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	// query pris en compte dans le code pour erreurs etc mais pas pour la réponse finale...
 	if (cmd.size() < 2)
-		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), "STATS"));
+		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
 	else if (cmd.size() == 2)
 	{
 		if (cmd[1].size() != 1 && cmd[1].compare(SERV_NAME))
