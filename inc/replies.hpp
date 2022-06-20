@@ -11,11 +11,11 @@
 # define RPL_ISUPPORT(user)		PROMPT(" 005 ", user) + std::string(" MAX_PORT=") + std::to_string(MAX_PORT) + \
 														std::string(" CHANNEL_LIMIT=") + std::to_string(CHANNEL_LIMIT) + \
 														std::string(" CLIENT_LIMIT=") + std::to_string(CLIENT_LIMIT) + \
-														std::string(" CHANLIMIT=") + std::to_string(CHANLIMIT) + \
-														std::string(" NICKLEN=") + std::to_string(NICKLEN) + \
-														std::string(" CHANNELLEN=") + std::to_string(CHANNELLEN) + \
-														std::string(" TOPICLEN=") + std::to_string(TOPICLEN) + \
-														std::string(" MESSAGELEN=") + std::to_string(MESSAGELEN)
+														std::string(" CLIENT_CHANNEL_LIMIT=") + std::to_string(CLIENT_CHANNEL_LIMIT) + \
+														std::string(" NICK_LEN=") + std::to_string(NICK_LEN) + \
+														std::string(" CHANNEL_LEN=") + std::to_string(CHANNEL_LEN) + \
+														std::string(" TOPIC_LEN=") + std::to_string(TOPIC_LEN) + \
+														std::string(" MESSAGE_LEN=") + std::to_string(MESSAGE_LEN)
 																	
 // Pour répondre à une requête au sujet du mode du client, RPL_UMODEIS est renvoyé.
 # define RPL_UMODEIS(user, client)		PROMPT(" 221 ", user) + std::string(" ") + client->getMods()
