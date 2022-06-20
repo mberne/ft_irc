@@ -243,8 +243,8 @@ void		Server::executeRequest(Client* sender)
 		std::string					cmdLine = sender->getInputBuffer().substr(start, i - start);
 		std::vector<std::string>	cmdArgs;
 
-		if (sender->getInputBuffer().find(CRLF) >= MESSAGELEN - CRLF.size())
-			cmdLine.erase(MESSAGELEN, cmdLine.size() - MESSAGELEN);
+		if (sender->getInputBuffer().find(CRLF) >= MESSAGE_LEN - CRLF.size())
+			cmdLine.erase(MESSAGE_LEN, cmdLine.size() - MESSAGE_LEN);
 		if (!cmdLine.empty())
 		{
 			if (cmdLine[0] == ':')
@@ -262,7 +262,7 @@ void		Server::executeRequest(Client* sender)
 		}
 		sender->getInputBuffer().erase(0, i + CRLF.size());
 	}
-	if (sender->getInputBuffer().size() >= MESSAGELEN - CRLF.size())
+	if (sender->getInputBuffer().size() >= MESSAGE_LEN - CRLF.size())
 	{
 		sender->addToInputBuffer(CRLF.c_str());
 		executeRequest(sender);

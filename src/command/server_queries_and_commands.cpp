@@ -28,7 +28,7 @@ void	irc_ping(Client* client)
 {
 	time_t	differenceTime = difftime(client->getLastCmdTime(), time(NULL));
 
-	if (differenceTime > MAX_TIME_AFK)
+	if (differenceTime > TIME_AFK)
 	{
 		if (!client->getIsPing())
 		{
@@ -36,7 +36,7 @@ void	irc_ping(Client* client)
 			client->addToOutputBuffer(SERV_NAME);
 			client->setIsPing(1);
 		}
-		// if (differenceTime > MAX_TIME_AFK + MAX_PING_TIME)
+		// if (differenceTime > TIME_AFK + MAX_PING_TIME)
 		// 	// couper la connexion avec quit
 	}
 
