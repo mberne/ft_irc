@@ -27,7 +27,6 @@ Server::Server(int port, std::string password) : _port(port), _password(password
 		stop(errno);
 	if (listen(_fd, SOMAXCONN) == -1) // SOMAXCONN = max value
 		stop(errno);
-	// parseConfig();
 	initSupportedCommands();
 }
 
@@ -234,7 +233,10 @@ void	Server::receiveMessages()
 				addLog("from: " + client->getPrefix() + " to: :" + SERV_NAME + "\n" + buf, LOG_LISTEN);
 				executeRequest(client);
 			}
+			irc_ping(client);
 		}
+		else
+			irc_ping(client);
 	}
 }
 
@@ -246,8 +248,8 @@ void		Server::executeRequest(Client* sender)
 		std::string					cmdLine = sender->getInputBuffer().substr(start, i - start);
 		std::vector<std::string>	cmdArgs;
 
-		if (sender->getInputBuffer().find(CRLF) >= MESSAGELEN - CRLF.size())
-			cmdLine.erase(MESSAGELEN, cmdLine.size() - MESSAGELEN);
+		if (sender->getInputBuffer().find(CRLF) >= MESSAGE_LEN - CRLF.size())
+			cmdLine.erase(MESSAGE_LEN, cmdLine.size() - MESSAGE_LEN);
 		if (!cmdLine.empty())
 		{
 			if (cmdLine[0] == ':')
@@ -265,7 +267,7 @@ void		Server::executeRequest(Client* sender)
 		}
 		sender->getInputBuffer().erase(0, i + CRLF.size());
 	}
-	if (sender->getInputBuffer().size() >= MESSAGELEN - CRLF.size())
+	if (sender->getInputBuffer().size() >= MESSAGE_LEN - CRLF.size())
 	{
 		sender->addToInputBuffer(CRLF.c_str());
 		executeRequest(sender);
@@ -338,6 +340,7 @@ void		Server::executeCommand(std::vector<std::string>	cmdArgs, Client* sender)
 	{
 		command_t fct = it->second;
 		fct(cmdArgs, sender, this);
+		sender->setLastCmdTime();
 		if (_clientsByName.find(sender->getNickname()) == _clientsByName.end() && sender->isRegistered() == true)
 		{
 			_clientsByName.insert(std::make_pair(sender->getNickname(), sender));

@@ -8,14 +8,24 @@
 # define RPL_YOURHOST(user)		PROMPT(" 002 ", user) + std::string(" :Your host is ") + SERV_NAME + std::string(", running version ") + SERV_VERSION
 # define RPL_CREATED(user)		PROMPT(" 003 ", user) + std::string(" :This server was created ") + SERV_CREATION
 # define RPL_MYINFO(user)		PROMPT(" 004 ", user) + std::string(" ") + SERV_NAME + std::string(" ") + SERV_VERSION + std::string(" io opsitnmlbvk")
-# define RPL_ISUPPORT(user)		PROMPT(" 005 ", user) + std::string(" MAX_PORT=") + std::to_string(MAX_PORT) + \
-														std::string(" CHANNEL_LIMIT=") + std::to_string(CHANNEL_LIMIT) + \
-														std::string(" CLIENT_LIMIT=") + std::to_string(CLIENT_LIMIT) + \
-														std::string(" CHANLIMIT=") + std::to_string(CHANLIMIT) + \
-														std::string(" NICKLEN=") + std::to_string(NICKLEN) + \
-														std::string(" CHANNELLEN=") + std::to_string(CHANNELLEN) + \
-														std::string(" TOPICLEN=") + std::to_string(TOPICLEN) + \
-														std::string(" MESSAGELEN=") + std::to_string(MESSAGELEN)
+# define RPL_ISUPPORT(user)		PROMPT(" 005 ", user) + std::string(" CASE_MAPPING=") +	CASE_MAPPING + \
+														std::string(" CLIENT_CHANNEL_LIMIT=") +	std::to_string(10) + \
+														std::string(" USER_MODS=") + USER_MODS + \
+														std::string(" CHAN_MODS=") + CHAN_MODS + \
+														std::string(" CHANNEL_LEN=") + std::to_string(50) + \
+														std::string(" CHAN_TYPES=") + CHAN_TYPES + \
+														std::string(" HOST_LEN=") + std::to_string(10) + \
+														std::string(" KICK_LEN=") + std::to_string(256) + \
+														std::string(" NICK_LEN=") + std::to_string(20) + \
+														std::string(" TOPIC_LEN=") + std::to_string(400) + \
+														std::string(" USER_LEN=") +	std::to_string(10) + \
+														std::string(" MESSAGE_LEN=") + std::to_string(512) + \
+														std::string(" REALNAME_LEN=") +	std::to_string(50) + \
+														std::string(" CLIENT_LIMIT=") +	std::to_string(500) + \
+														std::string(" CHANNEL_LIMIT=") + std::to_string(2000) + \
+														std::string(" MAX_PORT=") +	std::to_string(65536) + \
+														std::string(" TIME_AFK=") +	std::to_string(300) + \
+														std::string(" PING_TIME=") + std::to_string(60)
 																	
 // Pour répondre à une requête au sujet du mode du client, RPL_UMODEIS est renvoyé.
 # define RPL_UMODEIS(user, client)	PROMPT(" 221 ", user) + std::string(" ") + client->getMods()

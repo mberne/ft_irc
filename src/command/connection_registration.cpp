@@ -22,8 +22,8 @@ void	irc_nick(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 		sender->addToOutputBuffer(ERR_NONICKNAMEGIVEN(sender->getNickname()));
 	else
 	{
-		if (cmd[1].size() > NICKLEN)
-			cmd[1] = cmd[1].substr(0, NICKLEN);
+		if (cmd[1].size() > NICK_LEN)
+			cmd[1] = cmd[1].substr(0, NICK_LEN);
 		if (cmd[1].find_first_not_of(ASCII_CHARSET) != std::string::npos)
 			sender->addToOutputBuffer(ERR_ERRONEUSNICKNAME(sender->getNickname(), cmd[1]));
 		else if (serv->getAllClients().find(cmd[1]) != serv->getAllClients().end())
@@ -53,10 +53,10 @@ void	irc_user(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
 	else
 	{
-		if (cmd[1].size() > USERLEN)
-			cmd[1] = cmd[1].substr(0, USERLEN);
-		if (cmd[4].size() > REALNAMELEN)
-			cmd[4] = cmd[4].substr(0, REALNAMELEN);
+		if (cmd[1].size() > USER_LEN)
+			cmd[1] = cmd[1].substr(0, USER_LEN);
+		if (cmd[4].size() > REALNAME_LEN)
+			cmd[4] = cmd[4].substr(0, REALNAME_LEN);
 		sender->setUser("~" + cmd[1]);
 		sender->setRealName(cmd[4]);
 	}

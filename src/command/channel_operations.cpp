@@ -16,13 +16,13 @@ void	irc_join(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 			password.push_back("");
 		for (size_t i = 0; i < channels.size(); i++)
 		{
-			if (channels[i].size() > CHANNELLEN)
-				channels[i] = channels[i].substr(0, CHANNELLEN);
+			if (channels[i].size() > CHANNEL_LEN)
+				channels[i] = channels[i].substr(0, CHANNEL_LEN);
 			Channel* current = serv->getChannel(channels[i]);
 
 			if (channels[i][0] != '#')
 				sender->addToOutputBuffer(ERR_NOSUCHCHANNEL(sender->getNickname(), channels[i]));
-			else if (sender->getNumberOfChannels() >= CHANLIMIT)
+			else if (sender->getNumberOfChannels() >= CLIENT_CHANNEL_LIMIT)
 			{
 				sender->addToOutputBuffer(ERR_TOOMANYCHANNELS(sender->getNickname(), channels[i]));
 				return;	
@@ -87,7 +87,30 @@ void	irc_part(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 
 void	irc_mode(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
 {
-	(void)cmd; (void)sender; (void)serv;
+	if (cmd.size() < 2)
+		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
+	else if (cmd[1].size() > 0 && cmd[1][0] != '#')	// CLIENT MODE
+	{
+		if (serv->getClient(cmd[1]) == NULL)
+			sender->addToOutputBuffer(ERR_NOSUCHNICK(sender->getNickname(), cmd[1]));
+		else if (sender->getNickname().compare(cmd[1]) != 0)
+			sender->addToOutputBuffer(ERR_USERSDONTMATCH(sender->getNickname()));
+		else if (cmd.size() < 3)
+			sender->addToOutputBuffer(RPL_UMODEIS(sender->getNickname(), sender));
+		else
+		{
+			if (cmd[1].find_first_not_of("+-" + USER_MODS) != std::string::npos)
+				sender->addToOutputBuffer(ERR_UMODEUNKNOWNFLAG(sender->getNickname()));
+			for (size_t i = 0; i < USER_MODS.size(); i++)
+			{
+
+			}
+		}
+	}
+	else // USER MODE
+	{
+
+	}
 }
 
 void	irc_topic(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
@@ -162,6 +185,7 @@ void	irc_kick(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 		sender->addToOutputBuffer(ERR_USERNOTINCHANNEL(sender->getNickname(), cmd[2], cmd[1]));
 	else
 	{
+		if (cmd.size() > 3)
 		channel->sendToClients(sender->getPrefix() + " " + cmd[0] + " " + cmd[1] + " " + cmd[2] + " :" + (cmd.size() > 3 ? cmd[3] : "Kicked by operator." ));
 		client->leaveChannel(channel);
 		if (channel->clientCount() == 0)
