@@ -52,14 +52,13 @@ class Channel
 		int				clientCount() const;
 		int				getUserLimit() const;
 		// MODS
-		// void			addMods(int mods, ...);
-		// void			removeMods(int mods);
+		std::string		setMods(std::string mods, std::map<char, std::string>& modsArgs);
 		bool			hasMod(int mode) const;
 		std::string		getMods() const;
 		void			addOperator(Client* client);			// Add the Client to the list of channel operators
 		void			removeOperator(Client* client);			// Remove the Client from the list of channel operators
-		void			addclientWithVoice(Client* client);		// Add the Client to the list of clients with voice permission
-		void			removeclientWithVoice(Client* client);	// Remove the Client from the list of clients with voice permission
+		void			addClientWithVoice(Client* client);		// Add the Client to the list of clients with voice permission
+		void			removeClientWithVoice(Client* client);	// Remove the Client from the list of clients with voice permission
 		void			addBanMask(std::string banMask);
 		void			removeBanMask(std::string banMask);
 		// CLIENTS
@@ -113,3 +112,6 @@ class Channel
 *	t - toggle the topic settable by channel operator only flag;
 *
 */
+
+// psitnm
+// olbvk

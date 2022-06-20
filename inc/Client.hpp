@@ -40,8 +40,7 @@ class Client
 		bool			getIsPing() const;
 		void			setIsPing(bool ping);
 		// MODS
-		void			addMods(std::string mods);
-		void			removeMods(std::string mods);
+		std::string		setMods(std::string mods);
 		std::string		getMods() const;
 		bool			hasMod(int mode) const;
 		// CHANNEL

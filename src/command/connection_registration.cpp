@@ -69,17 +69,17 @@ void	irc_oper(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
 	else if (cmd[1].compare(OPERATOR_USER))
 	{
-		sender->removeMods("o");
+		sender->setMods("-o");
 		sender->addToOutputBuffer(ERR_NOOPERHOST(sender->getNickname()));
 	}
 	else if (cmd[2].compare(OPERATOR_PASSWORD))
 	{
-		sender->removeMods("o");
+		sender->setMods("-o");
 		sender->addToOutputBuffer(ERR_PASSWDMISMATCH(sender->getNickname()));
 	}
 	else
 	{
-		sender->addMods("o");
+		sender->setMods("+o");
 		sender->addToOutputBuffer(RPL_YOUREOPER(sender->getNickname()));
 	}
 }

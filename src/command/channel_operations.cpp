@@ -99,17 +99,105 @@ void	irc_mode(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 			sender->addToOutputBuffer(RPL_UMODEIS(sender->getNickname(), sender));
 		else
 		{
-			if (cmd[1].find_first_not_of("+-" + USER_MODS) != std::string::npos)
+			std::string		mods;
+
+			if (cmd[2].find_first_not_of("+-" + USER_MODS) != std::string::npos)
 				sender->addToOutputBuffer(ERR_UMODEUNKNOWNFLAG(sender->getNickname()));
 			for (size_t i = 0; i < USER_MODS.size(); i++)
 			{
-
+				size_t	flagPos = cmd[2].find_last_of(USER_MODS[i]);
+				size_t	signPos = cmd[2].find_last_of("+-", flagPos);
+				char	sign	= (signPos == std::string::npos ? '+' : cmd[2][signPos]);
+				if (flagPos != std::string::npos)
+				{
+					mods.push_back(sign);
+					mods += USER_MODS[i];
+				}
 			}
+			if (!mods.empty())
+				sender->addToOutputBuffer(sender->getPrefix() + " " + cmd[0] + " " + sender->getNickname() + " :" + sender->setMods(mods));
 		}
 	}
-	else // USER MODE
+	else // CHANNEL MODE
 	{
+		Channel* channel = serv->getChannel(cmd[1]);
 
+		if (channel == NULL)
+			sender->addToOutputBuffer(ERR_NOSUCHCHANNEL(sender->getNickname(), cmd[1]));
+		else if (cmd.size() < 3)
+			sender->addToOutputBuffer(RPL_CHANNELMODEIS(sender->getNickname(), channel));
+		else if (channel->isOperator(sender) == false)
+			sender->addToOutputBuffer(ERR_CHANOPRIVSNEEDED(sender->getNickname(), channel->getName()));
+		else if (cmd[2].find_first_not_of("+-" + CHANNEL_MODS) != std::string::npos)
+			sender->addToOutputBuffer(ERR_UNKNOWNMODE(sender->getNickname(), cmd[2][cmd[2].find_first_not_of("+-" + CHANNEL_MODS)]));
+		else
+		{
+			std::string					mods;
+			std::map<char, std::string>	modsArgs;
+			size_t						argIndex = 3;
+			
+			for (size_t i = 0; i < CHANNEL_MODS.size(); i++)
+			{
+				size_t	flagPos = cmd[2].find_last_of(CHANNEL_MODS[i]);
+				size_t	signPos = cmd[2].find_last_of("+-", flagPos);
+				char	sign	= (signPos == std::string::npos ? '+' : cmd[2][signPos]);
+				if (flagPos != std::string::npos)
+				{
+					if (std::string("psitnm").find(CHANNEL_MODS[i]) != std::string::npos)
+					{
+						mods.push_back(sign);
+						mods += CHANNEL_MODS[i];
+					}
+					else if (std::string("ov").find(CHANNEL_MODS[i]) != std::string::npos)
+					{
+						if (cmd.size() == argIndex)
+						{
+							sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
+							return ;
+						}
+						if (serv->getClient(cmd[argIndex]) == NULL)
+							sender->addToOutputBuffer(ERR_NOSUCHNICK(sender->getNickname(), cmd[argIndex]));
+						else if (channel->getClient(cmd[argIndex]) == NULL)
+							sender->addToOutputBuffer(ERR_USERNOTINCHANNEL(sender->getNickname(), cmd[argIndex], cmd[1]));
+						else
+						{
+							mods.push_back(sign);
+							mods += CHANNEL_MODS[i];
+							modsArgs.insert(std::make_pair(CHANNEL_MODS[i], cmd[argIndex++]));
+						}
+					}
+					else if (std::string("l").find(CHANNEL_MODS[i]) != std::string::npos)
+					{
+						if (sign == '+' && cmd.size() == argIndex)
+						{
+							sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
+							return ;
+						}
+						size_t limit = std::atoi(cmd[argIndex].c_str());
+						if (limit)
+						{
+							mods.push_back(sign);
+							mods += CHANNEL_MODS[i];
+							if (sign == '+')
+								modsArgs.insert(std::make_pair(CHANNEL_MODS[i], cmd[argIndex++]));
+						}
+					}
+					else if (std::string("bk").find(CHANNEL_MODS[i]) != std::string::npos)
+					{
+						if (cmd.size() == argIndex)
+						{
+							sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
+							return ;
+						}
+						mods.push_back(sign);
+						mods += CHANNEL_MODS[i];
+						modsArgs.insert(std::make_pair(CHANNEL_MODS[i], cmd[argIndex++]));
+					}
+				}
+			}
+			if (!mods.empty())
+				channel->sendToClients(sender->getPrefix() + " " + cmd[0] + " " + channel->getName() + " " + channel->setMods(mods, modsArgs));
+		}
 	}
 }
 
@@ -145,7 +233,6 @@ void	irc_list(std::vector<std::string> cmd, Client* sender, Server* serv)
 	{
 		std::vector<std::string>	channels;
 		parseArg(cmd[1], channels);
-		sender->addToOutputBuffer(RPL_LISTSTART(sender->getNickname()));
 		for (std::vector<std::string>::iterator it = channels.begin(); it < channels.end(); it++)
 		{
 			Channel* current = serv->getChannel(*it);

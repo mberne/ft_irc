@@ -58,7 +58,7 @@
 # define RPL_LISTEND(user)			PROMPT(" 323 ", user) + std::string(" :End of /LIST")
 
 // Mode du channel
-# define RPL_CHANNELMODEIS(user, channel, mode, modeParams)	PROMPT(" 324 ", user) + std::string(" ") + channel->getName() + std::string(" ") + mode + (modeParams.empty() ? "" : " " + modeParams)
+# define RPL_CHANNELMODEIS(user, channel)	PROMPT(" 324 ", user) + std::string(" ") + channel->getName() + std::string(" ") + channel->getMods()
 
 // Lors de l'envoi d'un message TOPIC pour déterminer le sujet d'un canal, une de ces deux réponses est envoyée.
 // Si le sujet est défini, RPL_TOPIC est renvoyée, sinon c'est RPL_NOTOPIC.

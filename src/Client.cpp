@@ -110,20 +110,24 @@ void	Client::setIsPing(bool ping)
 
 //~~ MODS
 
-void			Client::addMods(std::string mods)
+std::string		Client::setMods(std::string mods)
 {
-	if (mods.find('o'))
-		_mods |= CLIENT_FLAG_O;
-	if (mods.find('i'))
-		_mods |= CLIENT_FLAG_I;
-}
+	std::cout << mods << std::endl;
+	std::string		charset = "oi";
+	int				flag = 1;
 
-void			Client::removeMods(std::string mods)
-{
-	if (mods.find('o'))
-		_mods &= ~CLIENT_FLAG_O;
-	if (mods.find('i'))
-		_mods &= ~CLIENT_FLAG_I;
+	for(size_t	i = 0; i < charset.size(); i++)
+	{
+		if (mods.find(charset[i]) != std::string::npos)
+		{
+			if (mods[mods.find(charset[i]) - 1] == '+')
+				_mods |= flag;
+			if (mods[mods.find(charset[i]) - 1] == '-')
+				_mods &= ~flag;
+		}
+		flag <<= 1;
+	}
+	return (mods);
 }
 
 std::string		Client::getMods() const
@@ -131,9 +135,9 @@ std::string		Client::getMods() const
 	std::string modsString("+");
 
 	if (hasMod(CLIENT_FLAG_I) == true)
-		modsString += 'i';
+		modsString += "i";
 	if (hasMod(CLIENT_FLAG_O) == true)
-		modsString += 'o';
+		modsString += "o";
 	return modsString;
 }
 

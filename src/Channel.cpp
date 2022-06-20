@@ -96,22 +96,95 @@ bool		BanMask::stringCorrespondToMask(std::string str, std::string mask) // NEED
 
 //~~ MODS
 
+std::string		Channel::setMods(std::string mods, std::map<char, std::string>& modsArgs)
+{
+	std::string		charset("psitnm");
+	std::string		args;
+	int				flag = 1;
+
+	std::cout << mods << std::endl;
+	for(size_t	i = 0; i < charset.size(); i++)
+	{
+		if (mods.find(charset[i]) != std::string::npos)
+		{
+			if (mods[mods.find(charset[i]) - 1] == '+')
+				_mods |= flag;
+			if (mods[mods.find(charset[i]) - 1] == '-')
+				_mods &= ~flag;
+		}
+		flag <<= 1;
+	}
+	if (mods.find('o') != std::string::npos)
+	{
+		if (mods[mods.find('o') - 1] == '+')
+			addOperator(getClient(modsArgs.find('o')->second));
+		if (mods[mods.find('o') - 1] == '-')
+			removeOperator(getClient(modsArgs.find('o')->second));
+		args += (" " + modsArgs.find('o')->second);
+	}
+	if (mods.find('l') != std::string::npos)
+	{
+		if (mods[mods.find('l') - 1] == '+')
+			_userLimit = (std::atoi(modsArgs.find('l')->second.c_str()) >= CLIENT_LIMIT_PER_CHANNEL ? CLIENT_LIMIT_PER_CHANNEL : std::atoi(modsArgs.find('l')->second.c_str()));
+		if (mods[mods.find('l') - 1] == '-')
+			_userLimit = CLIENT_LIMIT_PER_CHANNEL;
+		args += (" " + modsArgs.find('l')->second);
+	}
+	if (mods.find('b') != std::string::npos)
+	{
+		if (mods[mods.find('b') - 1] == '+')
+			addBanMask(modsArgs.find('b')->second);
+		if (mods[mods.find('b') - 1] == '-')
+			removeBanMask(modsArgs.find('b')->second);
+		args += (" " + modsArgs.find('b')->second);
+	}
+	if (mods.find('v') != std::string::npos)
+	{
+		if (mods[mods.find('v') - 1] == '+')
+			addClientWithVoice(getClient(modsArgs.find('v')->second));
+		if (mods[mods.find('v') - 1] == '-')
+			removeClientWithVoice(getClient(modsArgs.find('v')->second));
+		args += (" " + modsArgs.find('v')->second);
+	}
+	if (mods.find('k') != std::string::npos)
+	{
+		if (mods[mods.find('k') - 1] == '+')
+			_password = modsArgs.find('k')->second;
+		if (mods[mods.find('k') - 1] == '-' && _password.compare(modsArgs.find('k')->second) == 0)
+		{
+			_password = "";
+			modsArgs.find('k')->second = "*";
+		}
+		args += (" " + modsArgs.find('k')->second);
+	}
+	return (mods + args);
+}
+
+
 std::string		Channel::getMods() const
 {
 	std::string modsString("+");
 
 	if ((_mods | CHANNEL_FLAG_P) == _mods)
-		modsString += 'p';
+		modsString.push_back('p');
 	if ((_mods | CHANNEL_FLAG_S) == _mods)
-		modsString += 's';
+		modsString.push_back('s');
 	if ((_mods | CHANNEL_FLAG_I) == _mods)
-		modsString += 'i';
+		modsString.push_back('i');
 	if ((_mods | CHANNEL_FLAG_T) == _mods)
-		modsString += 't';
+		modsString.push_back('t');
 	if ((_mods | CHANNEL_FLAG_N) == _mods)
-		modsString += 'n';
+		modsString.push_back('n');
 	if ((_mods | CHANNEL_FLAG_M) == _mods)
-		modsString += 'm';
+		modsString.push_back('m');
+	if (_userLimit < CLIENT_LIMIT_PER_CHANNEL)
+		modsString.push_back('l');
+	if (!_password.empty())
+		modsString.push_back('k');
+	if (_userLimit < CLIENT_LIMIT_PER_CHANNEL)
+		modsString += (" " + std::to_string(_userLimit));
+	if (!_password.empty())
+		modsString += (" " + _password);
 	return modsString;
 }
 
@@ -122,32 +195,38 @@ bool			Channel::hasMod(int mode) const
 
 void			Channel::addOperator(Client* client)
 {
-	_operators.insert(std::make_pair(client->getNickname(), client));
+	if (_operators.find(client->getNickname()) == _operators.end())
+		_operators.insert(std::make_pair(client->getNickname(), client));
 }
 
 void			Channel::removeOperator(Client* client)
 {
-	_operators.erase(client->getNickname());
+	if (_operators.find(client->getNickname()) != _operators.end())
+		_operators.erase(client->getNickname());
 }
 
-void			Channel::addclientWithVoice(Client* client)
+void			Channel::addClientWithVoice(Client* client)
 {
-	_clientsWithVoicePerm.insert(std::make_pair(client->getNickname(), client));
+	if (_clientsWithVoicePerm.find(client->getNickname()) == _clientsWithVoicePerm.end())
+		_clientsWithVoicePerm.insert(std::make_pair(client->getNickname(), client));
 }
 
-void			Channel::removeclientWithVoice(Client* client)
+void			Channel::removeClientWithVoice(Client* client)
 {
-	_clientsWithVoicePerm.erase(client->getNickname());
+	if (_clientsWithVoicePerm.find(client->getNickname()) != _clientsWithVoicePerm.end())
+		_clientsWithVoicePerm.erase(client->getNickname());
 }
 
 void			Channel::addBanMask(std::string banMask)
 {
-	_banList.insert(std::make_pair(banMask, BanMask(banMask, banMask.find_first_of('!'), banMask.find_first_of('@'))));
+	if (_banList.find(banMask) == _banList.end())
+		_banList.insert(std::make_pair(banMask, BanMask(banMask, banMask.find_first_of('!'), banMask.find_first_of('@'))));
 }
 
 void			Channel::removeBanMask(std::string banMask)
 {
-	_banList.erase(banMask);
+	if (_banList.find(banMask) != _banList.end())
+		_banList.erase(banMask);
 }
 
 //~~ CLIENTS
