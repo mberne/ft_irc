@@ -118,22 +118,25 @@ void	irc_names(std::vector<std::string> cmd, Client* sender, Server* serv)
 
 void	irc_list(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
-	// ERR_NOSUCHSERVER ??
-	// doublons à gérer... oskour
-	bool	arg = 0;
-	if (cmd.size() > 1)
-		arg = 1;
 	sender->addToOutputBuffer(RPL_LISTSTART(sender->getNickname()));
-	if (!arg)
-		for (std::map<std::string, Channel*>::iterator it = serv->getAllChannels().begin(); it != serv->getAllChannels().end(); it++)
-			sender->addToOutputBuffer(RPL_LIST(sender->getNickname(), it->second));
+	if ( cmd.size() > 1)
+	{
+		std::vector<std::string>	channels;
+		parseArg(cmd[1], channels);
+		sender->addToOutputBuffer(RPL_LISTSTART(sender->getNickname()));
+		for (std::vector<std::string>::iterator it = channels.begin(); it < channels.end(); it++)
+		{
+			Channel* current = serv->getChannel(*it);
+			if (current != NULL && (current->hasMod(CHANNEL_FLAG_S) || current->getClient(sender->getNickname()) != NULL))
+				sender->addToOutputBuffer(RPL_LIST(sender->getNickname(), current));
+		}
+	}
 	else
-		for (size_t i = 1; i != cmd.size(); i++)
-			for (std::map<std::string, Channel*>::iterator itChan = serv->getAllChannels().begin(); itChan != serv->getAllChannels().end(); itChan++)
-			{
-				if (!itChan->second->getName().compare(cmd[i]))
-					sender->addToOutputBuffer(RPL_LIST(sender->getNickname(), itChan->second));
-			}
+	{
+		for (std::map<std::string, Channel*>::iterator it = serv->getAllChannels().begin(); it != serv->getAllChannels().end(); it++)
+			if (it->second->hasMod(CHANNEL_FLAG_S) || it->second->getClient(sender->getNickname()) != NULL)
+				sender->addToOutputBuffer(RPL_LIST(sender->getNickname(), it->second));
+	}
 	sender->addToOutputBuffer(RPL_LISTEND(sender->getNickname()));
 }
 
