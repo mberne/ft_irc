@@ -95,7 +95,10 @@ std::string	Server::getCurrentTime() const
 
 Client*		Server::getClient(std::string name) const
 {
-	return _clientsByName.find(name)->second;
+	if (_clientsByName.find(name) == _clientsByName.end())
+		return (NULL);
+	else
+		return (_clientsByName.find(name)->second);
 }
 
 std::map<std::string, Client*> &	Server::getAllClients()
