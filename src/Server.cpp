@@ -312,20 +312,16 @@ void	closeFd(struct pollfd rhs) {close(rhs.fd);}
 
 void	Server::stop(int status)
 {
-	//	Je verrais plus un truc comme
-	//	if (status)
-	//	{
-	//		envoyer des messages comme quoi le serv crash aux clients
-	//		std::cerr << SERVER_NAME << "server exited with code: " << status << std::endl;
-	//	}
-	//	else
-	//	{
-	//		envoyer des messages comme quoi le serv ferme aux clients
-	//		std::cout << SERVER_NAME << "server closed" << std::endl;
-	//	}
-	perror(SERV_NAME.c_str());
-	addLog("Server exited with code: " + std::to_string(errno) + ". " + SERV_NAME + ": " + strerror(errno), LOG_ERROR);
-
+	for (std::map<int, Client*>::iterator it = _clientsBySock.begin(); it != _clientsBySock.end(); it++)
+	{
+		irc_error(it->second, std::string("Server is shuting down :") + (status == EXIT_SUCCESS ? "Closed by host" : "Fatal error"));
+		removeClient(it->second);
+	}
+	if (status)
+		addLog("Server exited with code: " + std::to_string(status) + " " + SERV_NAME + ": " + strerror(status), LOG_ERROR);
+	else
+		addLog("Server exited with code: " + std::to_string(status) + " " + SERV_NAME + ": Closed by host", LOG_INFO);
+	// FREE ALLOCATED MEMORY
 	std::for_each(_fdList.begin(), _fdList.end(), closeFd);
 	_fdList.clear();
 	for (std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); ++it)

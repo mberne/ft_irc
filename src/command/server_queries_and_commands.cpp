@@ -52,5 +52,5 @@ void	pingClients(Client* client)
 
 void	irc_error(Client* sender, std::string reason)
 {
-	sender->addToOutputBuffer("Error :" + reason);
+	sender->addToOutputBuffer("ERROR :" + reason);
 }
