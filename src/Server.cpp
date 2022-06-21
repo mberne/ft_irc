@@ -136,6 +136,12 @@ std::vector< std::pair<std::string, Client*> >&		Server::getOldNicknames()
 
 void		Server::addOldNickname(std::string nickname, Client* client)
 {
+	if (_oldNicknames.size() >= OLD_CLIENT_LIMIT)
+	{
+		std::pair<std::string, Client*>	oldClient = *(--_oldNicknames.end());
+		_oldNicknames.erase(--_oldNicknames.end());
+		delete oldClient.second;
+	}
 	_oldNicknames.insert(_oldNicknames.begin(), std::make_pair(nickname, client));
 }
 
