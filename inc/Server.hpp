@@ -74,6 +74,7 @@ class Server
 		void		addClient(int sock);
 		void		sendWelcome(Client* sender);
 		void		addLog(std::string message, int type);
+		void		pingClient(Client* client);
 };
 
 #endif //~~ SERVER_H

@@ -247,7 +247,7 @@ void	Server::receiveMessages()
 				else if (ret < 0)
 					irc_quit(std::vector<std::string>({"QUIT", "Remote host closed the connection"}), client, this);
 			}
-			pingClients(client);
+			pingClient(client);
 		}
 	}
 }
@@ -356,7 +356,7 @@ void		Server::executeCommand(std::vector<std::string>	cmdArgs, Client* sender)
 			sendWelcome(sender);
 		}
 		else if (_clientsByName.find(sender->getNickname()) != _clientsByName.end() && _clientsByName.find(sender->getNickname())->second != sender)
-			irc_quit(std::vector<std::string>({"QUIT", "Remote host closed the connection"}), sender, this);
+			irc_quit(std::vector<std::string>({"QUIT", "Nickname overridden"}), sender, this);
 	}
 }
 
@@ -439,4 +439,23 @@ void		Server::addLog(std::string message, int type)
 	}
 	if (message[message.size() - 1] != '\n')
 		_logFile << logPrompt + message.substr(start, message.size() - start) << std::endl;
+}
+
+void	Server::pingClient(Client* client)
+{
+	time_t	differenceTime = time(NULL) - client->getLastCmdTime();
+
+	if (differenceTime > TIME_AFK)
+	{
+		if (!client->getIsPing())
+		{
+			client->addToOutputBuffer("PING :" + SERV_NAME);
+			client->setIsPing(1);
+		}
+		if (differenceTime > TIME_AFK + PING_TIME)
+		{
+			// irc_quit(std::vector<std::string>({"QUIT", "Ping timeout:" + std::to_string(PING_TIME) + " seconds"}), client, this);
+		}
+	}
+
 }

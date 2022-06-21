@@ -10,7 +10,7 @@ void	irc_pass(std::vector<std::string> cmd, Client* sender, Server* serv)
 	{
 		sender->addToOutputBuffer(ERR_PASSWDMISMATCH(sender->getNickname()));
 		sender->setPassword(false);
-		// removeClient(sender, "Wrong Password")
+		// irc_quit(std::vector<std::string>({"QUIT", "Wrong password after 3 retries"}), sender, serv); // il faut rajouter une feature pour compter les retry
 	}
 	else
 		sender->setPassword(true);
