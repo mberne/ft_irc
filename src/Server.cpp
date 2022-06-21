@@ -182,7 +182,7 @@ void	Server::run()
 {
 	int	numberSockets; 
 	
-	_logFile.open( (std::string(SERV_NAME) + ".log").c_str() , std::ios_base::out | std::ios_base::trunc );
+	_logFile.open((std::string(SERV_NAME) + ".log").c_str() , std::ios_base::out | std::ios_base::trunc);
 	if ( _logFile.is_open() == false )
 		stop(errno);
 
