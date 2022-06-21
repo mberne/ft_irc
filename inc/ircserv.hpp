@@ -61,6 +61,7 @@
 # define MAX_PORT					65536
 # define TIME_AFK					300
 # define PING_TIME					60
+# define OLD_CLIENT_LIMIT			100
 // Sensitive or useless
 # define CLIENT_LIMIT_PER_CHANNEL	100
 # define ASCII_CHARSET				std::string("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
