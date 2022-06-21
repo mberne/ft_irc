@@ -28,7 +28,7 @@
 
 /*** ~~ DEFINES ~~ ***/
 
-# define USAGE						"usage: ircserv <port> <password>"
+# define USAGE						std::string("usage: ircserv <port> <password>")
 
 // Server info
 # define SERV_NAME					std::string("potatoes.land")
