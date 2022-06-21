@@ -244,6 +244,8 @@ void	Server::receiveMessages()
 						addLog("from: " + client->getPrefix() + " to: :" + SERV_NAME + "\n" + buf, LOG_LISTEN);
 					executeRequest(client);
 				}
+				else if (ret < 0)
+					irc_quit(std::vector<std::string>({"QUIT", "Remote host closed the connection"}), client, this);
 			}
 			pingClients(client);
 		}
