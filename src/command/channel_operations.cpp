@@ -11,7 +11,8 @@ void	irc_join(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 		std::vector<std::string>	channels, password;
 
 		parseArg(cmd[1], channels);
-		parseArg(cmd[2], password);
+		if (cmd.size() > 2)
+			parseArg(cmd[2], password);
 		while (password.size() < channels.size())
 			password.push_back("");
 		for (size_t i = 0; i < channels.size(); i++)
