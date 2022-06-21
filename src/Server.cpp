@@ -264,15 +264,17 @@ void		Server::executeRequest(Client* sender)
 		{
 			if (cmdLine[0] == ':')
 				cmdLine.erase(0, cmdLine.find_first_not_of(' ', cmdLine.find_first_of(' ', 0)));
-			for (size_t j = cmdLine.find_first_of(' '); j != std::string::npos; j = cmdLine.find_first_of(' '))
+			for (size_t endOfArg = cmdLine.find_first_of(' '); endOfArg != std::string::npos; endOfArg = cmdLine.find_first_of(' '))
 			{
 				if (cmdLine[0] == ':')
 				{
 					cmdLine.erase(0, 1);
+					cmdArgs.push_back(cmdLine);
+					cmdLine.clear();
 					break;
 				}
-				cmdArgs.push_back(cmdLine.substr(0, j));
-				cmdLine.erase(0, cmdLine.find_first_not_of(' ', j));
+				cmdArgs.push_back(cmdLine.substr(0, endOfArg));
+				cmdLine.erase(0, cmdLine.find_first_not_of(' ', endOfArg));
 			}
 			if (!cmdLine.empty())
 				cmdArgs.push_back(cmdLine);
