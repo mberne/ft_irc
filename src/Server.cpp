@@ -182,7 +182,7 @@ void	Server::run()
 {
 	int	numberSockets; 
 	
-	_logFile.open((std::string(SERV_NAME) + ".log").c_str() , std::ios_base::out | std::ios_base::trunc);
+	_logFile.open((SERV_NAME + ".log").c_str() , std::ios_base::out | std::ios_base::trunc);
 	if ( _logFile.is_open() == false )
 		stop(errno);
 
@@ -298,7 +298,7 @@ void	Server::sendMessages()
 		if (client->hasOutput()) // request on this socket
 		{
 			ret = send(it->fd, client->getOutputBuffer(), strlen(client->getOutputBuffer()), 0);
-			addLog("from: :" + std::string(SERV_NAME) + " to: " + client->getPrefix() + "\n" + client->getOutputBuffer(), LOG_BROADCAST);
+			addLog("from: :" + SERV_NAME + " to: " + client->getPrefix() + "\n" + client->getOutputBuffer(), LOG_BROADCAST);
 			client->clearOutputBuffer();
 			if (ret < 0 && errno == ECONNRESET) // deconnexion
 				removeClient(client, "Remote host closed the connection");
@@ -324,7 +324,7 @@ void	Server::stop(int status)
 	//		envoyer des messages comme quoi le serv ferme aux clients
 	//		std::cout << SERVER_NAME << "server closed" << std::endl;
 	//	}
-	perror(SERV_NAME);
+	perror(SERV_NAME.c_str());
 	addLog("Server exited with code: " + std::to_string(errno) + ". " + SERV_NAME + ": " + strerror(errno), LOG_ERROR);
 
 	std::for_each(_fdList.begin(), _fdList.end(), closeFd);
