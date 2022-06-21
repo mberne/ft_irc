@@ -300,18 +300,15 @@ void	Server::sendMessages()
 		if (client->hasOutput()) // request on this socket
 		{
 			ret = send(it->fd, client->getOutputBuffer(), strlen(client->getOutputBuffer()), 0);
-			addLog("from: :" + SERV_NAME + " to: " + client->getPrefix() + "\n" + client->getOutputBuffer(), LOG_BROADCAST);
-			client->clearOutputBuffer();
 			if (ret < 0 && errno == ECONNRESET) // deconnexion
 				removeClient(client, "Remote host closed the connection");
+			addLog("from: :" + SERV_NAME + " to: " + client->getPrefix() + "\n" + client->getOutputBuffer(), LOG_BROADCAST);
+			client->clearOutputBuffer();
 		}
 	}
 }
 
-void	closeFd(struct pollfd rhs)
-{
-	close(rhs.fd);
-}
+void	closeFd(struct pollfd rhs) {close(rhs.fd);}
 
 void	Server::stop(int status)
 {
