@@ -229,7 +229,7 @@ void	Server::receiveMessages()
 	{
 		client = _clientsBySock.find(it->fd)->second;
 		if ((it->revents | POLLHUP) == it->revents) // deconnexion
-			removeClient(client, "Remote host closed the connection");
+			irc_quit(std::vector<std::string>({"QUIT", "Remote host closed the connection"}), client, this);
 		else
 		{
 			if (it->revents == POLLIN)
@@ -301,7 +301,7 @@ void	Server::sendMessages()
 		{
 			ret = send(it->fd, client->getOutputBuffer(), strlen(client->getOutputBuffer()), 0);
 			if (ret < 0 && errno == ECONNRESET) // deconnexion
-				removeClient(client, "Remote host closed the connection");
+				irc_quit(std::vector<std::string>({"QUIT", "Remote host closed the connection"}), client, this);
 			addLog("from: :" + SERV_NAME + " to: " + client->getPrefix() + "\n" + client->getOutputBuffer(), LOG_BROADCAST);
 			client->clearOutputBuffer();
 		}
@@ -314,7 +314,7 @@ void	Server::stop(int status)
 {
 	for (std::map<int, Client*>::iterator it = _clientsBySock.begin(); it != _clientsBySock.end(); it++)
 	{
-		irc_error(it->second, std::string("Server is shuting down :") + (status == EXIT_SUCCESS ? "Closed by host" : "Fatal error"));
+		irc_error(it->second, "Closing Link: " +  it->second->getHost() + " Server is shuting down :" + (status == EXIT_SUCCESS ? "Closed by host" : "Fatal error"));
 		removeClient(it->second);
 	}
 	if (status)
@@ -354,7 +354,7 @@ void		Server::executeCommand(std::vector<std::string>	cmdArgs, Client* sender)
 			sendWelcome(sender);
 		}
 		else if (_clientsByName.find(sender->getNickname()) != _clientsByName.end() && _clientsByName.find(sender->getNickname())->second != sender)
-			removeClient(sender, "Remote host closed the connection");
+			irc_quit(std::vector<std::string>({"QUIT", "Remote host closed the connection"}), sender, this);
 	}
 }
 
@@ -367,28 +367,22 @@ void	Server::addClient(int sock)
 	addLog("New connexion: " + newClient->getPrefix(), LOG_INFO);
 }
 
-void	Server::removeClient(Client *client, std::string reason)
+void	Server::removeClient(Client *client)
 {
-	addLog("Connexion closed: " + client->getPrefix(), LOG_INFO);
 	std::vector<struct pollfd>::iterator it = _fdList.begin();
 	while (it->fd != client->getSock())
 		it++;
-	_clientsBySock.erase(it->fd);
+
+	addLog("Connexion closed: " + client->getPrefix(), LOG_INFO);
+
 	if (client->isRegistered() == true && _clientsByName.find(client->getNickname())->second == client)
 	{
-		client->addToOutputBuffer(client->getPrefix() + " QUIT :" + reason); // padakor
-		irc_error(client, "Closing Link: " + client->getHost() + " (" + reason + ")"); // moyendakor
-		send(client->getSock(), client->getOutputBuffer(), strlen(client->getOutputBuffer()), 0); // moyendakor
-		client->sendToAllChannels(client->getPrefix() + " QUIT :" + reason); // padakor
 		_clientsByName.erase(client->getNickname());
 		addOldNickname(client->getNickname(), client);
 	}
 	else
-	{
-		irc_error(client, "Closing Link: " + client->getHost() + " (" + reason + ")"); // padakor
-		send(client->getSock(), client->getOutputBuffer(), strlen(client->getOutputBuffer()), 0); // moyendakor
 		delete client;
-	}
+	_clientsBySock.erase(it->fd);
 	close(it->fd);
 	_fdList.erase(it);
 }

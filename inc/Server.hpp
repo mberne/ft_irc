@@ -36,13 +36,14 @@ class Server
 		int													getNonRegisteredNumber();
 		std::vector< std::pair<std::string, Client*> >&		getOldNicknames();
 		void												addOldNickname(std::string nickname, Client* client);
+		void												removeClient(Client *src);
 		// CHANNELS
 		Channel*							getChannel(std::string name) const;
 		std::map<std::string, Channel*>&	getAllChannels();
 		Channel*							newChannel(std::string name, Client* founder);
 		void								removeChannel(Channel* channel);
 		// SERVER MAIN
-		void								run();
+		void		run();
 	
 	private:
 
@@ -71,7 +72,6 @@ class Server
 		void		initSupportedCommands();
 		void		executeCommand(std::vector<std::string>	cmd, Client* sender);
 		void		addClient(int sock);
-		void		removeClient(Client *src, std::string reason);
 		void		sendWelcome(Client* sender);
 		void		addLog(std::string message, int type);
 };

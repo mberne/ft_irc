@@ -87,11 +87,14 @@ void	irc_oper(std::vector<std::string> cmd, Client* sender, Server* serv)
 void	irc_quit(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	(void)serv;
-	std::string	leaveMsg;
+	std::string	reason =  (cmd.size() > 1 ? cmd[1] : "Client quit");
 
-	if (cmd.size() == 1)
-		leaveMsg = sender->getPrefix() + " " + cmd[0] + " :Client Quit";
-	else
-		leaveMsg = sender->getPrefix() + " " + cmd[0] + " :" + cmd[1];
-	// removeClient(sender, leaveMsg);
+	if (sender->isRegistered() == true && serv->getAllClients().find(sender->getNickname())->second == sender)
+	{
+		sender->addToOutputBuffer(sender->getPrefix() + " " + cmd[0] + " :" + reason);
+		sender->sendToAllChannels(sender->getPrefix() + " " + cmd[0] + " :" + reason); 
+	}
+	irc_error(sender, "Closing Link: " + sender->getHost() + " (" + reason + ")");
+	send(sender->getSock(), sender->getOutputBuffer(), strlen(sender->getOutputBuffer()), 0);
+	serv->removeClient(sender);
 }
