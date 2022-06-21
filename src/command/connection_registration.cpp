@@ -86,8 +86,8 @@ void	irc_oper(std::vector<std::string> cmd, Client* sender, Server* serv)
 
 void	irc_quit(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
-	(void)serv;
-	std::string	reason =  (cmd.size() > 1 ? cmd[1] : "Client quit");
+	std::cout << "test\n";
+	std::string	reason =  (cmd.size() > 1 ? cmd[1] : sender->getNickname());
 
 	if (sender->isRegistered() == true && serv->getAllClients().find(sender->getNickname())->second == sender)
 	{
