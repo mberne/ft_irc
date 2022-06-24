@@ -72,8 +72,9 @@
 
 // Lors de l'envoi d'un message TOPIC pour déterminer le sujet d'un canal, une de ces deux réponses est envoyée.
 // Si le sujet est défini, RPL_TOPIC est renvoyée, sinon c'est RPL_NOTOPIC.
-# define RPL_NOTOPIC(user, name)	PROMPT(" 331 ", user) + " " + name + std::string(" :No topic is set")
-# define RPL_TOPIC(user, channel)	PROMPT(" 332 ", user) + " " + channel->getName() + std::string(" :") + channel->getTopic()
+# define RPL_NOTOPIC(user, channel)						PROMPT(" 331 ", user) + " " + channel->getName() + std::string(" :No topic is set")
+# define RPL_TOPIC(user, channel)						PROMPT(" 332 ", user) + " " + channel->getName() + std::string(" :") + channel->getTopic()
+# define RPL_TOPICWHOTIME(user, channel, name, hour)	PROMPT(" 333 ", user) + " " + channel->getName() + " " + name + " " + hour
 
 // Utile pour WHOIS et WHOWAS
 # define RPL_WHOISACTUALLY(user, client)	PROMPT(" 338 ", user) + " " + client->getNickname() + " " + client->getHost() + std::string(" :Is actually using host")

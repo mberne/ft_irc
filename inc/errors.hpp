@@ -90,7 +90,7 @@
 # define ERR_CHANNELISFULL(user, name) PROMPT(" 471 ", user) + " " + name + std::string(" :Cannot join channel (+l)")
 // Impossible de joindre le canal (+l)
 
-# define ERR_UNKNOWNMODE(user, arg) PROMPT(" 472 ", user) + " " + arg + std::string(" :is unknown mode char to me")
+# define ERR_UNKNOWNMODE(user, arg) PROMPT(" 472 ", user) + " " + arg + std::string(" :is an unknown mode char to me")
 // Mode inconnu.
 
 # define ERR_INVITEONLYCHAN(user, name) PROMPT(" 473 ", user) + " " + name + std::string(" :Cannot join channel (+i)")

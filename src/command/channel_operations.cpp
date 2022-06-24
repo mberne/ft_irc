@@ -1,6 +1,6 @@
 #include "ircserv.hpp"
 
-void	irc_join(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
+void	irc_join(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	if (cmd.size() < 2)
 		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
@@ -56,7 +56,7 @@ void	irc_join(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 	}
 }
 
-void	irc_part(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
+void	irc_part(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	if (cmd.size() < 2)
 		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
@@ -84,7 +84,7 @@ void	irc_part(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 	}
 }
 
-void	irc_mode(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
+void	irc_mode(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	if (cmd.size() < 2)
 		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
@@ -200,9 +200,11 @@ void	irc_mode(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 	}
 }
 
-void	irc_topic(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
+void	irc_topic(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	(void)cmd; (void)sender; (void)serv;
+	// ERR_NEEDMOREPARAMS ERR_NOSUCHCHANNEL ERR_NOTONCHANNEL ERR_CHANOPRIVSNEEDED
+	// RPL_NOTOPIC RPL_TOPIC RPL_TOPICWHOTIME
 }
 
 void	irc_names(std::vector<std::string> cmd, Client* sender, Server* serv)
@@ -228,7 +230,7 @@ void	irc_names(std::vector<std::string> cmd, Client* sender, Server* serv)
 void	irc_list(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	sender->addToOutputBuffer(RPL_LISTSTART(sender->getNickname()));
-	if ( cmd.size() > 1)
+	if (cmd.size() > 1)
 	{
 		std::vector<std::string>	channels;
 		parseArg(cmd[1], channels);
@@ -248,7 +250,7 @@ void	irc_list(std::vector<std::string> cmd, Client* sender, Server* serv)
 	sender->addToOutputBuffer(RPL_LISTEND(sender->getNickname()));
 }
 
-void	irc_kick(std::vector<std::string> cmd, Client* sender, Server* serv) // pthomas
+void	irc_kick(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 
 	if (cmd.size() < 3)
@@ -272,7 +274,7 @@ void	irc_kick(std::vector<std::string> cmd, Client* sender, Server* serv) // pth
 	else
 	{
 		if (cmd.size() > 3)
-		channel->sendToClients(sender->getPrefix() + " " + cmd[0] + " " + cmd[1] + " " + cmd[2] + " :" + (cmd.size() > 3 ? cmd[3] : "Kicked by operator." ), NULL);
+			channel->sendToClients(sender->getPrefix() + " " + cmd[0] + " " + cmd[1] + " " + cmd[2] + " :" + (cmd.size() > 3 ? cmd[3] : "Kicked by operator." ), NULL);
 		client->leaveChannel(channel);
 		if (channel->clientCount() == 0)
 			serv->removeChannel(channel);

@@ -10,7 +10,7 @@ void	irc_pass(std::vector<std::string> cmd, Client* sender, Server* serv)
 	{
 		sender->addToOutputBuffer(ERR_PASSWDMISMATCH(sender->getNickname()));
 		sender->setPassword(false);
-		// irc_quit(std::vector<std::string>({"QUIT", "Wrong password after 3 retries"}), sender, serv); // il faut rajouter une feature pour compter les retry
+		irc_quit(std::vector<std::string>({"QUIT", "Wrong password after 3 retries"}), sender, serv); // il faut rajouter une feature pour compter les retry
 	}
 	else
 		sender->setPassword(true);
@@ -86,7 +86,6 @@ void	irc_oper(std::vector<std::string> cmd, Client* sender, Server* serv)
 
 void	irc_quit(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
-	std::cout << "test\n";
 	std::string	reason =  (cmd.size() > 1 ? cmd[1] : sender->getNickname());
 
 	if (sender->isRegistered() == true && serv->getAllClients().find(sender->getNickname())->second == sender)

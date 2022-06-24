@@ -337,6 +337,7 @@ void	Server::stop(int status)
    	_oldNicknames.clear();
 	exit(status);
 }
+
 //~~ SERVER UTILS
 
 void		Server::executeCommand(std::vector<std::string>	cmdArgs, Client* sender)
@@ -453,9 +454,7 @@ void	Server::pingClient(Client* client)
 			client->setIsPing(1);
 		}
 		if (differenceTime > TIME_AFK + PING_TIME)
-		{
-			// irc_quit(std::vector<std::string>({"QUIT", "Ping timeout:" + std::to_string(PING_TIME) + " seconds"}), client, this);
-		}
+			irc_quit(std::vector<std::string>({"QUIT", "Ping timeout:" + std::to_string(PING_TIME) + " seconds"}), client, this);
 	}
 
 }
