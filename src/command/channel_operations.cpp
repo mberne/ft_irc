@@ -212,7 +212,14 @@ void	irc_topic(std::vector<std::string> cmd, Client* sender, Server* serv)
 void	irc_names(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	if (cmd.size() < 2)
-		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
+	{
+		for (std::map<std::string, Channel*>::iterator it = serv->getAllChannels().begin(); it != serv->getAllChannels().end(); it++)
+			if ((!it->second->hasMod(CHANNEL_FLAG_S) && !it->second->hasMod(CHANNEL_FLAG_P)) || it->second->getClient(sender->getNickname()) != NULL)
+			{
+				sender->addToOutputBuffer(RPL_NAMREPLY(sender->getNickname(), it->second));
+				sender->addToOutputBuffer(RPL_ENDOFNAMES(sender->getNickname(), it->second->getName()));
+			}
+	}
 	else
 	{
 		std::vector<std::string>	channels;
@@ -232,7 +239,13 @@ void	irc_names(std::vector<std::string> cmd, Client* sender, Server* serv)
 void	irc_list(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	sender->addToOutputBuffer(RPL_LISTSTART(sender->getNickname()));
-	if (cmd.size() > 1)
+	if (cmd.size() < 2)
+	{
+		for (std::map<std::string, Channel*>::iterator it = serv->getAllChannels().begin(); it != serv->getAllChannels().end(); it++)
+			if ((!it->second->hasMod(CHANNEL_FLAG_S) && !it->second->hasMod(CHANNEL_FLAG_P)) || it->second->getClient(sender->getNickname()) != NULL)
+				sender->addToOutputBuffer(RPL_LIST(sender->getNickname(), it->second));
+	}
+	else
 	{
 		std::vector<std::string>	channels;
 		parseArg(cmd[1], channels);
@@ -242,12 +255,6 @@ void	irc_list(std::vector<std::string> cmd, Client* sender, Server* serv)
 			if (current != NULL && ((!current->hasMod(CHANNEL_FLAG_S) && !current->hasMod(CHANNEL_FLAG_P)) || current->getClient(sender->getNickname()) != NULL))
 				sender->addToOutputBuffer(RPL_LIST(sender->getNickname(), current));
 		}
-	}
-	else
-	{
-		for (std::map<std::string, Channel*>::iterator it = serv->getAllChannels().begin(); it != serv->getAllChannels().end(); it++)
-			if ((!it->second->hasMod(CHANNEL_FLAG_S) && !it->second->hasMod(CHANNEL_FLAG_P)) || it->second->getClient(sender->getNickname()) != NULL)
-				sender->addToOutputBuffer(RPL_LIST(sender->getNickname(), it->second));
 	}
 	sender->addToOutputBuffer(RPL_LISTEND(sender->getNickname()));
 }
