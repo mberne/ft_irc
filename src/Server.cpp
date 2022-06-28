@@ -189,6 +189,7 @@ void	Server::run()
 		stop(errno);
 
 	online = true;
+	addLog("Server started: " + SERV_NAME + "\nVersion:\t\t" + SERV_VERSION + "\nCreation:\t\t" + SERV_CREATION + "\nAdmin:\t\t\t" + SERV_ADMIN + "\nAdmin email:\t" + SERV_ADMIN_EMAIL + "\nInfo:\t\t\t" + SERV_INFO + "\nLocation:\t" + SERV_LOC1 + " " + SERV_LOC2, LOG_INFO);
 	while (online)
 	{
 		numberSockets = poll(&_fdList[0], _fdList.size(), 0); // return the number of socket with request and fill pollfd
@@ -337,6 +338,9 @@ void	Server::stop(int status)
 	for (std::vector< std::pair<std::string, Client*> >::iterator it = _oldNicknames.begin(); it != _oldNicknames.end(); ++it)
 		delete it->second;
    	_oldNicknames.clear();
+	std::signal(SIGINT, SIG_DFL);
+	std::signal(SIGQUIT, SIG_DFL);
+	std::signal(SIGTERM, SIG_DFL);
 	exit(status);
 }
 

@@ -24,6 +24,8 @@ int main(int ac, char **av)
 
 	Server server(serverPort, av[2]);
 	std::signal(SIGINT, &handler);
+	std::signal(SIGQUIT, &handler);
+	std::signal(SIGTERM, &handler);
 	try			{server.run();}
 	catch(...)	{server.stop(errno);}
 }
