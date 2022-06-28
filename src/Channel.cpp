@@ -129,7 +129,7 @@ std::string		Channel::setMods(std::string mods, std::map<char, std::string>& mod
 	if (mods.find('l') != std::string::npos)
 	{
 		if (mods[mods.find('l') - 1] == '+')
-			_userLimit = (std::atoi(modsArgs.find('l')->second.c_str()) >= CLIENT_LIMIT_PER_CHANNEL ? CLIENT_LIMIT_PER_CHANNEL : std::atoi(modsArgs.find('l')->second.c_str()));
+			_userLimit = (std::stoi(modsArgs.find('l')->second) >= CLIENT_LIMIT_PER_CHANNEL ? CLIENT_LIMIT_PER_CHANNEL : std::atoi(modsArgs.find('l')->second.c_str()));
 		if (mods[mods.find('l') - 1] == '-')
 			_userLimit = CLIENT_LIMIT_PER_CHANNEL;
 		args += (" " + modsArgs.find('l')->second);

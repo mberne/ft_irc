@@ -36,8 +36,8 @@ class Server
 		std::map<std::string, Client*>&						getAllClients();
 		int													getOpsNumber();
 		int													getNonRegisteredNumber();
-		std::vector< std::pair<std::string, Client*> >&		getOldNicknames();
 		void												addOldNickname(std::string nickname, Client* client);
+		std::vector< std::pair<std::string, Client*> >&		getOldNicknames();
 		// CHANNELS
 		Channel*							getChannel(std::string name) const;
 		std::map<std::string, Channel*>&	getAllChannels();
@@ -67,6 +67,7 @@ class Server
 		std::map<int, Client*>								_clientsBySock;
 		std::vector< std::pair<std::string, Client*> >		_oldNicknames;
 		std::map<std::string, Channel*>						_channels;
+
 		// SERVER MAIN
 		void		acceptConnexions();
 		void		receiveMessages();
