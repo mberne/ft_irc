@@ -1,8 +1,10 @@
 #include "Server.hpp"
 
+bool Server::online = false;
+
 //~~ CONSTRUCTOR
 
-Server::Server(int port, std::string password) : _port(port), _password(password), _online(false), _startTime(std::time(NULL))
+Server::Server(int port, std::string password) : _port(port), _password(password), _startTime(std::time(NULL))
 {
 	struct protoent	*pe;
 	struct pollfd	tmp;
@@ -186,8 +188,8 @@ void	Server::run()
 	if ( _logFile.is_open() == false )
 		stop(errno);
 
-	_online = true;
-	while (_online)
+	online = true;
+	while (online)
 	{
 		numberSockets = poll(&_fdList[0], _fdList.size(), 0); // return the number of socket with request and fill pollfd
 		if (numberSockets == -1)
@@ -311,9 +313,10 @@ void	closeFd(struct pollfd rhs) {close(rhs.fd);}
 
 void	Server::stop(int status)
 {
-	for (std::map<int, Client*>::iterator it = _clientsBySock.begin(); it != _clientsBySock.end(); it++)
+	for (std::map<int, Client*>::iterator it = _clientsBySock.begin(); it != _clientsBySock.end(); it = _clientsBySock.begin())
 	{
 		irc_error(it->second, "Closing Link: " +  it->second->getHost() + " Server is shuting down :" + (status == EXIT_SUCCESS ? "Closed by host" : "Fatal error"));
+		send(it->second->getSock(), it->second->getOutputBuffer(), strlen(it->second->getOutputBuffer()), 0);
 		removeClient(it->second);
 	}
 	if (status)
