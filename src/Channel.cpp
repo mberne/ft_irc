@@ -28,6 +28,11 @@ std::string		Channel::getTopic() const
 	return _topic;
 }
 
+void			Channel::setTopic(std::string topic)
+{
+	_topic = topic;
+}
+
 std::string		Channel::getPassword() const
 {
 	return _password;

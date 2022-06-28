@@ -48,6 +48,7 @@ class Channel
 		// CHANNEL INFO
 		std::string		getName() const;
 		std::string		getTopic() const;
+		void			setTopic(std::string topic);
 		std::string		getPassword() const;
 		int				clientCount() const;
 		int				getUserLimit() const;
