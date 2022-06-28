@@ -373,19 +373,20 @@ void	Server::addClient(int sock)
 	
 	newClient->setHost(inet_ntoa(_servSocket.sin_addr));
 	_clientsBySock.insert(std::make_pair(sock, newClient));
+
 	addLog("New connexion: " + newClient->getPrefix(), LOG_INFO);
 }
 
 void	Server::removeClient(Client *client)
 {
+	addLog("Connexion closed: " + client->getPrefix(), LOG_INFO);
+
 	std::vector<struct pollfd>::iterator it = _fdList.begin();
 	while (it->fd != client->getSock())
 		it++;
 
-	addLog("Connexion closed: " + client->getPrefix(), LOG_INFO);
 	for (Channel* channel = client->getChannel(client->getLastChannelName()); channel != NULL; channel = client->getChannel(client->getLastChannelName()))
 		client->leaveChannel(channel, this);
-
 	if (client->isRegistered() == true && _clientsByName.find(client->getNickname())->second == client)
 	{
 		_clientsByName.erase(client->getNickname());
@@ -420,8 +421,7 @@ void	Server::sendWelcome(Client* sender)
 
 void		Server::addLog(std::string message, int type)
 {
-	std::string			logPrompt;
-
+	std::string		logPrompt;
 	switch (type)
 	{
 		case LOG_INFO:
@@ -440,11 +440,13 @@ void		Server::addLog(std::string message, int type)
 			logPrompt = "[" + getCurrentTime() + "]: ERROR:\t\t";
 			break ;
 	}
+
 	size_t	start = 0;
+
 	message.erase(remove(message.begin(), message.end(), '\r'), message.end());
 	for (size_t i = message.find('\n'); i != std::string::npos; i = message.find('\n', start))
 	{
-		std::string					line = message.substr(start, i - start);
+		std::string		line = message.substr(start, i - start);
 
 		_logFile << logPrompt + line << std::endl;
 		start = i + sizeof(char);
@@ -467,5 +469,4 @@ void	Server::pingClient(Client* client)
 		if (differenceTime > TIME_AFK + PING_TIME)
 			irc_quit(vectorizator("QUIT", "Ping timeout:" + std::to_string(PING_TIME) + " seconds"), client, this);
 	}
-
 }

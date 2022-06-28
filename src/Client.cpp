@@ -159,7 +159,7 @@ void	Client::leaveChannel(Channel* channel, Server* serv)
 	_channels.erase(channel->getName());
 	if (channel->getClient(_nickname) != NULL)
 		channel->removeClient(this, serv);
-	else
+	else if (channel->clientCount() == 0)
 		serv->removeChannel(channel);
 }
 

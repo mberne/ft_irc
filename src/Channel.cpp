@@ -245,9 +245,11 @@ void			Channel::addClient(Client* client)
 void			Channel::removeClient(Client* client, Server* serv)
 {
 	_clients.erase(client->getNickname());
+	removeClientWithVoice(client);
+	removeOperator(client);
 	if (client->getChannel(_name) != NULL)
 		client->leaveChannel(this, serv);
-	else
+	else if (clientCount() == 0)
 		serv->removeChannel(this);
 }
 
