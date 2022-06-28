@@ -247,6 +247,8 @@ void	Server::receiveMessages()
 				else if (ret < 0)
 					irc_quit(vectorizator("QUIT", "Remote host closed the connection"), client, this);
 			}
+			if (!client->isRegistered())
+				connexionTime(client);
 			pingClient(client);
 		}
 	}
@@ -469,4 +471,11 @@ void	Server::pingClient(Client* client)
 		if (differenceTime > TIME_AFK + PING_TIME)
 			irc_quit(vectorizator("QUIT", "Ping timeout:" + std::to_string(PING_TIME) + " seconds"), client, this);
 	}
+}
+
+void	Server::connexionTime(Client* client)
+{
+	time_t	differenceTime = time(NULL) - client->getConnexionStartTime();
+	if (differenceTime > CONNEXION_TIME)
+		irc_quit(vectorizator("QUIT", "Connection timed out"), client, this);
 }

@@ -2,7 +2,7 @@
 
 //~~ CONSTRUCTOR
 
-Client::Client(int sock) : _fd(sock), _mods(0), _password(false), _connexionStartTime(time(NULL)), _lastCmdTime(time(NULL)) {}
+Client::Client(int sock) : _fd(sock), _mods(0), _password(false), _connexionStartTime(time(NULL)), _lastCmdTime(time(NULL)), _retryPassword(RETRY_NUMBER) {}
 
 //~~ DESTRUCTOR
 
@@ -143,6 +143,16 @@ std::string		Client::getMods() const
 bool			Client::hasMod(int mode) const
 {
 	return ((_mods | mode) == _mods);
+}
+
+int				Client::getRetryPassword() const
+{
+	return _retryPassword;
+}
+
+void			Client::setRetryPassword()
+{
+	_retryPassword--;
 }
 
 //~~ CHANNELS

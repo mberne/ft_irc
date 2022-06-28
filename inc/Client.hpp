@@ -39,6 +39,8 @@ class Client
 		void			setLastCmdTime();
 		bool			getIsPing() const;
 		void			setIsPing(bool ping);
+		int				getRetryPassword() const;
+		void			setRetryPassword();
 		// MODS
 		std::string		setMods(std::string mods);
 		std::string		getMods() const;
@@ -75,6 +77,7 @@ class Client
 		const time_t						_connexionStartTime;
 		time_t								_lastCmdTime;
 		bool								_isPing;
+		int									_retryPassword;
 
 		std::string							_inputBuffer;			// Client's messages buffer
 		std::string							_outputBuffer;			// Messages to Client buffer

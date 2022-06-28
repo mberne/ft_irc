@@ -76,6 +76,7 @@ class Server
 		void		addClient(int sock);
 		void		sendWelcome(Client* sender);
 		void		pingClient(Client* client);
+		void		connexionTime(Client* client);
 };
 
 #endif //~~ SERVER_H
