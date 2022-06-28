@@ -44,7 +44,9 @@ void	irc_join(std::vector<std::string> cmd, Client* sender, Server* serv)
 				if (!current)
 					current = serv->newChannel(channels[i], sender);
 
-				std::vector<std::string> namesCmd = {"NAMES", current->getName()};
+				std::vector<std::string> namesCmd;
+				namesCmd.push_back("NAMES");
+				namesCmd.push_back(current->getName());
 
 				sender->joinChannel(current);
 				current->sendToClients(sender->getPrefix() + " " + cmd[0] + " " + channels[i], NULL);

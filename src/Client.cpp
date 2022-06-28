@@ -164,7 +164,9 @@ void	Client::leaveChannel(Channel* channel)
 
 void		Client::leaveAllChannels(Server* serv)
 {
-	std::vector<std::string> cmd = {"PART", ""};
+	std::vector<std::string> cmd;
+	cmd.push_back("PART");
+	cmd.push_back("");
 	for (std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); it = _channels.begin())
 	{
 		cmd[1] = it->first;

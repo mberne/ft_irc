@@ -12,7 +12,7 @@ void	irc_kill(std::vector<std::string> cmd, Client* sender, Server* serv)
 		if (!client)
 			sender->addToOutputBuffer(ERR_NOSUCHNICK(sender->getNickname(), cmd[1]));
 		else
-			irc_quit(std::vector<std::string>({"QUIT", "Closing Link: " + SERV_NAME + " (Killed (" + sender->getNickname() + " (" + cmd[2] + ")))"}), client, serv);
+			irc_quit(vectorization("QUIT", "Closing Link: " + SERV_NAME + " (Killed (" + sender->getNickname() + " (" + cmd[2] + ")))"), client, serv);
 	}
 }
 

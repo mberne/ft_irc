@@ -117,5 +117,6 @@ void	irc_pong(std::vector<std::string> cmd, Client* sender, Server* serv);
 void	irc_error(Client* sender, std::string reason);
 // utils
 void	parseArg(std::string cmdArg, std::vector<std::string>& argList);
+std::vector<std::string>	vectorization(std::string arg1, std::string arg2);
 
 #endif //~~ IRCSERV_H
