@@ -347,7 +347,7 @@ void		Server::executeCommand(std::vector<std::string>	cmdArgs, Client* sender)
 		sender->addToOutputBuffer(ERR_UNKNOWNCOMMAND(sender->getNickname(), cmdArgs.front()));
 	else if (sender->isRegistered() == false && it->first.compare("USER") && it->first.compare("PASS") && it->first.compare("NICK"))
 		sender->addToOutputBuffer(ERR_NOTREGISTERED(sender->getNickname()));
-	else
+	else if (sender->isRegistered() == false)
 	{
 		command_t fct = it->second;
 		fct(cmdArgs, sender, this);
@@ -359,6 +359,12 @@ void		Server::executeCommand(std::vector<std::string>	cmdArgs, Client* sender)
 		else if (_clientsByName.find(sender->getNickname()) != _clientsByName.end() && _clientsByName.find(sender->getNickname())->second != sender)
 			irc_quit(vectorization("QUIT", "Nickname overridden"), sender, this);
 	}
+	else
+	{
+		command_t fct = it->second;
+		fct(cmdArgs, sender, this);
+	}
+	
 }
 
 void	Server::addClient(int sock)
@@ -380,7 +386,10 @@ void	Server::removeClient(Client *client)
 
 	if (client->isRegistered() == true && _clientsByName.find(client->getNickname())->second == client)
 	{
-		_clientsByName.erase(client->getNickname());
+		std::cout << _clientsByName.find(client->getNickname())->second << "|";
+		std::cout << _clientsByName.erase(client->getNickname()) << "|";
+		std::cout << _clientsByName.find(client->getNickname())->second << "|";
+		std::cout << _clientsByName.end()->second << std::endl;
 		addOldNickname(client->getNickname(), client);
 	}
 	else

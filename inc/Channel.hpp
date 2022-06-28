@@ -65,7 +65,6 @@ class Channel
 		void			addClient(Client* client);				// Add the Client to the channel
 		void			removeClient(Client* client);			// Remove the Client from the channel
 		Client*			getClient(std::string name) const;
-		bool			isConnected(Client* client) const;
 		bool			isOperator(Client* client) const;
 		bool			hasVoice(Client* client) const;			// Return true if the client has voice permission
 		bool			isBanned(Client* client);

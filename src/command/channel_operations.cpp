@@ -222,7 +222,7 @@ void	irc_names(std::vector<std::string> cmd, Client* sender, Server* serv)
 		{
 			Channel* current = serv->getChannel(channels[i]);
 
-			if (current != NULL && (!current->hasMod(CHANNEL_FLAG_S) || current->getClient(sender->getNickname()) != NULL))
+			if (current != NULL && ((!current->hasMod(CHANNEL_FLAG_S) && !current->hasMod(CHANNEL_FLAG_P)) || current->getClient(sender->getNickname()) != NULL))
 				sender->addToOutputBuffer(RPL_NAMREPLY(sender->getNickname(), current));
 			sender->addToOutputBuffer(RPL_ENDOFNAMES(sender->getNickname(), channels[i]));
 		}
@@ -239,14 +239,14 @@ void	irc_list(std::vector<std::string> cmd, Client* sender, Server* serv)
 		for (std::vector<std::string>::iterator it = channels.begin(); it < channels.end(); it++)
 		{
 			Channel* current = serv->getChannel(*it);
-			if (current != NULL && (!current->hasMod(CHANNEL_FLAG_S) || current->getClient(sender->getNickname()) != NULL))
+			if (current != NULL && ((!current->hasMod(CHANNEL_FLAG_S) && !current->hasMod(CHANNEL_FLAG_P)) || current->getClient(sender->getNickname()) != NULL))
 				sender->addToOutputBuffer(RPL_LIST(sender->getNickname(), current));
 		}
 	}
 	else
 	{
 		for (std::map<std::string, Channel*>::iterator it = serv->getAllChannels().begin(); it != serv->getAllChannels().end(); it++)
-			if (!it->second->hasMod(CHANNEL_FLAG_S) || it->second->getClient(sender->getNickname()) != NULL)
+			if ((!it->second->hasMod(CHANNEL_FLAG_S) && !it->second->hasMod(CHANNEL_FLAG_P)) || it->second->getClient(sender->getNickname()) != NULL)
 				sender->addToOutputBuffer(RPL_LIST(sender->getNickname(), it->second));
 	}
 	sender->addToOutputBuffer(RPL_LISTEND(sender->getNickname()));
@@ -275,8 +275,7 @@ void	irc_kick(std::vector<std::string> cmd, Client* sender, Server* serv)
 		sender->addToOutputBuffer(ERR_USERNOTINCHANNEL(sender->getNickname(), cmd[2], cmd[1]));
 	else
 	{
-		if (cmd.size() > 3)
-			channel->sendToClients(sender->getPrefix() + " " + cmd[0] + " " + cmd[1] + " " + cmd[2] + " :" + (cmd.size() > 3 ? cmd[3] : "Kicked by operator." ), NULL);
+		channel->sendToClients(sender->getPrefix() + " " + cmd[0] + " " + cmd[1] + " " + cmd[2] + " :" + (cmd.size() > 3 ? cmd[3] : "Kicked by operator." ), NULL);
 		client->leaveChannel(channel);
 		if (channel->clientCount() == 0)
 			serv->removeChannel(channel);

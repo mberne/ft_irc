@@ -212,10 +212,10 @@ std::string		Client::showChannelList()
 	return channelList;
 }
 
-void			Client::sendToAllChannels(std::string msg)
+void			Client::sendToAllChannels(std::string msg, Client* sender)
 {
 	for (std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); it++)
-		it->second->sendToClients(msg, NULL);
+		it->second->sendToClients(msg, sender);
 }
 
 //~~ BUFFER

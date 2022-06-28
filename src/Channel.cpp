@@ -253,11 +253,6 @@ Client*			Channel::getClient(std::string name) const
 		return (_clients.find(name)->second);
 }
 
-bool			Channel::isConnected(Client* client) const
-{
-	return (_clients.find(client->getNickname()) != _clients.end());
-}
-
 bool			Channel::isOperator(Client* client) const
 {
 	return (_operators.find(client->getNickname()) != _operators.end());

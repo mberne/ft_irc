@@ -51,7 +51,7 @@ class Client
 		int				getNumberOfChannels() const;
 		std::string		getLastChannelName() const;
 		std::string		showChannelList();
-		void			sendToAllChannels(std::string msg);
+		void			sendToAllChannels(std::string msg, Client* sender);
 
 		// BUFFER
 		std::string &	getInputBuffer();

@@ -26,7 +26,7 @@ void	irc_nick(std::vector<std::string> cmd, Client* sender, Server* serv)
 			cmd[1] = cmd[1].substr(0, NICK_LEN);
 		if (cmd[1].find_first_not_of(ASCII_CHARSET) != std::string::npos)
 			sender->addToOutputBuffer(ERR_ERRONEUSNICKNAME(sender->getNickname(), cmd[1]));
-		else if (serv->getAllClients().find(cmd[1]) != serv->getAllClients().end())
+		else if (serv->getClient(cmd[1]) != NULL)
 			sender->addToOutputBuffer(ERR_NICKNAMEINUSE(sender->getNickname(), cmd[1]));
 		else
 		{
@@ -34,7 +34,7 @@ void	irc_nick(std::vector<std::string> cmd, Client* sender, Server* serv)
 			{
 				std::string		reply = sender->getPrefix() + " " + cmd[0] + " " + cmd[1];
 				sender->addToOutputBuffer(reply);
-				sender->sendToAllChannels(reply);
+				sender->sendToAllChannels(reply, sender);
 				serv->getAllClients().erase(sender->getNickname());
 				serv->getAllClients().insert(std::make_pair(cmd[1], sender));
 				serv->addOldNickname(sender->getNickname(), sender);
@@ -91,9 +91,10 @@ void	irc_quit(std::vector<std::string> cmd, Client* sender, Server* serv)
 	if (sender->isRegistered() == true && serv->getAllClients().find(sender->getNickname())->second == sender)
 	{
 		sender->addToOutputBuffer(sender->getPrefix() + " " + cmd[0] + " :" + reason);
-		sender->sendToAllChannels(sender->getPrefix() + " " + cmd[0] + " :" + reason); 
+		sender->sendToAllChannels(sender->getPrefix() + " " + cmd[0] + " :" + reason, sender); 
 	}
 	irc_error(sender, "Closing Link: " + sender->getHost() + " (" + reason + ")");
 	send(sender->getSock(), sender->getOutputBuffer(), strlen(sender->getOutputBuffer()), 0);
+	serv->addLog("from: :" + SERV_NAME + " to: " + sender->getPrefix() + "\n" + sender->getOutputBuffer(), LOG_BROADCAST);
 	serv->removeClient(sender);
 }
