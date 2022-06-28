@@ -172,7 +172,7 @@ void	irc_mode(std::vector<std::string> cmd, Client* sender, Server* serv)
 							sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
 							return;
 						}
-						size_t limit = std::atoi(cmd[argIndex].c_str());
+						size_t limit = std::stoi(cmd[argIndex]);
 						if (limit)
 						{
 							mods.push_back(sign);
