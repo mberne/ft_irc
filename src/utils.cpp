@@ -23,3 +23,16 @@ std::vector<std::string>	vectorizator(std::string arg1, std::string arg2)
 
 	return vec;
 }
+
+bool	ableToTalk(Client *client, Channel *channel)
+{
+	if (channel->isBanned(client))
+		return 0;
+	if (channel->hasMod(CHANNEL_FLAG_N) && !channel->getClient(client->getNickname()))
+		return 0;
+	if (channel->hasMod(CHANNEL_FLAG_I) && !channel->isInvited(client))
+		return 0;
+	if (channel->hasMod(CHANNEL_FLAG_M) && !channel->isOperator(client) && !channel->hasVoice(client))
+		return 0;
+	return 1;
+}
