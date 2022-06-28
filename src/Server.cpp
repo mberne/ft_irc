@@ -383,6 +383,8 @@ void	Server::removeClient(Client *client)
 		it++;
 
 	addLog("Connexion closed: " + client->getPrefix(), LOG_INFO);
+	for (Channel* channel = client->getChannel(client->getLastChannelName()); channel != NULL; channel = client->getChannel(client->getLastChannelName()))
+		client->leaveChannel(channel, this);
 
 	if (client->isRegistered() == true && _clientsByName.find(client->getNickname())->second == client)
 	{

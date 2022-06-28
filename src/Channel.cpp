@@ -242,11 +242,13 @@ void			Channel::addClient(Client* client)
 		client->joinChannel(this);
 }
 
-void			Channel::removeClient(Client* client)
+void			Channel::removeClient(Client* client, Server* serv)
 {
 	_clients.erase(client->getNickname());
 	if (client->getChannel(_name) != NULL)
-		client->leaveChannel(this);
+		client->leaveChannel(this, serv);
+	else
+		serv->removeChannel(this);
 }
 
 Client*			Channel::getClient(std::string name) const

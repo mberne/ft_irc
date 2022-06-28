@@ -45,7 +45,7 @@ class Client
 		bool			hasMod(int mode) const;
 		// CHANNEL
 		void			joinChannel(Channel* channel);				// Add the Channel sent as paramater to the _channels map
-		void			leaveChannel(Channel* channel);				// Remove the Channel sent as paramater from the _channels map
+		void			leaveChannel(Channel* channel, Server* serv);				// Remove the Channel sent as paramater from the _channels map
 		void			leaveAllChannels(Server* serv);
 		Channel*		getChannel(std::string name) const;
 		int				getNumberOfChannels() const;

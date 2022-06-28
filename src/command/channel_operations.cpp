@@ -78,9 +78,7 @@ void	irc_part(std::vector<std::string> cmd, Client* sender, Server* serv)
 			else
 			{
 				current->sendToClients(sender->getPrefix() + " " + cmd[0] + " " + channels[i] + (cmd.size() > 2 ? " " + cmd[2] : "" ), NULL);
-				sender->leaveChannel(current);
-				if (current->clientCount() == 0)
-					serv->removeChannel(current);
+				sender->leaveChannel(current, serv);
 			}
 		}
 	}
@@ -310,8 +308,6 @@ void	irc_kick(std::vector<std::string> cmd, Client* sender, Server* serv)
 	else
 	{
 		channel->sendToClients(sender->getPrefix() + " " + cmd[0] + " " + cmd[1] + " " + cmd[2] + " :" + (cmd.size() > 3 ? cmd[3] : "Kicked by operator." ), NULL);
-		client->leaveChannel(channel);
-		if (channel->clientCount() == 0)
-			serv->removeChannel(channel);
+		client->leaveChannel(channel, serv);
 	}
 }

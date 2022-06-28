@@ -154,11 +154,13 @@ void	Client::joinChannel(Channel* channel)
 		channel->addClient(this);
 }
 
-void	Client::leaveChannel(Channel* channel)	
+void	Client::leaveChannel(Channel* channel, Server* serv)
 {
 	_channels.erase(channel->getName());
 	if (channel->getClient(_nickname) != NULL)
-		channel->removeClient(this);
+		channel->removeClient(this, serv);
+	else
+		serv->removeChannel(channel);
 }
 
 void		Client::leaveAllChannels(Server* serv)
