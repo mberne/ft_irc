@@ -59,32 +59,25 @@ void	irc_whois(std::vector<std::string> cmd, Client* sender, Server* serv)
 
 void	irc_whowas(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
-	(void)serv; (void)sender; (void)cmd;
-	// int count;
-	// int	i = 0;
+	size_t	count = (cmd.size() > 2 ? std::stoi(cmd[2]) : OLD_CLIENT_LIMIT);
+	size_t	i = 0;
 
-	// if (cmd.size() < 2)
-	// 	sender->addToOutputBuffer(ERR_NONICKNAMEGIVEN(sender->getNickname()));
-	// else
-	// {
-	// 	if (cmd.size() == 3)
-	// 	{
-	// 		count = std::stoi(cmd[2]);
-	// 		if (count < 1)
-	// 			count = INT32_MAX;
-	// 	}
-	// 	for (std::map<std::string, Client*>::iterator it = serv->getOldNickname().begin(); it != serv->getOldNickname().end(); it++)
-	// 	{
-	// 		if (!it->second->getNickname().compare(cmd[1]) && i < count)
-	// 		{
-	// 			sender->addToOutputBuffer(RPL_WHOWASUSER(sender->getNickname(), it->second));
-	// 			sender->addToOutputBuffer(RPL_WHOISSERVER(sender->getNickname(), it->second->getNickname()));
-	// 			sender->addToOutputBuffer(RPL_WHOISACTUALLY(sender->getNickname(), it->second));
-	// 			i++;
-	// 		}
-	// 	}
-	// 	if (!i)
-	// 		sender->addToOutputBuffer(ERR_WASNOSUCHNICK(sender->getNickname(), cmd[1]));
-	// 	sender->addToOutputBuffer(RPL_ENDOFWHOWAS(sender->getNickname(), cmd[1]));
-	// }
+	if (cmd.size() < 2)
+	{
+		sender->addToOutputBuffer(ERR_NONICKNAMEGIVEN(sender->getNickname()));
+		return;
+	}
+	for (std::vector< std::pair<std::string, Client*> >::iterator it = serv->getOldNicknames().begin(); it != serv->getOldNicknames().end(); it++)
+	{
+		if (!it->second->getNickname().compare(cmd[1]) && i < count)
+		{
+			sender->addToOutputBuffer(RPL_WHOWASUSER(sender->getNickname(), it->second));
+			sender->addToOutputBuffer(RPL_WHOISSERVER(sender->getNickname(), it->second->getNickname()));
+			sender->addToOutputBuffer(RPL_WHOISACTUALLY(sender->getNickname(), it->second));
+			i++;
+		}
+	}
+	if (i == 0)
+		sender->addToOutputBuffer(ERR_WASNOSUCHNICK(sender->getNickname(), cmd[1]));
+	sender->addToOutputBuffer(RPL_ENDOFWHOWAS(sender->getNickname(), cmd[1]));
 }
