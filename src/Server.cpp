@@ -386,10 +386,7 @@ void	Server::removeClient(Client *client)
 
 	if (client->isRegistered() == true && _clientsByName.find(client->getNickname())->second == client)
 	{
-		std::cout << _clientsByName.find(client->getNickname())->second << "|";
-		std::cout << _clientsByName.erase(client->getNickname()) << "|";
-		std::cout << _clientsByName.find(client->getNickname())->second << "|";
-		std::cout << _clientsByName.end()->second << std::endl;
+		_clientsByName.erase(client->getNickname());
 		addOldNickname(client->getNickname(), client);
 	}
 	else

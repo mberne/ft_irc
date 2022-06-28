@@ -112,7 +112,6 @@ void	Client::setIsPing(bool ping)
 
 std::string		Client::setMods(std::string mods)
 {
-	std::cout << mods << std::endl;
 	std::string		charset = "oi";
 	int				flag = 1;
 
