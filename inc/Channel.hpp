@@ -93,8 +93,6 @@ class Channel
 
 #endif //~~ CHANNEL_H
 
-// channel->showClientList() "[[@|+]<pseudo> [[@|+]<pseudo> [...]]]"
-
 /*
 *	NAME RESTRICTIONS:
 *	Channels names are strings (beginning with a '&' or '#' character) of length up to 200 characters.

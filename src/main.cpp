@@ -1,5 +1,10 @@
 #include "ircserv.hpp"
 
+void	handler(int)
+{
+	Server::online = false;
+}
+
 int main(int ac, char **av)
 {
 	if (ac != 3)
@@ -18,5 +23,7 @@ int main(int ac, char **av)
 	}
 
 	Server server(serverPort, av[2]);
-	server.run();
+	std::signal(SIGINT, &handler);
+	try			{server.run();}
+	catch(...)	{server.stop(errno);}
 }

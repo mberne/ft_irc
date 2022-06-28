@@ -8,7 +8,7 @@
 # include <string>
 # include <cstring>
 # include <unistd.h>
-# include <signal.h>
+# include <csignal>
 # include <fcntl.h>
 # include <poll.h>
 # include <netdb.h>

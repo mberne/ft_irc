@@ -26,7 +26,6 @@ class Server
 		~Server();
 
 		// SERVER
-		void								run();
 		int									getPort() const;
 		std::string							getPassword() const;
 		std::string							getStartTime() const;
@@ -39,20 +38,24 @@ class Server
 		int													getNonRegisteredNumber();
 		std::vector< std::pair<std::string, Client*> >&		getOldNicknames();
 		void												addOldNickname(std::string nickname, Client* client);
-		void												removeClient(Client *src);
 		// CHANNELS
 		Channel*							getChannel(std::string name) const;
 		std::map<std::string, Channel*>&	getAllChannels();
 		Channel*							newChannel(std::string name, Client* founder);
 		void								removeChannel(Channel* channel);
 		// SERVER MAIN
+		void								run();
+		void								stop(int status);
+		// SERVER UTILS
+		void								removeClient(Client *src);
 	
+		static bool	online;
+
 	private:
 
 		// SERVER
 		int									_port;
 		std::string							_password;
-		bool								_online;
 		time_t								_startTime;
 		int									_fd;
 		struct sockaddr_in					_servSocket;
@@ -69,7 +72,6 @@ class Server
 		void		receiveMessages();
 		void		executeRequest(Client* sender);
 		void		sendMessages();
-		void		stop(int status); // SIGNAL HANDLING
 		// SERVER UTILS
 		void		initSupportedCommands();
 		void		executeCommand(std::vector<std::string>	cmd, Client* sender);
