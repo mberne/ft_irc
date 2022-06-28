@@ -204,9 +204,36 @@ void	irc_mode(std::vector<std::string> cmd, Client* sender, Server* serv)
 
 void	irc_topic(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
-	(void)cmd; (void)sender; (void)serv;
-	// ERR_NEEDMOREPARAMS ERR_NOSUCHCHANNEL ERR_NOTONCHANNEL ERR_CHANOPRIVSNEEDED
-	// RPL_NOTOPIC RPL_TOPIC RPL_TOPICWHOTIME
+	if (cmd.size() < 2)
+		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
+	else
+	{
+		if (serv->getChannel(cmd[1]) == NULL)
+			sender->addToOutputBuffer(ERR_NOSUCHCHANNEL(sender->getNickname(), cmd[1]));
+		else if (sender->getChannel(cmd[1]) == NULL)
+			sender->addToOutputBuffer(ERR_NOTONCHANNEL(sender->getNickname(), cmd[1]));
+		else if (serv->getChannel(cmd[1])->hasMod(CHANNEL_FLAG_T) && !serv->getChannel(cmd[1])->isOperator(sender))
+			sender->addToOutputBuffer(ERR_CHANOPRIVSNEEDED(sender->getNickname(), cmd[1]));
+		else
+		{
+			if (cmd.size() == 2)
+			{
+				std::string	topic = serv->getChannel(cmd[1])->getTopic();
+				if (topic.size() == 0)
+					sender->addToOutputBuffer(RPL_NOTOPIC(sender->getNickname(), serv->getChannel(cmd[1])));
+				else
+				{
+					sender->addToOutputBuffer(RPL_TOPIC(sender->getNickname(),serv->getChannel(cmd[1])));
+					sender->addToOutputBuffer(RPL_TOPICWHOTIME(sender->getNickname(), serv->getChannel(cmd[1]), sender->getNickname(), serv->getCurrentTime()));
+				}
+			}
+			else
+			{
+				serv->getChannel(cmd[1])->setTopic(cmd[2]);
+				serv->getChannel(cmd[1])->sendToClients(RPL_TOPIC(sender->getNickname(),serv->getChannel(cmd[1])), NULL);
+			}
+		}
+	}
 }
 
 void	irc_names(std::vector<std::string> cmd, Client* sender, Server* serv)
