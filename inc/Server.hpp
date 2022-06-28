@@ -13,7 +13,8 @@
 # define LOG_INFO		0
 # define LOG_LISTEN		1
 # define LOG_BROADCAST	2
-# define LOG_ERROR		3
+# define LOG_MESSAGE	3
+# define LOG_ERROR		4
 
 typedef void (*command_t)(std::vector<std::string> cmd, Client* sender, Server* serv);
 
@@ -25,10 +26,12 @@ class Server
 		~Server();
 
 		// SERVER
+		void								run();
 		int									getPort() const;
 		std::string							getPassword() const;
 		std::string							getStartTime() const;
 		std::string							getCurrentTime() const;
+		void								addLog(std::string message, int type);
 		// CLIENTS
 		Client*												getClient(std::string name) const;
 		std::map<std::string, Client*>&						getAllClients();
@@ -43,7 +46,6 @@ class Server
 		Channel*							newChannel(std::string name, Client* founder);
 		void								removeChannel(Channel* channel);
 		// SERVER MAIN
-		void		run();
 	
 	private:
 
@@ -73,7 +75,6 @@ class Server
 		void		executeCommand(std::vector<std::string>	cmd, Client* sender);
 		void		addClient(int sock);
 		void		sendWelcome(Client* sender);
-		void		addLog(std::string message, int type);
 		void		pingClient(Client* client);
 };
 

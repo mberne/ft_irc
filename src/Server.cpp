@@ -425,6 +425,9 @@ void		Server::addLog(std::string message, int type)
 		case LOG_BROADCAST:
 			logPrompt = "[" + getCurrentTime() + "]: BROADCAST:\t";
 			break ;
+		case LOG_MESSAGE:
+			logPrompt = "[" + getCurrentTime() + "]: MESSAGE:\t";
+			break ;
 		case LOG_ERROR:
 			logPrompt = "[" + getCurrentTime() + "]: ERROR:\t\t";
 			break ;
