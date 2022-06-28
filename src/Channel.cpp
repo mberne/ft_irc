@@ -107,7 +107,6 @@ std::string		Channel::setMods(std::string mods, std::map<char, std::string>& mod
 	std::string		args;
 	int				flag = 1;
 
-	std::cout << mods << std::endl;
 	for(size_t	i = 0; i < charset.size(); i++)
 	{
 		if (mods.find(charset[i]) != std::string::npos)
