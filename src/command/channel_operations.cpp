@@ -21,7 +21,7 @@ void	irc_join(std::vector<std::string> cmd, Client* sender, Server* serv)
 				channels[i] = channels[i].substr(0, CHANNEL_LEN);
 			Channel* current = serv->getChannel(channels[i]);
 
-			if (channels[i][0] != '#')
+			if (channels[i][0] != '#' || channels[i].find_first_of(" ,") != std::string::npos || channels[i].find(7) != std::string::npos)
 				sender->addToOutputBuffer(ERR_NOSUCHCHANNEL(sender->getNickname(), channels[i]));
 			else if (sender->getNumberOfChannels() >= CLIENT_CHANNEL_LIMIT)
 			{
