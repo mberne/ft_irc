@@ -269,16 +269,13 @@ void		Server::executeRequest(Client* sender)
 			for (size_t endOfArg = cmdLine.find_first_of(' '); endOfArg != std::string::npos; endOfArg = cmdLine.find_first_of(' '))
 			{
 				if (cmdLine[0] == ':')
-				{
-					cmdLine.erase(0, 1);
-					cmdArgs.push_back(cmdLine);
-					cmdLine.clear();
 					break;
-				}
 				cmdArgs.push_back(cmdLine.substr(0, endOfArg));
 				cmdLine.erase(0, cmdLine.find_first_not_of(' ', endOfArg));
 			}
-			if (!cmdLine.empty())
+			if (cmdLine[0] == ':')
+				cmdArgs.push_back(cmdLine.substr(1, cmdLine.size() - 1));
+			else if (!cmdLine.empty())
 				cmdArgs.push_back(cmdLine);
 			executeCommand(cmdArgs, sender);
 		}
