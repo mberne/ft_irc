@@ -40,6 +40,14 @@
 # define SERV_LOC1					std::string("Charbonniere-Les-Bains, France")
 # define SERV_LOC2					std::string("42 Lyon")
 # define PROMPT(num, user)			std::string(":") + SERV_NAME + std::string(num) + user
+# define START_LOG					"Server started:\t" + SERV_NAME +\
+									"\nVersion:\t\t" + SERV_VERSION +\
+									"\nCreation:\t\t" + SERV_CREATION +\
+									"\nAdmin:\t\t\t" + SERV_ADMIN +\
+									"\nAdmin email:\t" + SERV_ADMIN_EMAIL +\
+									"\nInfo:\t\t\t" + SERV_INFO +\
+									"\nLocation:\t\t" + SERV_LOC1 +\
+									" " + SERV_LOC2
 
 // Server specifications
 // Required

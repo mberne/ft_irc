@@ -189,7 +189,7 @@ void	Server::run()
 		stop(errno);
 
 	online = true;
-	addLog("Server started: " + SERV_NAME + "\nVersion:\t\t" + SERV_VERSION + "\nCreation:\t\t" + SERV_CREATION + "\nAdmin:\t\t\t" + SERV_ADMIN + "\nAdmin email:\t" + SERV_ADMIN_EMAIL + "\nInfo:\t\t\t" + SERV_INFO + "\nLocation:\t" + SERV_LOC1 + " " + SERV_LOC2, LOG_INFO);
+	addLog(START_LOG, LOG_INFO);
 	while (online)
 	{
 		numberSockets = poll(&_fdList[0], _fdList.size(), 0); // return the number of socket with request and fill pollfd
