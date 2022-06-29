@@ -8,7 +8,7 @@ void	irc_kill(std::vector<std::string> cmd, Client* sender, Server* serv)
 		sender->addToOutputBuffer(ERR_NOPRIVILEGES(sender->getNickname()));
 	else
 	{
-		Client *client = serv->getClient(cmd[1]);
+		Client*	client = serv->getClient(cmd[1]);
 		if (!client)
 			sender->addToOutputBuffer(ERR_NOSUCHNICK(sender->getNickname(), cmd[1]));
 		else
