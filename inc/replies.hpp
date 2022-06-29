@@ -121,7 +121,7 @@
 # define RPL_ENDOFINFO(user)	PROMPT(" 374 ", user) + std::string(" :End of /INFO list")
 
 // MOTD (Message Of The Day)
-# define RPL_MOTD(user)			PROMPT(" 372 ", user) + std::string(" :WELCOME to Potatoe's Land !")
+# define RPL_MOTD(user)			PROMPT(" 372 ", user) + std::string(" :WELCOME to Potatoe's Land!")
 # define RPL_MOTDSTART(user)	PROMPT(" 375 ", user) + std::string(" :- ") + SERV_NAME + std::string(" Message of the day - ")
 # define RPL_ENDOFMOTD(user)	PROMPT(" 376 ", user) + std::string(" :End of /MOTD command.")
 
