@@ -92,12 +92,13 @@ void	irc_oper(std::vector<std::string> cmd, Client* sender, Server* serv)
 
 void	irc_quit(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
-	std::string	reason =  (cmd.size() > 1 ? cmd[1] : sender->getNickname());
+	std::string	reason = (cmd.size() > 1 ? cmd[1] : sender->getNickname());
 
 	if (sender->isRegistered() == true && serv->getAllClients().find(sender->getNickname())->second == sender)
 	{
-		sender->addToOutputBuffer(sender->getPrefix() + " " + cmd[0] + " :" + reason);
-		sender->sendToAllChannels(sender->getPrefix() + " " + cmd[0] + " :" + reason, sender); 
+		std::string reply = sender->getPrefix() + " " + cmd[0] + " :" + reason;
+		sender->addToOutputBuffer(reply);
+		sender->sendToAllChannels(reply, sender); 
 	}
 	irc_error(sender, "Closing Link: " + sender->getHost() + " (" + reason + ")");
 	send(sender->getSock(), sender->getOutputBuffer(), strlen(sender->getOutputBuffer()), 0);
