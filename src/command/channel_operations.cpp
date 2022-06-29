@@ -248,10 +248,12 @@ void	irc_names(std::vector<std::string> cmd, Client* sender, Server* serv)
 		{
 			if ((!it->second->hasModes(CHANNEL_FLAG_S) && !it->second->hasModes(CHANNEL_FLAG_P)) || it->second->getClient(sender->getNickname()) != NULL)
 			{
-				sender->addToOutputBuffer(RPL_NAMREPLY(sender->getNickname(), it->second));
+				sender->addToOutputBuffer(RPL_NAMREPLY(sender->getNickname(), it->second->getName(), it->second->showClientsList()));
 				sender->addToOutputBuffer(RPL_ENDOFNAMES(sender->getNickname(), it->second->getName()));
 			}
 		}
+		sender->addToOutputBuffer(RPL_NAMREPLY(sender->getNickname(), "*", serv->showLonelyClientsList()));
+		sender->addToOutputBuffer(RPL_ENDOFNAMES(sender->getNickname(), "*"));
 	}
 	else
 	{
@@ -263,7 +265,7 @@ void	irc_names(std::vector<std::string> cmd, Client* sender, Server* serv)
 			Channel* current = serv->getChannel(channels[i]);
 
 			if (current != NULL && ((!current->hasModes(CHANNEL_FLAG_S) && !current->hasModes(CHANNEL_FLAG_P)) || current->getClient(sender->getNickname()) != NULL))
-				sender->addToOutputBuffer(RPL_NAMREPLY(sender->getNickname(), current));
+				sender->addToOutputBuffer(RPL_NAMREPLY(sender->getNickname(), current->getName(), current->showClientsList()));
 			sender->addToOutputBuffer(RPL_ENDOFNAMES(sender->getNickname(), channels[i]));
 		}
 	}

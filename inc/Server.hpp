@@ -67,6 +67,7 @@ class Server
 		void										addClient(int sock);
 		void										removeClient(Client *src);
 		void										pingClient(Client* client);
+		std::string									showLonelyClientsList();
 		// CHANNEL
 		Channel*							getChannel(std::string name) const;
 		std::map<std::string, Channel*>&	getAllChannels();

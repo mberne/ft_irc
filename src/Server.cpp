@@ -230,6 +230,22 @@ void	Server::pingClient(Client* client)
 	}
 }
 
+std::string		Server::showLonelyClientsList()
+{
+	std::string		clientList;
+
+	for (std::map<std::string, Client*>::iterator it = _clientsByName.begin(); it != _clientsByName.end(); it++)
+	{
+		if (!it->second->hasModes(CLIENT_FLAG_I))
+		{
+			if (it != _clientsByName.begin())
+				clientList += " ";
+			clientList += it->second->getNickname();
+		}
+	}
+	return clientList;
+}
+
 //~~ CHANNEL
 
 Channel*	Server::getChannel(std::string name) const
