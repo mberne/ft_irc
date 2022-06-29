@@ -10,7 +10,7 @@
 # define RPL_MYINFO(user)		PROMPT(" 004 ", user) + " " + SERV_NAME + " " + SERV_VERSION + std::string(" io opsitnmlbvk")
 # define RPL_ISUPPORT(user)		PROMPT(" 005 ", user) + std::string(" CASE_MAPPING=") +				CASE_MAPPING + \
 														std::string(" USER_MODES=") +				USER_MODES + \
-														std::string(" CHANNEL_MODES=") +				CHANNEL_MODES + \
+														std::string(" CHANNEL_MODES=") +			CHANNEL_MODES + \
 														std::string(" CHAN_TYPES=") +				CHAN_TYPES + \
 														std::string(" NICK_LEN=") +					std::to_string(NICK_LEN) + \
 														std::string(" USER_LEN=") +					std::to_string(USER_LEN) + \

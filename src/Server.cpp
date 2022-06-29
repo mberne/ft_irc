@@ -414,6 +414,7 @@ void	Server::stop(int status)
 	else
 		addLog("Server exited with code: " + std::to_string(status) + " " + SERV_NAME + ": Closed by host", LOG_INFO);
 	(status ? std::cerr : std::cout) << "Server exited with code: " << status << "\nLogs available at: " << getcwd(NULL, 0) << "/" << SERV_NAME << ".log" << std::endl;
+	_logFile.close();
 	
 	std::for_each(_fdList.begin(), _fdList.end(), closeFd);
 	_fdList.clear();
