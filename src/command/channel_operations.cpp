@@ -206,29 +206,30 @@ void	irc_topic(std::vector<std::string> cmd, Client* sender, Server* serv)
 		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
 	else
 	{
-		if (serv->getChannel(cmd[1]) == NULL)
+		Channel* channel = serv->getChannel(cmd[1]);
+		if (channel == NULL)
 			sender->addToOutputBuffer(ERR_NOSUCHCHANNEL(sender->getNickname(), cmd[1]));
 		else if (sender->getChannel(cmd[1]) == NULL)
 			sender->addToOutputBuffer(ERR_NOTONCHANNEL(sender->getNickname(), cmd[1]));
-		else if (serv->getChannel(cmd[1])->hasModes(CHANNEL_FLAG_T) && !serv->getChannel(cmd[1])->isOperator(sender))
+		else if (channel->hasModes(CHANNEL_FLAG_T) && !channel->isOperator(sender))
 			sender->addToOutputBuffer(ERR_CHANOPRIVSNEEDED(sender->getNickname(), cmd[1]));
 		else
 		{
 			if (cmd.size() == 2)
 			{
-				std::string	topic = serv->getChannel(cmd[1])->getTopic();
+				std::string	topic = channel->getTopic();
 				if (topic.size() == 0)
-					sender->addToOutputBuffer(RPL_NOTOPIC(sender->getNickname(), serv->getChannel(cmd[1])));
+					sender->addToOutputBuffer(RPL_NOTOPIC(sender->getNickname(), channel));
 				else
 				{
-					sender->addToOutputBuffer(RPL_TOPIC(sender->getNickname(),serv->getChannel(cmd[1])));
-					sender->addToOutputBuffer(RPL_TOPICWHOTIME(sender->getNickname(), serv->getChannel(cmd[1]), sender->getNickname(), serv->getCurrentTime()));
+					sender->addToOutputBuffer(RPL_TOPIC(sender->getNickname(),channel));
+					sender->addToOutputBuffer(RPL_TOPICWHOTIME(sender->getNickname(), channel, sender->getNickname(), serv->getCurrentTime()));
 				}
 			}
 			else
 			{
-				serv->getChannel(cmd[1])->setTopic(cmd[2]);
-				serv->getChannel(cmd[1])->sendToClients(RPL_TOPIC(sender->getNickname(),serv->getChannel(cmd[1])), NULL);
+				channel->setTopic(cmd[2]);
+				channel->sendToClients(RPL_TOPIC(sender->getNickname(),channel), NULL);
 			}
 		}
 	}
@@ -239,11 +240,13 @@ void	irc_names(std::vector<std::string> cmd, Client* sender, Server* serv)
 	if (cmd.size() < 2)
 	{
 		for (std::map<std::string, Channel*>::iterator it = serv->getAllChannels().begin(); it != serv->getAllChannels().end(); it++)
+		{
 			if ((!it->second->hasModes(CHANNEL_FLAG_S) && !it->second->hasModes(CHANNEL_FLAG_P)) || it->second->getClient(sender->getNickname()) != NULL)
 			{
 				sender->addToOutputBuffer(RPL_NAMREPLY(sender->getNickname(), it->second));
 				sender->addToOutputBuffer(RPL_ENDOFNAMES(sender->getNickname(), it->second->getName()));
 			}
+		}
 	}
 	else
 	{
