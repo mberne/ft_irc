@@ -305,7 +305,7 @@ void	irc_invite(std::vector<std::string> cmd, Client* sender, Server* serv)
 			sender->addToOutputBuffer(ERR_NOTONCHANNEL(sender->getNickname(), cmd[2]));
 		else if (serv->getChannel(cmd[2])->getClient(serv->getClient(cmd[1])->getNickname()))
 			sender->addToOutputBuffer(ERR_USERONCHANNEL(sender->getNickname(), cmd[1], cmd[2]));
-		else if (serv->getChannel(cmd[2])->hasMod(CHANNEL_FLAG_I) && !serv->getChannel(cmd[2])->isOperator(sender))
+		else if (serv->getChannel(cmd[2])->hasModes(CHANNEL_FLAG_I) && !serv->getChannel(cmd[2])->isOperator(sender))
 			sender->addToOutputBuffer(ERR_CHANOPRIVSNEEDED(sender->getNickname(), cmd[2]));
 		else
 		{

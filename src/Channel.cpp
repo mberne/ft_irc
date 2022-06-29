@@ -250,8 +250,7 @@ void			Channel::removeBanMask(std::string banMask)
 void			Channel::addClient(Client* client)
 {
 	_clients.insert(std::make_pair(client->getNickname(), client));
-	if (_invitedClients.find(client->getNickname()) != _invitedClients.end())
-		_invitedClients.erase(client->getNickname());
+	removeInvitedClient(client);
 	if (client->getChannel(_name) == NULL)
 		client->joinChannel(this);
 }
