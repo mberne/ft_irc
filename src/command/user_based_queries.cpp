@@ -25,36 +25,25 @@ void	irc_who(std::vector<std::string> cmd, Client* sender, Server* serv)
 
 void	irc_whois(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
-	int	mask;
+	int	mask = (cmd.size() == 2 ? 1 : 2);
+
 	if (cmd.size() < 2)
 		sender->addToOutputBuffer(ERR_NONICKNAMEGIVEN(sender->getNickname()));
-	else
+	else if (cmd.size() > 2 && cmd[1].compare(SERV_NAME))
+		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), cmd[1]));
+	else if (serv->getClient(cmd[mask]))
 	{
-		if (cmd.size() == 2)
-			mask = 1;
-		else
-		{
-			if (cmd[1].compare(SERV_NAME))
-			{
-				sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), cmd[1]));
-				return;
-			}
-			mask = 2;
-		}
-		if (serv->getClient(cmd[mask]))
-		{
-			sender->addToOutputBuffer(RPL_WHOISUSER(sender->getNickname(), serv->getClient(cmd[mask])));
-			sender->addToOutputBuffer(RPL_WHOISSERVER(sender->getNickname(), cmd[mask]));
-			sender->addToOutputBuffer(RPL_WHOISACTUALLY(sender->getNickname(),serv->getClient(cmd[mask])));
-			sender->addToOutputBuffer(RPL_WHOISOPERATOR(sender->getNickname(), cmd[mask]));
-			sender->addToOutputBuffer(RPL_WHOISIDLE(sender->getNickname(), serv->getClient(cmd[mask])));
-			if (serv->getClient(cmd[mask])->showChannelList().size() > 0)
-				sender->addToOutputBuffer(RPL_WHOISCHANNELS(sender->getNickname(), cmd[mask], serv->getClient(cmd[mask])));
-			sender->addToOutputBuffer(RPL_ENDOFWHOIS(sender->getNickname(), cmd[mask]));
-		}
-		else
-			ERR_NOSUCHNICK(sender->getNickname(), cmd[mask]);
+		sender->addToOutputBuffer(RPL_WHOISUSER(sender->getNickname(), serv->getClient(cmd[mask])));
+		sender->addToOutputBuffer(RPL_WHOISSERVER(sender->getNickname(), cmd[mask]));
+		sender->addToOutputBuffer(RPL_WHOISACTUALLY(sender->getNickname(),serv->getClient(cmd[mask])));
+		sender->addToOutputBuffer(RPL_WHOISOPERATOR(sender->getNickname(), cmd[mask]));
+		sender->addToOutputBuffer(RPL_WHOISIDLE(sender->getNickname(), serv->getClient(cmd[mask])));
+		if (serv->getClient(cmd[mask])->showChannelList().size() > 0)
+			sender->addToOutputBuffer(RPL_WHOISCHANNELS(sender->getNickname(), cmd[mask], serv->getClient(cmd[mask])));
+		sender->addToOutputBuffer(RPL_ENDOFWHOIS(sender->getNickname(), cmd[mask]));
 	}
+	else
+		ERR_NOSUCHNICK(sender->getNickname(), cmd[mask]);
 }
 
 void	irc_whowas(std::vector<std::string> cmd, Client* sender, Server* serv)
@@ -63,23 +52,23 @@ void	irc_whowas(std::vector<std::string> cmd, Client* sender, Server* serv)
 	size_t	i = 0;
 
 	if (cmd.size() < 2)
-	{
 		sender->addToOutputBuffer(ERR_NONICKNAMEGIVEN(sender->getNickname()));
-		return;
-	}
-	for (std::list< std::vector<std::string> >::iterator it = serv->getOldNicknames().begin(); it != serv->getOldNicknames().end(); it++)
+	else
 	{
-		if (!(*it)[0].compare(cmd[1]) && i < count)
+		for (std::list< std::vector<std::string> >::iterator it = serv->getOldNicknames().begin(); it != serv->getOldNicknames().end(); it++)
 		{
-			Client*	client = new Client(*it);
-			sender->addToOutputBuffer(RPL_WHOWASUSER(sender->getNickname(), client));
-			sender->addToOutputBuffer(RPL_WHOISSERVER(sender->getNickname(), client->getNickname()));
-			sender->addToOutputBuffer(RPL_WHOISACTUALLY(sender->getNickname(), client));
-			delete client;
-			i++;
+			if (!(*it)[0].compare(cmd[1]) && i < count)
+			{
+				Client*	client = new Client(*it);
+				sender->addToOutputBuffer(RPL_WHOWASUSER(sender->getNickname(), client));
+				sender->addToOutputBuffer(RPL_WHOISSERVER(sender->getNickname(), client->getNickname()));
+				sender->addToOutputBuffer(RPL_WHOISACTUALLY(sender->getNickname(), client));
+				delete client;
+				i++;
+			}
 		}
+		if (i == 0)
+			sender->addToOutputBuffer(ERR_WASNOSUCHNICK(sender->getNickname(), cmd[1]));
+		sender->addToOutputBuffer(RPL_ENDOFWHOWAS(sender->getNickname(), cmd[1]));
 	}
-	if (i == 0)
-		sender->addToOutputBuffer(ERR_WASNOSUCHNICK(sender->getNickname(), cmd[1]));
-	sender->addToOutputBuffer(RPL_ENDOFWHOWAS(sender->getNickname(), cmd[1]));
 }
