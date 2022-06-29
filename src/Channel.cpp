@@ -297,6 +297,15 @@ bool			Channel::isInvited(Client* client) const
 	return ((_modes | CHANNEL_FLAG_I) != _modes || _invitedClients.find(client->getNickname()) != _invitedClients.end());
 }
 
+bool	Channel::ableToTalk(Client *client)
+{
+	if (isBanned(client) || \
+		(hasModes(CHANNEL_FLAG_N) && !getClient(client->getNickname())) || \
+		(hasModes(CHANNEL_FLAG_M) && !isOperator(client) && !hasVoice(client)))
+		return false;
+	return true;
+}
+
 std::string		Channel::showClientsList()
 {
 	std::string		clientList;
