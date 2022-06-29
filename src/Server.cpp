@@ -45,6 +45,7 @@ void		Server::initSupportedCommands()
 	_commands.insert(std::make_pair("TOPIC", &irc_topic));
 	_commands.insert(std::make_pair("NAMES", &irc_names));
 	_commands.insert(std::make_pair("LIST", &irc_list));
+	_commands.insert(std::make_pair("INVITE", &irc_invite));
 	_commands.insert(std::make_pair("KICK", &irc_kick));
 	_commands.insert(std::make_pair("VERSION", &irc_version));
 	_commands.insert(std::make_pair("STATS", &irc_stats));

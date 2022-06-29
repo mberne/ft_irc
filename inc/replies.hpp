@@ -76,8 +76,15 @@
 # define RPL_TOPIC(user, channel)						PROMPT(" 332 ", user) + " " + channel->getName() + std::string(" :") + channel->getTopic()
 # define RPL_TOPICWHOTIME(user, channel, name, hour)	PROMPT(" 333 ", user) + " " + channel->getName() + " " + name + " " + hour
 
+// INVITE sans argument
+# define RPL_INVITELIST(user, channel)	PROMPT(" 336 ", user) + " " + channel->getName()
+# define RPL_ENDOFINVITELIST(user)		PROMPT(" 337 ", user) + std::string(" :End of /INVITE list")
+
 // Utile pour WHOIS et WHOWAS
 # define RPL_WHOISACTUALLY(user, client)	PROMPT(" 338 ", user) + " " + client->getNickname() + " " + client->getHost() + std::string(" :Is actually using host")
+
+// Sent as a reply to the INVITE command to indicate that the attempt was successful and the client with the nickname <nick> has been invited to <channel>.
+# define RPL_INVITING(user, nickname, channel)	PROMPT(" 341 ", user) + " " + nickname + " " + channel
 
 // La paire RPL_WHOREPLY et RPL_ENDOFWHO est utilisée en réponse à un message WHO.
 // Le RPL_WHOREPLY n'est envoyé que s'il y a une correspondance à la requête WHO.

@@ -284,6 +284,38 @@ void	irc_list(std::vector<std::string> cmd, Client* sender, Server* serv)
 	sender->addToOutputBuffer(RPL_LISTEND(sender->getNickname()));
 }
 
+void	irc_invite(std::vector<std::string> cmd, Client* sender, Server* serv)
+{
+	if (cmd.size() == 1)
+	{
+		for (std::map<std::string, Channel*>::iterator it = serv->getAllChannels().begin(); it != serv->getAllChannels().end(); it++)
+			if (it->second->isInvited(sender))
+				sender->addToOutputBuffer(RPL_INVITELIST(sender->getNickname(), it->second));
+		sender->addToOutputBuffer(RPL_ENDOFINVITELIST(sender->getNickname()));
+	}
+	else if (cmd.size() == 2)
+		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
+	else
+	{
+		if (!serv->getClient(cmd[1]))
+			sender->addToOutputBuffer(ERR_NOSUCHNICK(sender->getNickname(), cmd[1]));
+		else if (!serv->getChannel(cmd[2]))
+			sender->addToOutputBuffer(ERR_NOSUCHCHANNEL(sender->getNickname(), cmd[2]));
+		else if (!serv->getChannel(cmd[2])->getClient(sender->getNickname()))
+			sender->addToOutputBuffer(ERR_NOTONCHANNEL(sender->getNickname(), cmd[2]));
+		else if (serv->getChannel(cmd[2])->getClient(serv->getClient(cmd[1])->getNickname()))
+			sender->addToOutputBuffer(ERR_USERONCHANNEL(sender->getNickname(), cmd[1], cmd[2]));
+		else if (serv->getChannel(cmd[2])->hasMod(CHANNEL_FLAG_I) && !serv->getChannel(cmd[2])->isOperator(sender))
+			sender->addToOutputBuffer(ERR_CHANOPRIVSNEEDED(sender->getNickname(), cmd[2]));
+		else
+		{
+			sender->addToOutputBuffer(RPL_INVITING(sender->getNickname(), cmd[1], cmd[2]));
+			serv->getClient(cmd[1])->addToOutputBuffer(sender->getPrefix() + " " + cmd[0] + " " + cmd[1] + " :" + cmd[2]);
+			serv->getChannel(cmd[2])->addInvitedClient(serv->getClient(cmd[1]));
+		}
+	}
+}
+
 void	irc_kick(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 

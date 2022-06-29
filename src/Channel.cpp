@@ -221,6 +221,18 @@ void			Channel::removeClientWithVoice(Client* client)
 		_clientsWithVoicePerm.erase(client->getNickname());
 }
 
+void			Channel::addInvitedClient(Client* client)
+{
+	if (_invitedClients.find(client->getNickname()) == _invitedClients.end())
+		_invitedClients.insert(std::make_pair(client->getNickname(), client));
+}
+
+void			Channel::removeInvitedClient(Client* client)
+{
+	if (_invitedClients.find(client->getNickname()) != _invitedClients.end())
+		_invitedClients.erase(client->getNickname());
+}
+
 void			Channel::addBanMask(std::string banMask)
 {
 	if (_banList.find(banMask) == _banList.end())

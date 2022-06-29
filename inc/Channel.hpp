@@ -60,6 +60,8 @@ class Channel
 		void			removeOperator(Client* client);			// Remove the Client from the list of channel operators
 		void			addClientWithVoice(Client* client);		// Add the Client to the list of clients with voice permission
 		void			removeClientWithVoice(Client* client);	// Remove the Client from the list of clients with voice permission
+		void			addInvitedClient(Client* client);		// Add the Client to the list of clients invited
+		void			removeInvitedClient(Client* client);	// Remove the Client from the list of clients invited
 		void			addBanMask(std::string banMask);
 		void			removeBanMask(std::string banMask);
 		// CLIENTS
