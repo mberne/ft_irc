@@ -86,8 +86,13 @@
 // La paire RPL_WHOREPLY et RPL_ENDOFWHO est utilisée en réponse à un message WHO.
 // Le RPL_WHOREPLY n'est envoyé que s'il y a une correspondance à la requête WHO.
 // S'il y a une liste de paramètres fournie avec le message WHO, un RPL_ENDOFWHO doit être envoyé après le traitement de chaque élément de la liste, <nom> étant l'élément.
-# define RPL_WHOREPLY(user, client)		PROMPT(" 352 ", user) + " " + client->getLastChannelName() + " " + client->getUser() + " " + client->getHost() + " " + SERV_NAME + " " + client->getNickname() + std::string(" H") + (client->hasModes(CLIENT_FLAG_O) ? "*" : "" ) + (client->getLastChannelName().compare("*") && client->getChannel(client->getLastChannelName())->isOperator(client) ? "@" : (client->getLastChannelName().compare("*") && client->getChannel(client->getLastChannelName())->hasVoice(client) ? "+" : "")) + std::string(" :0 ") + client->getRealName()
-# define RPL_ENDOFWHO(user, name)		PROMPT(" 315 ", user) + " " + name + " :End of /WHO list"
+# define RPL_WHOREPLY(user, client)		PROMPT(" 352 ", user) + " " + client->getLastChannelName() + " " + client->getUser() + " " + client->getHost() + " " + SERV_NAME + " " + client->getNickname() +	std::string(" H") + \
+																																																			(client->hasModes(CLIENT_FLAG_O) ? "*" : "" ) + \
+																																																			(client->getLastChannelName().compare("*") && client->getChannel(client->getLastChannelName())->isOperator(client) ? "@" : \
+																																																			(client->getLastChannelName().compare("*") && client->getChannel(client->getLastChannelName())->hasVoice(client) ? "+" : "")) + \
+																																																			std::string(" :0 ") + \
+																																																			client->getRealName()
+# define RPL_ENDOFWHO(user, name)		PROMPT(" 315 ", user) + " " + name + std::string(" :End of /WHO list")
 
 // Réponse du serveur indiquant les détails de sa version.
 // <version> est la version actuelle du programme utilisé (comprenant le numéro de mise à jour) et <debuglevel> est utilisé pour indiquer si le serveur fonctionne en mode débugage.
