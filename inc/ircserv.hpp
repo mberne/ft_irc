@@ -48,7 +48,6 @@
 									"\nInfo:\t\t\t" + SERV_INFO +\
 									"\nLocation:\t\t" + SERV_LOC1 +\
 									" " + SERV_LOC2
-
 // Server specifications
 // Required
 # define CASE_MAPPING				std::string("ascii")

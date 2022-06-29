@@ -341,6 +341,7 @@ void	Server::stop(int status)
 	std::signal(SIGINT, SIG_DFL);
 	std::signal(SIGQUIT, SIG_DFL);
 	std::signal(SIGTERM, SIG_DFL);
+	(status ? std::cerr : std::cout) << "Server exited with code: " << status << "\nLogs available at: " << getcwd(NULL, 0) << "/" << SERV_NAME << ".log" << std::endl;
 	exit(status);
 }
 
