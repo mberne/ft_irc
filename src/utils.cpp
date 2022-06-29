@@ -14,13 +14,14 @@ void	parseArg(std::string cmdArg, std::vector<std::string>& argList)
 	argList.push_back(cmdArg.substr(tmp, cmdArg.size() - tmp));
 }
 
-std::vector<std::string>	vectorizator(std::string arg1, std::string arg2)
+std::vector<std::string>	vectorizator(std::string arg1, std::string arg2, std::string arg3)
 {
 	std::vector<std::string> vec;
 
 	vec.push_back(arg1);
 	vec.push_back(arg2);
-
+	if (!arg3.empty())
+		vec.push_back(arg3);
 	return vec;
 }
 

@@ -226,7 +226,7 @@ void	Server::pingClient(Client* client)
 			client->setIsPing(true);
 		}
 		if (diff > TIME_AFK + PING_TIME)
-			irc_quit(vectorizator("QUIT", "Ping timeout:" + std::to_string(PING_TIME) + " seconds"), client, this);
+			irc_quit(vectorizator("QUIT", "Ping timeout:" + std::to_string(PING_TIME) + " seconds", ""), client, this);
 	}
 }
 
@@ -318,7 +318,7 @@ void	Server::receiveMessages()
 	{
 		client = _clientsBySock.find(it->fd)->second;
 		if ((it->revents | POLLHUP) == it->revents) // deconnexion
-			irc_quit(vectorizator("QUIT", "Remote host closed the connection"), client, this);
+			irc_quit(vectorizator("QUIT", "Remote host closed the connection", ""), client, this);
 		else
 		{
 			if (it->revents == POLLIN)
@@ -334,10 +334,10 @@ void	Server::receiveMessages()
 					executeRequest(client);
 				}
 				else if (ret < 0)
-					irc_quit(vectorizator("QUIT", "Remote host closed the connection"), client, this);
+					irc_quit(vectorizator("QUIT", "Remote host closed the connection", ""), client, this);
 			}
 			if (!client->isRegistered() && time(NULL) - client->getConnexionStartTime() > CONNEXION_TIME)
-				irc_quit(vectorizator("QUIT", "Connection timed out"), client, this);
+				irc_quit(vectorizator("QUIT", "Connection timed out", ""), client, this);
 			pingClient(client);
 		}
 	}
@@ -391,7 +391,7 @@ void	Server::sendMessages()
 		{
 			ret = send(it->fd, client->getOutputBuffer(), strlen(client->getOutputBuffer()), 0);
 			if (ret < 0 && errno == ECONNRESET) // deconnexion
-				irc_quit(vectorizator("QUIT", "Remote host closed the connection"), client, this);
+				irc_quit(vectorizator("QUIT", "Remote host closed the connection", ""), client, this);
 			addLog("from: :" + SERV_NAME + " to: " + client->getPrefix() + "\n" + client->getOutputBuffer(), LOG_BROADCAST);
 			client->clearOutputBuffer();
 		}
@@ -453,7 +453,7 @@ void		Server::executeCommand(std::vector<std::string>	cmdArgs, Client* sender)
 			sendWelcome(sender);
 		}
 		else if (_clientsByName.find(sender->getNickname()) != _clientsByName.end() && _clientsByName.find(sender->getNickname())->second != sender)
-			irc_quit(vectorizator("QUIT", "Nickname overridden"), sender, this);
+			irc_quit(vectorizator("QUIT", "Nickname overridden", ""), sender, this);
 	}
 	else
 	{

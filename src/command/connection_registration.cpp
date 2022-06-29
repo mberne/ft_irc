@@ -11,7 +11,7 @@ void	irc_pass(std::vector<std::string> cmd, Client* sender, Server* serv)
 		sender->addToOutputBuffer(ERR_PASSWDMISMATCH(sender->getNickname()));
 		sender->setPassword(false);
 		if (sender->retryPassword() == 0)
-			irc_quit(vectorizator("QUIT", "Wrong password after 3 retries"), sender, serv);
+			irc_quit(vectorizator("QUIT", "Wrong password after 3 retries", ""), sender, serv);
 	}
 	else
 		sender->setPassword(true);
@@ -56,6 +56,11 @@ void	irc_user(std::vector<std::string> cmd, Client* sender, Server* serv)
 	{
 		if (cmd[1].size() > USER_LEN)
 			cmd[1] = cmd[1].substr(0, USER_LEN);
+		if (cmd[1].find_first_not_of(ASCII_CHARSET) != std::string::npos)
+		{
+			sender->addToOutputBuffer(SERV_NAME + " NOTICE " + sender->getNickname() + " :" + "Invalid username. CASEMAPPING=ascii");
+			return;
+		}
 		if (cmd[4].size() > REALNAME_LEN)
 			cmd[4] = cmd[4].substr(0, REALNAME_LEN);
 		sender->setUser("~" + cmd[1]);

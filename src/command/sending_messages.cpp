@@ -41,15 +41,20 @@ void	irc_notice(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	std::vector<std::string>	target;
 
+	std::cout << "test1\n";
 	if (cmd.size() > 2)
 	{
+		std::cout << "test2\n";
 		parseArg(cmd[1], target);
 		for (size_t i = 0; i < target.size(); i++)
 		{
+			std::cout << "test3\n";
 			if (!sender)
 			{
+				std::cout << "test4\n";
 				serv->addLog("from: " + SERV_NAME + " to: " + target[i] + "\n" + cmd[2], LOG_MESSAGE);
 				serv->getClient(target[i])->addToOutputBuffer(SERV_NAME + " NOTICE " + serv->getClient(target[i])->getNickname() + " :" + cmd[2]);
+				std::cout << "test5\n";
 			}
 			else if (target[i][0] != '#' && serv->getClient(target[i]))
 			{

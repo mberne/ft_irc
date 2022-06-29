@@ -104,7 +104,7 @@ void	irc_pong(std::vector<std::string> cmd, Client* sender, Server* serv);
 void	irc_error(Client* sender, std::string reason);
 // Utils
 void						parseArg(std::string cmdArg, std::vector<std::string>& argList);
-std::vector<std::string>	vectorizator(std::string arg1, std::string arg2);
+std::vector<std::string>	vectorizator(std::string arg1, std::string arg2, std::string arg3);
 bool						ableToTalk(Client *client, Channel *channel);
 
 #endif //~~ IRCSERV_H
