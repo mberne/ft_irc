@@ -20,7 +20,10 @@ void	irc_who(std::vector<std::string> cmd, Client* sender, Server* serv)
 			for (std::map<std::string, Client*>::iterator it = serv->getChannel(cmd[1])->getAllClients().begin(); it != serv->getChannel(cmd[1])->getAllClients().end(); it++)
 				sender->addToOutputBuffer(RPL_WHOREPLY(sender->getNickname(), it->second));
 	}
-	sender->addToOutputBuffer(RPL_ENDOFWHO(sender->getNickname(), cmd[1]));
+	if (cmd.size() == 1)
+		sender->addToOutputBuffer(RPL_ENDOFWHO(sender->getNickname(), ""));
+	else
+		sender->addToOutputBuffer(RPL_ENDOFWHO(sender->getNickname(), cmd[1]));
 }
 
 void	irc_whois(std::vector<std::string> cmd, Client* sender, Server* serv)
