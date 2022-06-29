@@ -66,6 +66,9 @@
 # define ERR_NOTONCHANNEL(user, name) PROMPT(" 442 ", user) + " " + name + std::string(" :You're not on that channel")
 // Renvoyé par le serveur quand un client essaie une commande affectant un canal dont il ne fait pas partie.
 
+# define ERR_USERONCHANNEL(user, nickname, channel)	PROMPT(" 443 ", user) + " " + nickname + " " + channel + std::string(" :is already on channel")
+// Renvoyé par un serveur quand un client essaie d'inviter un utilisateur dans un channel qu'il a déjà rejoint
+
 # define ERR_NOTREGISTERED(user) PROMPT(" 451 ", user) + std::string(" :You have not registered")
 // Retourné par le serveur pour indiquer à un client qu'il doit être enregistré avant que ses commandes soient traitées.
 

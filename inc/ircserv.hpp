@@ -96,6 +96,7 @@ void	irc_mode(std::vector<std::string> cmd, Client* sender, Server* serv);
 void	irc_topic(std::vector<std::string> cmd, Client* sender, Server* serv);
 void	irc_names(std::vector<std::string> cmd, Client* sender, Server* serv);
 void	irc_list(std::vector<std::string> cmd, Client* sender, Server* serv);
+void	irc_invite(std::vector<std::string> cmd, Client* sender, Server* serv);
 void	irc_kick(std::vector<std::string> cmd, Client* sender, Server* serv);
 // Miscellaneous messages
 void	irc_version(std::vector<std::string> cmd, Client* sender, Server* serv);
