@@ -294,7 +294,7 @@ bool			Channel::isBanned(Client* client)
 
 bool			Channel::isInvited(Client* client) const
 {
-	return ((_modes | CHANNEL_FLAG_I) != _modes || _invitedClients.find(client->getNickname()) != _invitedClients.end());
+	return (_invitedClients.find(client->getNickname()) != _invitedClients.end());
 }
 
 bool	Channel::ableToTalk(Client *client)

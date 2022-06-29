@@ -33,7 +33,7 @@ void	irc_join(std::vector<std::string> cmd, Client* sender, Server* serv)
 				sender->addToOutputBuffer(ERR_BADCHANNELKEY(sender->getNickname(), channels[i]));
 			else if (current && current->isBanned(sender))
 				sender->addToOutputBuffer(ERR_BANNEDFROMCHAN(sender->getNickname(), channels[i]));
-			else if (current && !current->isInvited(sender))
+			else if (current && current->hasModes(CHANNEL_FLAG_I) && !current->isInvited(sender))
 				sender->addToOutputBuffer(ERR_INVITEONLYCHAN(sender->getNickname(), channels[i]));
 			else if (current && current->clientCount() >= current->getUserLimit())
 				sender->addToOutputBuffer(ERR_CHANNELISFULL(sender->getNickname(), channels[i]));
