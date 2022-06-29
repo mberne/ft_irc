@@ -24,4 +24,3 @@ std::vector<std::string>	vectorizator(std::string arg1, std::string arg2, std::s
 		vec.push_back(arg3);
 	return vec;
 }
-
