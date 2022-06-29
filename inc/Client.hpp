@@ -40,8 +40,7 @@ class Client
 		void			setLastCmdTime();
 		bool			getIsPing() const;
 		void			setIsPing(bool ping);
-		int				getRetryPassword() const;
-		void			setRetryPassword();
+		int				retryPassword();
 		// MODES
 		std::string		setModes(std::string modes);
 		std::string		getModes() const;

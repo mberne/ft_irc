@@ -134,14 +134,9 @@ bool			Client::hasModes(mode_t modes) const
 	return ((_modes | modes) == _modes);
 }
 
-int				Client::getRetryPassword() const
+int				Client::retryPassword()
 {
-	return _retriesLeft;
-}
-
-void			Client::setRetryPassword()
-{
-	_retriesLeft--;
+	return --_retriesLeft;
 }
 
 //~~ CHANNELS
