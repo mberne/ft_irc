@@ -46,7 +46,12 @@ void	irc_notice(std::vector<std::string> cmd, Client* sender, Server* serv)
 		parseArg(cmd[1], target);
 		for (size_t i = 0; i < target.size(); i++)
 		{
-			if (target[i][0] != '#' && serv->getClient(target[i]))
+			if (!sender)
+			{
+				serv->addLog("from: " + SERV_NAME + " to: " + target[i] + "\n" + cmd[2], LOG_MESSAGE);
+				serv->getClient(target[i])->addToOutputBuffer(SERV_NAME + " NOTICE " + serv->getClient(target[i])->getNickname() + " :" + cmd[2]);
+			}
+			else if (target[i][0] != '#' && serv->getClient(target[i]))
 			{
 				serv->addLog("from: " + sender->getPrefix() + " to: " + target[i] + "\n" + cmd[2], LOG_MESSAGE);
 				serv->getClient(target[i])->addToOutputBuffer(sender->getPrefix() + " NOTICE " + serv->getClient(target[i])->getNickname() + " :" + cmd[2]);
