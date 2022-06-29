@@ -14,7 +14,6 @@ int main(int ac, char **av)
 	}
 	
 	int serverPort = std::atoi(av[1]);
-
 	if (serverPort < 0 || serverPort > MAX_PORT || !av[2][0] || std::string(av[1]).find_first_not_of("0123456789") != std::string::npos)
 	{
 		errno = EINVAL;
