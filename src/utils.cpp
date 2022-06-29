@@ -28,11 +28,11 @@ bool	ableToTalk(Client *client, Channel *channel)
 {
 	if (channel->isBanned(client))
 		return 0;
-	if (channel->hasMod(CHANNEL_FLAG_N) && !channel->getClient(client->getNickname()))
+	if (channel->hasModes(CHANNEL_FLAG_N) && !channel->getClient(client->getNickname()))
 		return 0;
-	if (channel->hasMod(CHANNEL_FLAG_I) && !channel->isInvited(client))
+	if (channel->hasModes(CHANNEL_FLAG_I) && !channel->isInvited(client))
 		return 0;
-	if (channel->hasMod(CHANNEL_FLAG_M) && !channel->isOperator(client) && !channel->hasVoice(client))
+	if (channel->hasModes(CHANNEL_FLAG_M) && !channel->isOperator(client) && !channel->hasVoice(client))
 		return 0;
 	return 1;
 }

@@ -8,27 +8,24 @@
 # define RPL_YOURHOST(user)		PROMPT(" 002 ", user) + std::string(" :Your host is ") + SERV_NAME + std::string(", running version ") + SERV_VERSION
 # define RPL_CREATED(user)		PROMPT(" 003 ", user) + std::string(" :This server was created ") + SERV_CREATION
 # define RPL_MYINFO(user)		PROMPT(" 004 ", user) + " " + SERV_NAME + " " + SERV_VERSION + std::string(" io opsitnmlbvk")
-# define RPL_ISUPPORT(user)		PROMPT(" 005 ", user) + std::string(" CASE_MAPPING=") +	CASE_MAPPING + \
-														std::string(" CLIENT_CHANNEL_LIMIT=") +	std::to_string(10) + \
-														std::string(" USER_MODS=") + USER_MODS + \
-														std::string(" CHANNEL_MODS=") + CHANNEL_MODS + \
-														std::string(" CHANNEL_LEN=") + std::to_string(50) + \
-														std::string(" CHAN_TYPES=") + CHAN_TYPES + \
-														std::string(" HOST_LEN=") + std::to_string(10) + \
-														std::string(" KICK_LEN=") + std::to_string(256) + \
-														std::string(" NICK_LEN=") + std::to_string(20) + \
-														std::string(" TOPIC_LEN=") + std::to_string(400) + \
-														std::string(" USER_LEN=") +	std::to_string(10) + \
-														std::string(" MESSAGE_LEN=") + std::to_string(512) + \
-														std::string(" REALNAME_LEN=") +	std::to_string(50) + \
-														std::string(" CLIENT_LIMIT=") +	std::to_string(500) + \
-														std::string(" CHANNEL_LIMIT=") + std::to_string(2000) + \
-														std::string(" MAX_PORT=") +	std::to_string(65536) + \
-														std::string(" TIME_AFK=") +	std::to_string(300) + \
-														std::string(" PING_TIME=") + std::to_string(60)
+# define RPL_ISUPPORT(user)		PROMPT(" 005 ", user) + std::string(" CASE_MAPPING=") +				CASE_MAPPING + \
+														std::string(" USER_MODES=") +				USER_MODES + \
+														std::string(" CHANNEL_MODES=") +				CHANNEL_MODES + \
+														std::string(" CHAN_TYPES=") +				CHAN_TYPES + \
+														std::string(" NICK_LEN=") +					std::to_string(NICK_LEN) + \
+														std::string(" USER_LEN=") +					std::to_string(USER_LEN) + \
+														std::string(" HOST_LEN=") +					std::to_string(HOST_LEN) + \
+														std::string(" REALNAME_LEN=") +				std::to_string(REALNAME_LEN) + \
+														std::string(" MESSAGE_LEN=") +				std::to_string(MESSAGE_LEN) + \
+														std::string(" CHANNEL_LEN=") +				std::to_string(CHANNEL_LEN) + \
+														std::string(" TOPIC_LEN=") +				std::to_string(TOPIC_LEN) + \
+														std::string(" CLIENT_LIMIT=") +				std::to_string(CLIENT_LIMIT) + \
+														std::string(" CHANNEL_LIMIT=") +			std::to_string(CHANNEL_LIMIT) + \
+														std::string(" CLIENT_CHANNELS_LIMIT=") +	std::to_string(CLIENT_CHANNELS_LIMIT) + \
+														std::string(" CHANNEL_CLIENTS_LIMIT=") +	std::to_string(CHANNEL_CLIENTS_LIMIT)
 																	
 // Pour répondre à une requête au sujet du mode du client, RPL_UMODEIS est renvoyé.
-# define RPL_UMODEIS(user, client)	PROMPT(" 221 ", user) + " " + client->getMods()
+# define RPL_UMODEIS(user, client)	PROMPT(" 221 ", user) + " " + client->getModes()
 
 // Réponses à STATS
 # define RPL_STATSUPTIME(user, server)		PROMPT(" 242 ", user) + std::string(" :Server Up ") + server->getStartTime()
@@ -68,7 +65,7 @@
 # define RPL_LISTEND(user)			PROMPT(" 323 ", user) + std::string(" :End of /LIST")
 
 // Mode du channel
-# define RPL_CHANNELMODEIS(user, channel)	PROMPT(" 324 ", user) + " " + channel->getName() + " " + channel->getMods()
+# define RPL_CHANNELMODEIS(user, channel)	PROMPT(" 324 ", user) + " " + channel->getName() + " " + channel->getModes()
 
 // Lors de l'envoi d'un message TOPIC pour déterminer le sujet d'un canal, une de ces deux réponses est envoyée.
 // Si le sujet est défini, RPL_TOPIC est renvoyée, sinon c'est RPL_NOTOPIC.
@@ -89,7 +86,7 @@
 // La paire RPL_WHOREPLY et RPL_ENDOFWHO est utilisée en réponse à un message WHO.
 // Le RPL_WHOREPLY n'est envoyé que s'il y a une correspondance à la requête WHO.
 // S'il y a une liste de paramètres fournie avec le message WHO, un RPL_ENDOFWHO doit être envoyé après le traitement de chaque élément de la liste, <nom> étant l'élément.
-# define RPL_WHOREPLY(user, client)		PROMPT(" 352 ", user) + " " + client->getLastChannelName() + " " + client->getUser() + " " + client->getHost() + " " + SERV_NAME + " " + client->getNickname() + std::string(" H") + (client->hasMod(CLIENT_FLAG_O) ? "*" : "" ) + (client->getLastChannelName().compare("*") && client->getChannel(client->getLastChannelName())->isOperator(client) ? "@" : (client->getLastChannelName().compare("*") && client->getChannel(client->getLastChannelName())->hasVoice(client) ? "+" : "")) + std::string(" :0 ") + client->getRealName()
+# define RPL_WHOREPLY(user, client)		PROMPT(" 352 ", user) + " " + client->getLastChannelName() + " " + client->getUser() + " " + client->getHost() + " " + SERV_NAME + " " + client->getNickname() + std::string(" H") + (client->hasModes(CLIENT_FLAG_O) ? "*" : "" ) + (client->getLastChannelName().compare("*") && client->getChannel(client->getLastChannelName())->isOperator(client) ? "@" : (client->getLastChannelName().compare("*") && client->getChannel(client->getLastChannelName())->hasVoice(client) ? "+" : "")) + std::string(" :0 ") + client->getRealName()
 # define RPL_ENDOFWHO(user, name)		PROMPT(" 315 ", user) + " " + name + " :End of /WHO list"
 
 // Réponse du serveur indiquant les détails de sa version.

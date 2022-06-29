@@ -2,7 +2,7 @@
 
 //~~ CONSTRUCTOR
 
-Client::Client(int sock) : _fd(sock), _mods(0), _password(false), _connexionStartTime(time(NULL)), _lastCmdTime(time(NULL)), _retryPassword(RETRY_NUMBER) {}
+Client::Client(int sock) : _fd(sock), _modes(0), _connexionStartTime(time(NULL)), _password(false), _retriesLeft(RETRY_NUMBER), _lastCmdTime(time(NULL)) {}
 
 //~~ DESTRUCTOR
 
@@ -17,30 +17,17 @@ int				Client::getSock() const
 
 std::string		Client::getNickname() const
 {
-	if (_nickname.empty())
-		return "*";
-	return _nickname;
+	return (_nickname.empty() ? "*" : _nickname);
 }
 
 void			Client::setNickname(std::string nickname)
 {
-	_oldNicknames.push_back(_nickname);
-	_nickname = nickname.substr(0, NICK_LEN);
+	_nickname = nickname;
 }
-
-// bool	Client::isOldNickname(std::string nickname)
-// {
-// 	for (std::vector<std::string>::iterator it = _oldNicknames.begin(); it != _oldNicknames.end(); it++)
-// 		if (!nickname.compare(*it))
-// 			return true;
-// 	return false;
-// }
 
 std::string		Client::getUser() const
 {
-	if (_user.empty())
-		return "*";
-	return _user;
+	return (_user.empty() ? "*" : _user);
 }
 
 void			Client::setUser(std::string user)
@@ -108,51 +95,51 @@ void	Client::setIsPing(bool ping)
 	_isPing = ping;
 }
 
-//~~ MODS
+//~~ MODES
 
-std::string		Client::setMods(std::string mods)
+std::string		Client::setModes(std::string modes)
 {
 	std::string		charset = "oi";
-	int				flag = 1;
+	mode_t			flag = 1;
 
 	for(size_t	i = 0; i < charset.size(); i++)
 	{
-		if (mods.find(charset[i]) != std::string::npos)
+		if (modes.find(charset[i]) != std::string::npos)
 		{
-			if (mods[mods.find(charset[i]) - 1] == '+')
-				_mods |= flag;
-			if (mods[mods.find(charset[i]) - 1] == '-')
-				_mods &= ~flag;
+			if (modes[modes.find(charset[i]) - 1] == '+')
+				_modes |= flag;
+			if (modes[modes.find(charset[i]) - 1] == '-')
+				_modes &= ~flag;
 		}
 		flag <<= 1;
 	}
-	return (mods);
+	return (modes);
 }
 
-std::string		Client::getMods() const
+std::string		Client::getModes() const
 {
-	std::string modsString("+");
+	std::string modesString("+");
 
-	if (hasMod(CLIENT_FLAG_I) == true)
-		modsString += "i";
-	if (hasMod(CLIENT_FLAG_O) == true)
-		modsString += "o";
-	return modsString;
+	if (hasModes(CLIENT_FLAG_I) == true)
+		modesString += "i";
+	if (hasModes(CLIENT_FLAG_O) == true)
+		modesString += "o";
+	return modesString;
 }
 
-bool			Client::hasMod(int mode) const
+bool			Client::hasModes(mode_t modes) const
 {
-	return ((_mods | mode) == _mods);
+	return ((_modes | modes) == _modes);
 }
 
 int				Client::getRetryPassword() const
 {
-	return _retryPassword;
+	return _retriesLeft;
 }
 
 void			Client::setRetryPassword()
 {
-	_retryPassword--;
+	_retriesLeft--;
 }
 
 //~~ CHANNELS
@@ -200,10 +187,7 @@ int				Client::getNumberOfChannels() const
 
 std::string		Client::getLastChannelName() const
 {
-	if (!_channels.size())
-		return "*";
-	else
-		return _channels.begin()->second->getName();
+	return (!_channels.size() ? "*" : _channels.begin()->second->getName());
 }
 
 std::string		Client::showChannelList()
@@ -216,7 +200,7 @@ std::string		Client::showChannelList()
 			channelList += " ";
 		if (it->second->isOperator(this))
 			channelList += "@";
-		else if (it->second->hasMod(CHANNEL_FLAG_M) && it->second->hasVoice(this))
+		else if (it->second->hasModes(CHANNEL_FLAG_M) && it->second->hasVoice(this))
 			channelList += "+";
 		channelList += it->second->getName();
 	}

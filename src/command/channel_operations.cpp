@@ -23,7 +23,7 @@ void	irc_join(std::vector<std::string> cmd, Client* sender, Server* serv)
 
 			if (channels[i][0] != '#' || channels[i].find_first_of(" ,") != std::string::npos || channels[i].find(7) != std::string::npos)
 				sender->addToOutputBuffer(ERR_NOSUCHCHANNEL(sender->getNickname(), channels[i]));
-			else if (sender->getNumberOfChannels() >= CLIENT_CHANNEL_LIMIT)
+			else if (sender->getNumberOfChannels() >= CLIENT_CHANNELS_LIMIT)
 			{
 				sender->addToOutputBuffer(ERR_TOOMANYCHANNELS(sender->getNickname(), channels[i]));
 				return;	
@@ -42,7 +42,7 @@ void	irc_join(std::vector<std::string> cmd, Client* sender, Server* serv)
 			else
 			{
 				if (!current)
-					current = serv->newChannel(channels[i], sender);
+					current = serv->addChannel(channels[i], sender);
 
 				std::vector<std::string> namesCmd;
 				namesCmd.push_back("NAMES");
@@ -50,7 +50,7 @@ void	irc_join(std::vector<std::string> cmd, Client* sender, Server* serv)
 
 				sender->joinChannel(current);
 				current->sendToClients(sender->getPrefix() + " " + cmd[0] + " " + channels[i], NULL);
-				if (current->hasMod(CHANNEL_FLAG_T) == true)
+				if (current->hasModes(CHANNEL_FLAG_T) == true)
 					sender->addToOutputBuffer(RPL_TOPIC(sender->getNickname(), current));
 				irc_names(namesCmd, sender, serv);
 			}
@@ -98,23 +98,23 @@ void	irc_mode(std::vector<std::string> cmd, Client* sender, Server* serv)
 			sender->addToOutputBuffer(RPL_UMODEIS(sender->getNickname(), sender));
 		else
 		{
-			std::string		mods;
+			std::string		modes;
 
-			if (cmd[2].find_first_not_of("+-" + USER_MODS) != std::string::npos)
+			if (cmd[2].find_first_not_of("+-" + USER_MODES) != std::string::npos)
 				sender->addToOutputBuffer(ERR_UMODEUNKNOWNFLAG(sender->getNickname()));
-			for (size_t i = 0; i < USER_MODS.size(); i++)
+			for (size_t i = 0; i < USER_MODES.size(); i++)
 			{
-				size_t	flagPos = cmd[2].find_last_of(USER_MODS[i]);
+				size_t	flagPos = cmd[2].find_last_of(USER_MODES[i]);
 				size_t	signPos = cmd[2].find_last_of("+-", flagPos);
 				char	sign	= (signPos == std::string::npos ? '+' : cmd[2][signPos]);
 				if (flagPos != std::string::npos)
 				{
-					mods.push_back(sign);
-					mods += USER_MODS[i];
+					modes.push_back(sign);
+					modes += USER_MODES[i];
 				}
 			}
-			if (!mods.empty())
-				sender->addToOutputBuffer(sender->getPrefix() + " " + cmd[0] + " " + sender->getNickname() + " :" + sender->setMods(mods));
+			if (!modes.empty())
+				sender->addToOutputBuffer(sender->getPrefix() + " " + cmd[0] + " " + sender->getNickname() + " :" + sender->setModes(modes));
 		}
 	}
 	else // CHANNEL MODE
@@ -127,27 +127,27 @@ void	irc_mode(std::vector<std::string> cmd, Client* sender, Server* serv)
 			sender->addToOutputBuffer(RPL_CHANNELMODEIS(sender->getNickname(), channel));
 		else if (channel->isOperator(sender) == false)
 			sender->addToOutputBuffer(ERR_CHANOPRIVSNEEDED(sender->getNickname(), channel->getName()));
-		else if (cmd[2].find_first_not_of("+-" + CHANNEL_MODS) != std::string::npos)
-			sender->addToOutputBuffer(ERR_UNKNOWNMODE(sender->getNickname(), cmd[2][cmd[2].find_first_not_of("+-" + CHANNEL_MODS)]));
+		else if (cmd[2].find_first_not_of("+-" + CHANNEL_MODES) != std::string::npos)
+			sender->addToOutputBuffer(ERR_UNKNOWNMODE(sender->getNickname(), cmd[2][cmd[2].find_first_not_of("+-" + CHANNEL_MODES)]));
 		else
 		{
-			std::string					mods;
-			std::map<char, std::string>	modsArgs;
+			std::string					modes;
+			std::map<char, std::string>	modesArgs;
 			size_t						argIndex = 3;
 			
-			for (size_t i = 0; i < CHANNEL_MODS.size(); i++)
+			for (size_t i = 0; i < CHANNEL_MODES.size(); i++)
 			{
-				size_t	flagPos = cmd[2].find_last_of(CHANNEL_MODS[i]);
+				size_t	flagPos = cmd[2].find_last_of(CHANNEL_MODES[i]);
 				size_t	signPos = cmd[2].find_last_of("+-", flagPos);
 				char	sign	= (signPos == std::string::npos ? '+' : cmd[2][signPos]);
 				if (flagPos != std::string::npos)
 				{
-					if (std::string("psitnm").find(CHANNEL_MODS[i]) != std::string::npos)
+					if (std::string("psitnm").find(CHANNEL_MODES[i]) != std::string::npos)
 					{
-						mods.push_back(sign);
-						mods += CHANNEL_MODS[i];
+						modes.push_back(sign);
+						modes += CHANNEL_MODES[i];
 					}
-					else if (std::string("ov").find(CHANNEL_MODS[i]) != std::string::npos)
+					else if (std::string("ov").find(CHANNEL_MODES[i]) != std::string::npos)
 					{
 						if (cmd.size() == argIndex)
 						{
@@ -160,12 +160,12 @@ void	irc_mode(std::vector<std::string> cmd, Client* sender, Server* serv)
 							sender->addToOutputBuffer(ERR_USERNOTINCHANNEL(sender->getNickname(), cmd[argIndex], cmd[1]));
 						else
 						{
-							mods.push_back(sign);
-							mods += CHANNEL_MODS[i];
-							modsArgs.insert(std::make_pair(CHANNEL_MODS[i], cmd[argIndex++]));
+							modes.push_back(sign);
+							modes += CHANNEL_MODES[i];
+							modesArgs.insert(std::make_pair(CHANNEL_MODES[i], cmd[argIndex++]));
 						}
 					}
-					else if (std::string("l").find(CHANNEL_MODS[i]) != std::string::npos)
+					else if (std::string("l").find(CHANNEL_MODES[i]) != std::string::npos)
 					{
 						if (sign == '+' && cmd.size() == argIndex)
 						{
@@ -175,27 +175,27 @@ void	irc_mode(std::vector<std::string> cmd, Client* sender, Server* serv)
 						size_t limit = std::stoi(cmd[argIndex]);
 						if (limit)
 						{
-							mods.push_back(sign);
-							mods += CHANNEL_MODS[i];
+							modes.push_back(sign);
+							modes += CHANNEL_MODES[i];
 							if (sign == '+')
-								modsArgs.insert(std::make_pair(CHANNEL_MODS[i], cmd[argIndex++]));
+								modesArgs.insert(std::make_pair(CHANNEL_MODES[i], cmd[argIndex++]));
 						}
 					}
-					else if (std::string("bk").find(CHANNEL_MODS[i]) != std::string::npos)
+					else if (std::string("bk").find(CHANNEL_MODES[i]) != std::string::npos)
 					{
 						if (cmd.size() == argIndex)
 						{
 							sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
 							return;
 						}
-						mods.push_back(sign);
-						mods += CHANNEL_MODS[i];
-						modsArgs.insert(std::make_pair(CHANNEL_MODS[i], cmd[argIndex++]));
+						modes.push_back(sign);
+						modes += CHANNEL_MODES[i];
+						modesArgs.insert(std::make_pair(CHANNEL_MODES[i], cmd[argIndex++]));
 					}
 				}
 			}
-			if (!mods.empty())
-				channel->sendToClients(sender->getPrefix() + " " + cmd[0] + " " + channel->getName() + " " + channel->setMods(mods, modsArgs), NULL);
+			if (!modes.empty())
+				channel->sendToClients(sender->getPrefix() + " " + cmd[0] + " " + channel->getName() + " " + channel->setModes(modes, modesArgs), NULL);
 		}
 	}
 }
@@ -210,7 +210,7 @@ void	irc_topic(std::vector<std::string> cmd, Client* sender, Server* serv)
 			sender->addToOutputBuffer(ERR_NOSUCHCHANNEL(sender->getNickname(), cmd[1]));
 		else if (sender->getChannel(cmd[1]) == NULL)
 			sender->addToOutputBuffer(ERR_NOTONCHANNEL(sender->getNickname(), cmd[1]));
-		else if (serv->getChannel(cmd[1])->hasMod(CHANNEL_FLAG_T) && !serv->getChannel(cmd[1])->isOperator(sender))
+		else if (serv->getChannel(cmd[1])->hasModes(CHANNEL_FLAG_T) && !serv->getChannel(cmd[1])->isOperator(sender))
 			sender->addToOutputBuffer(ERR_CHANOPRIVSNEEDED(sender->getNickname(), cmd[1]));
 		else
 		{
@@ -239,7 +239,7 @@ void	irc_names(std::vector<std::string> cmd, Client* sender, Server* serv)
 	if (cmd.size() < 2)
 	{
 		for (std::map<std::string, Channel*>::iterator it = serv->getAllChannels().begin(); it != serv->getAllChannels().end(); it++)
-			if ((!it->second->hasMod(CHANNEL_FLAG_S) && !it->second->hasMod(CHANNEL_FLAG_P)) || it->second->getClient(sender->getNickname()) != NULL)
+			if ((!it->second->hasModes(CHANNEL_FLAG_S) && !it->second->hasModes(CHANNEL_FLAG_P)) || it->second->getClient(sender->getNickname()) != NULL)
 			{
 				sender->addToOutputBuffer(RPL_NAMREPLY(sender->getNickname(), it->second));
 				sender->addToOutputBuffer(RPL_ENDOFNAMES(sender->getNickname(), it->second->getName()));
@@ -254,7 +254,7 @@ void	irc_names(std::vector<std::string> cmd, Client* sender, Server* serv)
 		{
 			Channel* current = serv->getChannel(channels[i]);
 
-			if (current != NULL && ((!current->hasMod(CHANNEL_FLAG_S) && !current->hasMod(CHANNEL_FLAG_P)) || current->getClient(sender->getNickname()) != NULL))
+			if (current != NULL && ((!current->hasModes(CHANNEL_FLAG_S) && !current->hasModes(CHANNEL_FLAG_P)) || current->getClient(sender->getNickname()) != NULL))
 				sender->addToOutputBuffer(RPL_NAMREPLY(sender->getNickname(), current));
 			sender->addToOutputBuffer(RPL_ENDOFNAMES(sender->getNickname(), channels[i]));
 		}
@@ -267,7 +267,7 @@ void	irc_list(std::vector<std::string> cmd, Client* sender, Server* serv)
 	if (cmd.size() < 2)
 	{
 		for (std::map<std::string, Channel*>::iterator it = serv->getAllChannels().begin(); it != serv->getAllChannels().end(); it++)
-			if ((!it->second->hasMod(CHANNEL_FLAG_S) && !it->second->hasMod(CHANNEL_FLAG_P)) || it->second->getClient(sender->getNickname()) != NULL)
+			if ((!it->second->hasModes(CHANNEL_FLAG_S) && !it->second->hasModes(CHANNEL_FLAG_P)) || it->second->getClient(sender->getNickname()) != NULL)
 				sender->addToOutputBuffer(RPL_LIST(sender->getNickname(), it->second));
 	}
 	else
@@ -277,7 +277,7 @@ void	irc_list(std::vector<std::string> cmd, Client* sender, Server* serv)
 		for (std::vector<std::string>::iterator it = channels.begin(); it < channels.end(); it++)
 		{
 			Channel* current = serv->getChannel(*it);
-			if (current != NULL && ((!current->hasMod(CHANNEL_FLAG_S) && !current->hasMod(CHANNEL_FLAG_P)) || current->getClient(sender->getNickname()) != NULL))
+			if (current != NULL && ((!current->hasModes(CHANNEL_FLAG_S) && !current->hasModes(CHANNEL_FLAG_P)) || current->getClient(sender->getNickname()) != NULL))
 				sender->addToOutputBuffer(RPL_LIST(sender->getNickname(), current));
 		}
 	}

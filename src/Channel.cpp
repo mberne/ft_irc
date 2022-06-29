@@ -8,45 +8,13 @@ BanMask::BanMask(std::string banMask, size_t firstSepPos, size_t secondSepPos) :
 				_ident(banMask.substr(firstSepPos + 1, secondSepPos - firstSepPos - 1)), \
 				_host(banMask.substr(secondSepPos + 1, banMask.size() - secondSepPos - 1)) {}
 
-Channel::Channel(std::string name) : _name(name), _userLimit(CLIENT_LIMIT_PER_CHANNEL), _mods(0) {}
+Channel::Channel(std::string name) : _name(name), _userLimit(CHANNEL_CLIENTS_LIMIT), _modes(0) {}
 
 //~~ DESTRUCTOR
 
 BanMask::~BanMask() {}
 
 Channel::~Channel() {}
-
-//~~ CHANNEL INFO
-
-std::string		Channel::getName() const
-{
-	return _name;
-}
-
-std::string		Channel::getTopic() const
-{
-	return _topic;
-}
-
-void			Channel::setTopic(std::string topic)
-{
-	_topic = topic;
-}
-
-std::string		Channel::getPassword() const
-{
-	return _password;
-}
-
-int				Channel::clientCount() const
-{
-	return _clients.size();
-}
-
-int				Channel::getUserLimit() const
-{
-	return _userLimit;
-}
 
 //~~ BanMask METHODS
 
@@ -57,7 +25,7 @@ bool		BanMask::isClientBanned(Client* client) const
 		&& BanMask::stringCorrespondToMask(client->getHost(), _host) == true);
 }
 
-bool		BanMask::stringCorrespondToMask(std::string str, std::string mask) // NEED TEST!
+bool		BanMask::stringCorrespondToMask(std::string str, std::string mask)
 {
 	size_t	i = 0;
 	size_t	j = 0;
@@ -99,102 +67,134 @@ bool		BanMask::stringCorrespondToMask(std::string str, std::string mask) // NEED
 	return (i == str.size() && j == mask.size());
 }
 
-//~~ MODS
+//~~ CHANNEL INFO
 
-std::string		Channel::setMods(std::string mods, std::map<char, std::string>& modsArgs)
+std::string		Channel::getName() const
+{
+	return _name;
+}
+
+std::string		Channel::getTopic() const
+{
+	return _topic;
+}
+
+void			Channel::setTopic(std::string topic)
+{
+	_topic = topic;
+}
+
+std::string		Channel::getPassword() const
+{
+	return _password;
+}
+
+int				Channel::clientCount() const
+{
+	return _clients.size();
+}
+
+int				Channel::getUserLimit() const
+{
+	return _userLimit;
+}
+
+//~~ MODES
+
+std::string		Channel::setModes(std::string modes, std::map<char, std::string>& modesArgs)
 {
 	std::string		charset("psitnm");
 	std::string		args;
-	int				flag = 1;
+	mode_t			flag = 1;
 
 	for(size_t	i = 0; i < charset.size(); i++)
 	{
-		if (mods.find(charset[i]) != std::string::npos)
+		if (modes.find(charset[i]) != std::string::npos)
 		{
-			if (mods[mods.find(charset[i]) - 1] == '+')
-				_mods |= flag;
-			if (mods[mods.find(charset[i]) - 1] == '-')
-				_mods &= ~flag;
+			if (modes[modes.find(charset[i]) - 1] == '+')
+				_modes |= flag;
+			if (modes[modes.find(charset[i]) - 1] == '-')
+				_modes &= ~flag;
 		}
 		flag <<= 1;
 	}
-	if (mods.find('o') != std::string::npos)
+	if (modes.find('o') != std::string::npos)
 	{
-		if (mods[mods.find('o') - 1] == '+')
-			addOperator(getClient(modsArgs.find('o')->second));
-		if (mods[mods.find('o') - 1] == '-')
-			removeOperator(getClient(modsArgs.find('o')->second));
-		args += (" " + modsArgs.find('o')->second);
+		if (modes[modes.find('o') - 1] == '+')
+			addOperator(getClient(modesArgs.find('o')->second));
+		if (modes[modes.find('o') - 1] == '-')
+			removeOperator(getClient(modesArgs.find('o')->second));
+		args += (" " + modesArgs.find('o')->second);
 	}
-	if (mods.find('l') != std::string::npos)
+	if (modes.find('l') != std::string::npos)
 	{
-		if (mods[mods.find('l') - 1] == '+')
-			_userLimit = (std::stoi(modsArgs.find('l')->second) >= CLIENT_LIMIT_PER_CHANNEL ? CLIENT_LIMIT_PER_CHANNEL : std::atoi(modsArgs.find('l')->second.c_str()));
-		if (mods[mods.find('l') - 1] == '-')
-			_userLimit = CLIENT_LIMIT_PER_CHANNEL;
-		args += (" " + modsArgs.find('l')->second);
+		if (modes[modes.find('l') - 1] == '+')
+			_userLimit = (std::stoi(modesArgs.find('l')->second) >= CHANNEL_CLIENTS_LIMIT ? CHANNEL_CLIENTS_LIMIT : std::atoi(modesArgs.find('l')->second.c_str()));
+		if (modes[modes.find('l') - 1] == '-')
+			_userLimit = CHANNEL_CLIENTS_LIMIT;
+		args += (" " + modesArgs.find('l')->second);
 	}
-	if (mods.find('b') != std::string::npos)
+	if (modes.find('b') != std::string::npos)
 	{
-		if (mods[mods.find('b') - 1] == '+')
-			addBanMask(modsArgs.find('b')->second);
-		if (mods[mods.find('b') - 1] == '-')
-			removeBanMask(modsArgs.find('b')->second);
-		args += (" " + modsArgs.find('b')->second);
+		if (modes[modes.find('b') - 1] == '+')
+			addBanMask(modesArgs.find('b')->second);
+		if (modes[modes.find('b') - 1] == '-')
+			removeBanMask(modesArgs.find('b')->second);
+		args += (" " + modesArgs.find('b')->second);
 	}
-	if (mods.find('v') != std::string::npos)
+	if (modes.find('v') != std::string::npos)
 	{
-		if (mods[mods.find('v') - 1] == '+')
-			addClientWithVoice(getClient(modsArgs.find('v')->second));
-		if (mods[mods.find('v') - 1] == '-')
-			removeClientWithVoice(getClient(modsArgs.find('v')->second));
-		args += (" " + modsArgs.find('v')->second);
+		if (modes[modes.find('v') - 1] == '+')
+			addClientWithVoice(getClient(modesArgs.find('v')->second));
+		if (modes[modes.find('v') - 1] == '-')
+			removeClientWithVoice(getClient(modesArgs.find('v')->second));
+		args += (" " + modesArgs.find('v')->second);
 	}
-	if (mods.find('k') != std::string::npos)
+	if (modes.find('k') != std::string::npos)
 	{
-		if (mods[mods.find('k') - 1] == '+')
-			_password = modsArgs.find('k')->second;
-		if (mods[mods.find('k') - 1] == '-' && _password.compare(modsArgs.find('k')->second) == 0)
+		if (modes[modes.find('k') - 1] == '+')
+			_password = modesArgs.find('k')->second;
+		if (modes[modes.find('k') - 1] == '-' && _password.compare(modesArgs.find('k')->second) == 0)
 		{
 			_password = "";
-			modsArgs.find('k')->second = "*";
+			modesArgs.find('k')->second = "*";
 		}
-		args += (" " + modsArgs.find('k')->second);
+		args += (" " + modesArgs.find('k')->second);
 	}
-	return (mods + args);
+	return (modes + args);
 }
 
 
-std::string		Channel::getMods() const
+std::string		Channel::getModes() const
 {
-	std::string modsString("+");
+	std::string modesString("+");
 
-	if ((_mods | CHANNEL_FLAG_P) == _mods)
-		modsString.push_back('p');
-	if ((_mods | CHANNEL_FLAG_S) == _mods)
-		modsString.push_back('s');
-	if ((_mods | CHANNEL_FLAG_I) == _mods)
-		modsString.push_back('i');
-	if ((_mods | CHANNEL_FLAG_T) == _mods)
-		modsString.push_back('t');
-	if ((_mods | CHANNEL_FLAG_N) == _mods)
-		modsString.push_back('n');
-	if ((_mods | CHANNEL_FLAG_M) == _mods)
-		modsString.push_back('m');
-	if (_userLimit < CLIENT_LIMIT_PER_CHANNEL)
-		modsString.push_back('l');
+	if ((_modes | CHANNEL_FLAG_P) == _modes)
+		modesString.push_back('p');
+	if ((_modes | CHANNEL_FLAG_S) == _modes)
+		modesString.push_back('s');
+	if ((_modes | CHANNEL_FLAG_I) == _modes)
+		modesString.push_back('i');
+	if ((_modes | CHANNEL_FLAG_T) == _modes)
+		modesString.push_back('t');
+	if ((_modes | CHANNEL_FLAG_N) == _modes)
+		modesString.push_back('n');
+	if ((_modes | CHANNEL_FLAG_M) == _modes)
+		modesString.push_back('m');
+	if (_userLimit < CHANNEL_CLIENTS_LIMIT)
+		modesString.push_back('l');
 	if (!_password.empty())
-		modsString.push_back('k');
-	if (_userLimit < CLIENT_LIMIT_PER_CHANNEL)
-		modsString += (" " + std::to_string(_userLimit));
+		modesString.push_back('k');
+	if (_userLimit < CHANNEL_CLIENTS_LIMIT)
+		modesString += (" " + std::to_string(_userLimit));
 	if (!_password.empty())
-		modsString += (" " + _password);
-	return modsString;
+		modesString += (" " + _password);
+	return modesString;
 }
 
-bool			Channel::hasMod(int mode) const
+bool			Channel::hasModes(mode_t modes) const
 {
-	return ((_mods | mode) == _mods);
+	return ((_modes | modes) == _modes);
 }
 
 void			Channel::addOperator(Client* client)
@@ -250,6 +250,8 @@ void			Channel::removeBanMask(std::string banMask)
 void			Channel::addClient(Client* client)
 {
 	_clients.insert(std::make_pair(client->getNickname(), client));
+	if (_invitedClients.find(client->getNickname()) != _invitedClients.end())
+		_invitedClients.erase(client->getNickname());
 	if (client->getChannel(_name) == NULL)
 		client->joinChannel(this);
 }
@@ -293,7 +295,7 @@ bool			Channel::isBanned(Client* client)
 
 bool			Channel::isInvited(Client* client) const
 {
-	return ((_mods | CHANNEL_FLAG_I) != _mods || _invitedClients.find(client->getNickname()) != _invitedClients.end());
+	return ((_modes | CHANNEL_FLAG_I) != _modes || _invitedClients.find(client->getNickname()) != _invitedClients.end());
 }
 
 std::string		Channel::showClientsList()
@@ -302,13 +304,13 @@ std::string		Channel::showClientsList()
 
 	for (std::map<std::string, Client*>::iterator it = _clients.begin(); it != _clients.end(); it++)
 	{
-		if (!it->second->hasMod(CLIENT_FLAG_I))
+		if (!it->second->hasModes(CLIENT_FLAG_I))
 		{
 			if (it != _clients.begin())
 				clientList += " ";
 			if (this->isOperator(it->second))
 				clientList += "@";
-			else if (this->hasMod(CHANNEL_FLAG_M) && this->hasVoice(it->second))
+			else if (this->hasModes(CHANNEL_FLAG_M) && this->hasVoice(it->second))
 				clientList += "+";
 			clientList += it->second->getNickname();
 		}
@@ -319,10 +321,8 @@ std::string		Channel::showClientsList()
 void			Channel::sendToClients(std::string msg, Client* sender)
 {
 	for (std::map<std::string, Client*>::iterator it = _clients.begin(); it != _clients.end(); it++)
-	{
 		if (it->second != sender)
 			it->second->addToOutputBuffer(msg);
-	}
 }
 
 std::map<std::string, Client*> &	Channel::getAllClients()

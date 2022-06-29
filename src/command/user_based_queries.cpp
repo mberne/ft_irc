@@ -9,12 +9,12 @@ void	irc_who(std::vector<std::string> cmd, Client* sender, Server* serv)
 	if ((cmd.size() == 2 && option) || cmd.size() == 1)
 	{
 		for (std::map<std::string, Client*>::iterator it = serv->getAllClients().begin(); it != serv->getAllClients().end(); it++)
-			if (!it->second->hasMod(CLIENT_FLAG_I) && (!option || it->second->hasMod(CLIENT_FLAG_O)))
+			if (!it->second->hasModes(CLIENT_FLAG_I) && (!option || it->second->hasModes(CLIENT_FLAG_O)))
 				sender->addToOutputBuffer(RPL_WHOREPLY(sender->getNickname(), it->second));
 	}
 	else if ((cmd.size() == 2 && !option) || cmd.size() > 2)
 	{
-		if (serv->getClient(cmd[1]) && !serv->getClient(cmd[1])->hasMod(CLIENT_FLAG_I) && (!option || serv->getClient(cmd[1])->hasMod(CLIENT_FLAG_O)))
+		if (serv->getClient(cmd[1]) && !serv->getClient(cmd[1])->hasModes(CLIENT_FLAG_I) && (!option || serv->getClient(cmd[1])->hasModes(CLIENT_FLAG_O)))
 			sender->addToOutputBuffer(RPL_WHOREPLY(sender->getNickname(), serv->getClient(cmd[1])));
 		else if (serv->getChannel(cmd[1]))
 			for (std::map<std::string, Client*>::iterator it = serv->getChannel(cmd[1])->getAllClients().begin(); it != serv->getChannel(cmd[1])->getAllClients().end(); it++)
@@ -67,7 +67,7 @@ void	irc_whowas(std::vector<std::string> cmd, Client* sender, Server* serv)
 		sender->addToOutputBuffer(ERR_NONICKNAMEGIVEN(sender->getNickname()));
 		return;
 	}
-	for (std::vector< std::pair<std::string, Client*> >::iterator it = serv->getOldNicknames().begin(); it != serv->getOldNicknames().end(); it++)
+	for (std::vector< std::pair<std::string, Client*> >::iterator it = serv->getOldClients().begin(); it != serv->getOldClients().end(); it++)
 	{
 		if (!it->second->getNickname().compare(cmd[1]) && i < count)
 		{

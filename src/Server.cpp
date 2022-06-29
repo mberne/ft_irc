@@ -70,7 +70,7 @@ Server::~Server() {}
 
 //~~ SERVER
 
-int			Server::getPort() const
+in_port_t	Server::getPort() const
 {
 	return _port;
 }
@@ -97,6 +97,41 @@ std::string	Server::getCurrentTime() const
 	return time;
 }
 
+void		Server::addLog(std::string message, mode_t type)
+{
+	std::string		logPrompt;
+	switch (type)
+	{
+		case LOG_INFO:
+			logPrompt = "[" + getCurrentTime() + "]: INFO:\t\t";
+			break ;
+		case LOG_LISTEN:
+			logPrompt = "[" + getCurrentTime() + "]: LISTEN:\t\t";
+			break ;
+		case LOG_BROADCAST:
+			logPrompt = "[" + getCurrentTime() + "]: BROADCAST:\t";
+			break ;
+		case LOG_MESSAGE:
+			logPrompt = "[" + getCurrentTime() + "]: MESSAGE:\t";
+			break ;
+		case LOG_ERROR:
+			logPrompt = "[" + getCurrentTime() + "]: ERROR:\t\t";
+			break ;
+	}
+
+	size_t	start = 0;
+	message.erase(remove(message.begin(), message.end(), '\r'), message.end());
+	for (size_t i = message.find('\n'); i != std::string::npos; i = message.find('\n', start))
+	{
+		std::string		line = message.substr(start, i - start);
+
+		_logFile << logPrompt + line << std::endl;
+		start = i + sizeof(char);
+	}
+	if (message[message.size() - 1] != '\n')
+		_logFile << logPrompt + message.substr(start, message.size() - start) << std::endl;
+}
+
 //~~ CLIENT
 
 Client*		Server::getClient(std::string name) const
@@ -107,45 +142,92 @@ Client*		Server::getClient(std::string name) const
 		return (_clientsByName.find(name)->second);
 }
 
-std::map<std::string, Client*> &	Server::getAllClients()
+std::map<std::string, Client*>&		Server::getAllClients()
 {
 	return _clientsByName;
 }
 
-int	Server::getOpsNumber()
+size_t	Server::getOpsNumber()
 {
-	int	num = 0;
+	size_t	count = 0;
 
-	for (std::map<std::string, Client*>::iterator it = _clientsByName.begin(); it != _clientsByName.end(); ++it)
-		if (it->second->hasMod(CLIENT_FLAG_O))
-			num++;
-	return num;
+	for (std::map<std::string, Client*>::iterator it = _clientsByName.begin(); it != _clientsByName.end(); it++)
+		if (it->second->hasModes(CLIENT_FLAG_O))
+			count++;
+	return count;
 }
 
-int	Server::getNonRegisteredNumber()
+size_t	Server::getNonRegisteredNumber()
 {
-	int	num = 0;
+	size_t	count = 0;
 
-	for (std::map<std::string, Client*>::iterator it = _clientsByName.begin(); it != _clientsByName.end(); ++it)
+	for (std::map<std::string, Client*>::iterator it = _clientsByName.begin(); it != _clientsByName.end(); it++)
 		if (!(it->second->isRegistered()))
-			num++;
-	return num;
+			count++;
+	return count;
 }
 
-std::vector< std::pair<std::string, Client*> >&		Server::getOldNicknames()
+std::vector< std::pair<std::string, Client*> >&		Server::getOldClients()
 {
 	return _oldNicknames;
 }
 
-void		Server::addOldNickname(std::string nickname, Client* client)
+void	Server::addOldClient(std::string nickname, Client* client)
 {
 	if (_oldNicknames.size() >= OLD_CLIENT_LIMIT)
 	{
-		std::pair<std::string, Client*>	oldClient = *(--_oldNicknames.end());
+		delete (--_oldNicknames.end())->second;
 		_oldNicknames.erase(--_oldNicknames.end());
-		delete oldClient.second;
 	}
 	_oldNicknames.insert(_oldNicknames.begin(), std::make_pair(nickname, client));
+}
+
+void	Server::addClient(int sock)
+{
+	Client*		newClient = new Client(sock);
+	
+	newClient->setHost(inet_ntoa(_servSocket.sin_addr));
+	_clientsBySock.insert(std::make_pair(sock, newClient));
+
+	addLog("New connexion: " + newClient->getPrefix(), LOG_INFO);
+}
+
+void	Server::removeClient(Client *client)
+{
+	addLog("Connexion closed: " + client->getPrefix(), LOG_INFO);
+
+	std::vector<struct pollfd>::iterator it = _fdList.begin();
+	while (it->fd != client->getSock())
+		it++;
+
+	for (Channel* channel = client->getChannel(client->getLastChannelName()); channel != NULL; channel = client->getChannel(client->getLastChannelName()))
+		client->leaveChannel(channel, this);
+	if (client->isRegistered() == true && _clientsByName.find(client->getNickname())->second == client)
+	{
+		_clientsByName.erase(client->getNickname());
+		// addOldClient(client->getNickname(), client);
+	}
+	else
+		delete client;
+	_clientsBySock.erase(it->fd);
+	close(it->fd);
+	_fdList.erase(it);
+}
+
+void	Server::pingClient(Client* client)
+{
+	time_t	diff = time(NULL) - client->getLastCmdTime();
+
+	if (diff > TIME_AFK)
+	{
+		if (!client->getIsPing())
+		{
+			client->addToOutputBuffer("PING :" + SERV_NAME);
+			client->setIsPing(true);
+		}
+		if (diff > TIME_AFK + PING_TIME)
+			irc_quit(vectorizator("QUIT", "Ping timeout:" + std::to_string(PING_TIME) + " seconds"), client, this);
+	}
 }
 
 //~~ CHANNEL
@@ -163,10 +245,12 @@ std::map<std::string, Channel*> &	Server::getAllChannels()
 	return _channels;
 }
 
-Channel*	Server::newChannel(std::string name, Client* founder)
+Channel*	Server::addChannel(std::string name, Client* founder)
 {
 	addLog("New channel: " + name + " created by: " + founder->getPrefix(), LOG_INFO);
+
 	Channel* channel = new Channel(name);
+
 	_channels.insert(std::make_pair(name, channel));
 	channel->addOperator(founder);
 	return channel;
@@ -175,6 +259,7 @@ Channel*	Server::newChannel(std::string name, Client* founder)
 void	Server::removeChannel(Channel* channel)
 {
 	addLog("Channel deleted: " + channel->getName(), LOG_INFO);
+
 	_channels.erase(channel->getName());
 	delete channel;
 }
@@ -183,7 +268,7 @@ void	Server::removeChannel(Channel* channel)
 
 void	Server::run()
 {
-	int	numberSockets; 
+	int	socketsNumber; 
 	
 	_logFile.open((SERV_NAME + ".log").c_str() , std::ios_base::out | std::ios_base::trunc);
 	if ( _logFile.is_open() == false )
@@ -193,9 +278,9 @@ void	Server::run()
 	addLog(START_LOG, LOG_INFO);
 	while (online)
 	{
-		numberSockets = poll(&_fdList[0], _fdList.size(), 0); // return the number of socket with request and fill pollfd
-		if (numberSockets == -1)
-			stop(EXIT_FAILURE);
+		socketsNumber = poll(&_fdList[0], _fdList.size(), 0); // return the number of socket with request and fill pollfd
+		if (socketsNumber == -1)
+			stop(errno);
 		acceptConnexions(); // the server accept connexions
 		receiveMessages(); // the server retrieves the requests
 		sendMessages(); // the server responds to requests
@@ -251,8 +336,8 @@ void	Server::receiveMessages()
 				else if (ret < 0)
 					irc_quit(vectorizator("QUIT", "Remote host closed the connection"), client, this);
 			}
-			if (!client->isRegistered())
-				connexionTime(client);
+			if (!client->isRegistered() && time(NULL) - client->getConnexionStartTime() > CONNEXION_TIME)
+				irc_quit(vectorizator("QUIT", "Connection timed out"), client, this);
 			pingClient(client);
 		}
 	}
@@ -323,11 +408,13 @@ void	Server::stop(int status)
 		send(it->second->getSock(), it->second->getOutputBuffer(), strlen(it->second->getOutputBuffer()), 0);
 		removeClient(it->second);
 	}
+
 	if (status)
 		addLog("Server exited with code: " + std::to_string(status) + " " + SERV_NAME + ": " + strerror(status), LOG_ERROR);
 	else
 		addLog("Server exited with code: " + std::to_string(status) + " " + SERV_NAME + ": Closed by host", LOG_INFO);
-	// FREE ALLOCATED MEMORY
+	(status ? std::cerr : std::cout) << "Server exited with code: " << status << "\nLogs available at: " << getcwd(NULL, 0) << "/" << SERV_NAME << ".log" << std::endl;
+	
 	std::for_each(_fdList.begin(), _fdList.end(), closeFd);
 	_fdList.clear();
 	for (std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); ++it)
@@ -336,13 +423,13 @@ void	Server::stop(int status)
 	for (std::map<int, Client*>::iterator it = _clientsBySock.begin(); it != _clientsBySock.end(); ++it)
 		delete it->second;
 	_clientsBySock.clear();
-	for (std::vector< std::pair<std::string, Client*> >::iterator it = _oldNicknames.begin(); it != _oldNicknames.end(); ++it)
-		delete it->second;
-   	_oldNicknames.clear();
+	// for (std::vector< std::pair<std::string, Client*> >::iterator it = _oldNicknames.begin(); it != _oldNicknames.end(); ++it)
+	// 	delete it->second;
+   	// _oldNicknames.clear();
+
 	std::signal(SIGINT, SIG_DFL);
 	std::signal(SIGQUIT, SIG_DFL);
 	std::signal(SIGTERM, SIG_DFL);
-	(status ? std::cerr : std::cout) << "Server exited with code: " << status << "\nLogs available at: " << getcwd(NULL, 0) << "/" << SERV_NAME << ".log" << std::endl;
 	exit(status);
 }
 
@@ -375,38 +462,6 @@ void		Server::executeCommand(std::vector<std::string>	cmdArgs, Client* sender)
 	
 }
 
-void	Server::addClient(int sock)
-{
-	Client*		newClient = new Client(sock);
-	
-	newClient->setHost(inet_ntoa(_servSocket.sin_addr));
-	_clientsBySock.insert(std::make_pair(sock, newClient));
-
-	addLog("New connexion: " + newClient->getPrefix(), LOG_INFO);
-}
-
-void	Server::removeClient(Client *client)
-{
-	addLog("Connexion closed: " + client->getPrefix(), LOG_INFO);
-
-	std::vector<struct pollfd>::iterator it = _fdList.begin();
-	while (it->fd != client->getSock())
-		it++;
-
-	for (Channel* channel = client->getChannel(client->getLastChannelName()); channel != NULL; channel = client->getChannel(client->getLastChannelName()))
-		client->leaveChannel(channel, this);
-	if (client->isRegistered() == true && _clientsByName.find(client->getNickname())->second == client)
-	{
-		_clientsByName.erase(client->getNickname());
-		addOldNickname(client->getNickname(), client);
-	}
-	else
-		delete client;
-	_clientsBySock.erase(it->fd);
-	close(it->fd);
-	_fdList.erase(it);
-}
-
 void	Server::sendWelcome(Client* sender)
 {
 	std::string name = sender->getNickname();
@@ -425,63 +480,4 @@ void	Server::sendWelcome(Client* sender)
 	sender->addToOutputBuffer(RPL_MOTD(name));
 	sender->addToOutputBuffer(RPL_ENDOFMOTD(name));
 	sender->addToOutputBuffer(RPL_UMODEIS(name, sender));
-}
-
-void		Server::addLog(std::string message, int type)
-{
-	std::string		logPrompt;
-	switch (type)
-	{
-		case LOG_INFO:
-			logPrompt = "[" + getCurrentTime() + "]: INFO:\t\t";
-			break ;
-		case LOG_LISTEN:
-			logPrompt = "[" + getCurrentTime() + "]: LISTEN:\t\t";
-			break ;
-		case LOG_BROADCAST:
-			logPrompt = "[" + getCurrentTime() + "]: BROADCAST:\t";
-			break ;
-		case LOG_MESSAGE:
-			logPrompt = "[" + getCurrentTime() + "]: MESSAGE:\t";
-			break ;
-		case LOG_ERROR:
-			logPrompt = "[" + getCurrentTime() + "]: ERROR:\t\t";
-			break ;
-	}
-
-	size_t	start = 0;
-
-	message.erase(remove(message.begin(), message.end(), '\r'), message.end());
-	for (size_t i = message.find('\n'); i != std::string::npos; i = message.find('\n', start))
-	{
-		std::string		line = message.substr(start, i - start);
-
-		_logFile << logPrompt + line << std::endl;
-		start = i + sizeof(char);
-	}
-	if (message[message.size() - 1] != '\n')
-		_logFile << logPrompt + message.substr(start, message.size() - start) << std::endl;
-}
-
-void	Server::pingClient(Client* client)
-{
-	time_t	differenceTime = time(NULL) - client->getLastCmdTime();
-
-	if (differenceTime > TIME_AFK)
-	{
-		if (!client->getIsPing())
-		{
-			client->addToOutputBuffer("PING :" + SERV_NAME);
-			client->setIsPing(1);
-		}
-		if (differenceTime > TIME_AFK + PING_TIME)
-			irc_quit(vectorizator("QUIT", "Ping timeout:" + std::to_string(PING_TIME) + " seconds"), client, this);
-	}
-}
-
-void	Server::connexionTime(Client* client)
-{
-	time_t	differenceTime = time(NULL) - client->getConnexionStartTime();
-	if (differenceTime > CONNEXION_TIME)
-		irc_quit(vectorizator("QUIT", "Connection timed out"), client, this);
 }

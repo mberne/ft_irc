@@ -1,44 +1,24 @@
 #ifndef IRCSERV_H
 # define IRCSERV_H
 
-/*** ~~ LIBS ~~ ***/
-
+/*** ~~ HEADERS ~~ ***/
+// Standard libs
 # include <cstdlib>
-# include <stdlib.h>
+# include <iostream>
 # include <string>
-# include <cstring>
-# include <unistd.h>
 # include <csignal>
-# include <fcntl.h>
-# include <poll.h>
-# include <netdb.h>
-# include <netinet/tcp.h>
-# include <arpa/inet.h>
-# include <sys/stat.h>
-# include <sys/socket.h>
-# include <sys/types.h>
-# include <ctime>
-# include <string>
-# include <vector>
-# include <map>
-# include <cerrno>
-# include <cstdio>
-# include "errors.hpp"
-# include "replies.hpp"
+// Classes
+class Server;
+class Client;
+class Channel;
+# include "Server.hpp"
+# include "Client.hpp"
+# include "Channel.hpp"
 
 /*** ~~ DEFINES ~~ ***/
 
+// Utils
 # define USAGE						std::string("usage: ircserv <port> <password>")
-
-// Server info
-# define SERV_NAME					std::string("potatoes.land")
-# define SERV_VERSION				std::string("4.2")
-# define SERV_CREATION				std::string("Thursday 9 June 2022 at 10:42:00 UTC")
-# define SERV_ADMIN					std::string("Pinkie Pie")
-# define SERV_ADMIN_EMAIL			std::string("pinkie_pie@rainbow.dash")
-# define SERV_INFO					std::string("Made with *LOUD TRUCK SOUND* by pthomas and mberne in 2022. Copyleft.")
-# define SERV_LOC1					std::string("Charbonniere-Les-Bains, France")
-# define SERV_LOC2					std::string("42 Lyon")
 # define PROMPT(num, user)			std::string(":") + SERV_NAME + std::string(num) + user
 # define START_LOG					"Server started:\t" + SERV_NAME +\
 									"\nVersion:\t\t" + SERV_VERSION +\
@@ -48,44 +28,41 @@
 									"\nInfo:\t\t\t" + SERV_INFO +\
 									"\nLocation:\t\t" + SERV_LOC1 +\
 									" " + SERV_LOC2
+// Server info
+# define SERV_NAME					std::string("potatoes.land")
+# define SERV_VERSION				std::string("4.2")
+# define SERV_CREATION				std::string("Thursday 9 June 2022 at 10:42:00 UTC")
+# define SERV_ADMIN					std::string("Pinkie Pie")
+# define SERV_ADMIN_EMAIL			std::string("pinkie_pie@rainbow.dash")
+# define SERV_INFO					std::string("Made with *LOUD TRUCK SOUND* by pthomas and mberne in 2022. Copyleft.")
+# define SERV_LOC1					std::string("Charbonniere-Les-Bains, France")
+# define SERV_LOC2					std::string("42 Lyon")
 // Server specifications
-// Required
 # define CASE_MAPPING				std::string("ascii")
-# define CLIENT_CHANNEL_LIMIT		10
-# define USER_MODS					std::string("i")
-# define CHANNEL_MODS				std::string("opsitnmlbvk")
-# define CHANNEL_LEN				50
+# define USER_MODES					std::string("i")
+# define CHANNEL_MODES				std::string("opsitnmlbvk")
 # define CHAN_TYPES					std::string("#")
-# define HOST_LEN					10
-# define KICK_LEN					256
 # define NICK_LEN					20
-# define TOPIC_LEN					400
 # define USER_LEN					10
-# define MESSAGE_LEN				512
+# define HOST_LEN					10
 # define REALNAME_LEN				50
+# define MESSAGE_LEN				512
+# define CHANNEL_LEN				50
+# define TOPIC_LEN					400
 # define CLIENT_LIMIT				500
 # define CHANNEL_LIMIT				2000
-# define MAX_PORT					65536
+# define CLIENT_CHANNELS_LIMIT		10
+# define CHANNEL_CLIENTS_LIMIT		100
+// Other specifications
+# define CONNEXION_TIME				120
+# define RETRY_NUMBER				3
 # define TIME_AFK					300
 # define PING_TIME					60
 # define OLD_CLIENT_LIMIT			100
-# define CONNEXION_TIME				120
-# define RETRY_NUMBER				3
-// Sensitive or useless
-# define CLIENT_LIMIT_PER_CHANNEL	100
 # define ASCII_CHARSET				std::string("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 # define CRLF						std::string("\r\n")
 # define OPERATOR_USER				std::string("p1k13p13")
 # define OPERATOR_PASSWORD			std::string("*_*SEGFAULT_11")
-
-/*** ~~ CLASSES ~~ ***/
-
-class Server;
-class Client;
-class Channel;
-# include "Server.hpp"
-# include "Client.hpp"
-# include "Channel.hpp"
 
 /*** ~~ PROTOTYPES ~~ ***/
 
@@ -125,7 +102,7 @@ void	irc_kill(std::vector<std::string> cmd, Client* sender, Server* serv);
 void	irc_ping(std::vector<std::string> cmd, Client* sender, Server* serv);
 void	irc_pong(std::vector<std::string> cmd, Client* sender, Server* serv);
 void	irc_error(Client* sender, std::string reason);
-// utils
+// Utils
 void						parseArg(std::string cmdArg, std::vector<std::string>& argList);
 std::vector<std::string>	vectorizator(std::string arg1, std::string arg2);
 bool						ableToTalk(Client *client, Channel *channel);

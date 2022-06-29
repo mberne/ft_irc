@@ -1,22 +1,45 @@
 #ifndef SERVER_H
 #define SERVER_H
 
+/*** ~~ HEADERS ~~ ***/
+// Standard libs
+# include <iostream>
 # include <string>
+# include <cstring>
 # include <vector>
 # include <map>
-# include <algorithm>
+# include <csignal>
 # include <fstream>
-# include <sstream>
-# include "Client.hpp"
+# include <ctime>
+# include <algorithm>
+// Other libs
+# include <unistd.h>
+# include <netdb.h>
+# include <netinet/tcp.h>
+# include <poll.h>
+# include <arpa/inet.h>
+# include <fcntl.h>
+// Classes
+# include "ircserv.hpp"
 # include "Channel.hpp"
+# include "Client.hpp"
+// Replies
+# include "errors.hpp"
+# include "replies.hpp"
 
+/*** ~~ DEFINES ~~ ***/
+// Logs options
 # define LOG_INFO		0
 # define LOG_LISTEN		1
 # define LOG_BROADCAST	2
 # define LOG_MESSAGE	3
 # define LOG_ERROR		4
 
+/*** ~~ TYPES ~~ ***/
+
 typedef void (*command_t)(std::vector<std::string> cmd, Client* sender, Server* serv);
+
+/*** ~~ CLASS ~~ ***/
 
 class Server
 {
@@ -26,30 +49,30 @@ class Server
 		~Server();
 
 		// SERVER
-		int									getPort() const;
+		void								run();
+		void								stop(int status);
+		in_port_t							getPort() const;
 		std::string							getPassword() const;
 		std::string							getStartTime() const;
 		std::string							getCurrentTime() const;
-		void								addLog(std::string message, int type);
-		// CLIENTS
-		Client*												getClient(std::string name) const;
-		std::map<std::string, Client*>&						getAllClients();
-		int													getOpsNumber();
-		int													getNonRegisteredNumber();
-		void												addOldNickname(std::string nickname, Client* client);
-		std::vector< std::pair<std::string, Client*> >&		getOldNicknames();
-		// CHANNELS
+		void								addLog(std::string message, mode_t type);
+		// CLIENT
+		Client*											getClient(std::string name) const;
+		std::map<std::string, Client*>&					getAllClients();
+		size_t											getOpsNumber();
+		size_t											getNonRegisteredNumber();
+		void											addOldClient(std::string nickname, Client* client);
+		std::vector< std::pair<std::string, Client*> >&	getOldClients();
+		void											addClient(int sock);
+		void											removeClient(Client *src);
+		void											pingClient(Client* client);
+		// CHANNEL
 		Channel*							getChannel(std::string name) const;
 		std::map<std::string, Channel*>&	getAllChannels();
-		Channel*							newChannel(std::string name, Client* founder);
+		Channel*							addChannel(std::string name, Client* founder);
 		void								removeChannel(Channel* channel);
-		// SERVER MAIN
-		void								run();
-		void								stop(int status);
-		// SERVER UTILS
-		void								removeClient(Client *src);
 	
-		static bool	online;
+		static bool		online;
 
 	private:
 
@@ -76,10 +99,7 @@ class Server
 		// SERVER UTILS
 		void		initSupportedCommands();
 		void		executeCommand(std::vector<std::string>	cmd, Client* sender);
-		void		addClient(int sock);
 		void		sendWelcome(Client* sender);
-		void		pingClient(Client* client);
-		void		connexionTime(Client* client);
 };
 
 #endif //~~ SERVER_H
