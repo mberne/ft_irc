@@ -19,6 +19,7 @@ class Client
 	public:
 
 		Client(int sock);
+		Client(std::vector<std::string>);
 		~Client();
 
 		// CLIENT INFO

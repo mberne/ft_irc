@@ -40,7 +40,7 @@ void	irc_nick(std::vector<std::string> cmd, Client* sender, Server* serv)
 				sender->sendToAllChannels(reply, sender);
 				serv->getAllClients().erase(sender->getNickname());
 				serv->getAllClients().insert(std::make_pair(cmd[1], sender));
-				// serv->addOldClient(sender->getNickname(), sender);
+				serv->addOldNickname(sender);
 			}
 			sender->setNickname(cmd[1]);
 		}

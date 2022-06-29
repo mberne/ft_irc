@@ -2,7 +2,9 @@
 
 //~~ CONSTRUCTOR
 
-Client::Client(int sock) : _fd(sock), _modes(0), _connexionStartTime(time(NULL)), _password(false), _retriesLeft(RETRY_NUMBER), _lastCmdTime(time(NULL)) {}
+Client::Client(int sock) : _fd(sock), _modes(0), _connexionStartTime(time(NULL)), _password(false), _retriesLeft(MAX_PASS_ATTEMPT), _lastCmdTime(time(NULL)) {}
+
+Client::Client(std::vector<std::string>	ident) : _nickname(ident[0]), _user(ident[1]), _host(ident[2]), _realName(ident[3]), _connexionStartTime(0) {}
 
 //~~ DESTRUCTOR
 

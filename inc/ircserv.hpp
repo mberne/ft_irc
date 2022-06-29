@@ -43,8 +43,8 @@ class Channel;
 # define CHANNEL_MODES				std::string("opsitnmlbvk")
 # define CHAN_TYPES					std::string("#")
 # define NICK_LEN					20
-# define USER_LEN					10
-# define HOST_LEN					10
+# define USER_LEN					15
+# define HOST_LEN					15
 # define REALNAME_LEN				50
 # define MESSAGE_LEN				512
 # define CHANNEL_LEN				50
@@ -55,10 +55,10 @@ class Channel;
 # define CHANNEL_CLIENTS_LIMIT		100
 // Other specifications
 # define CONNEXION_TIME				120
-# define RETRY_NUMBER				3
+# define MAX_PASS_ATTEMPT			3
 # define TIME_AFK					300
 # define PING_TIME					60
-# define OLD_CLIENT_LIMIT			100
+# define OLD_CLIENT_LIMIT			400
 # define ASCII_CHARSET				std::string("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 # define CRLF						std::string("\r\n")
 # define OPERATOR_USER				std::string("p1k13p13")

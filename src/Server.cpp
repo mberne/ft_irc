@@ -167,19 +167,22 @@ size_t	Server::getNonRegisteredNumber()
 	return count;
 }
 
-std::vector< std::pair<std::string, Client*> >&		Server::getOldClients()
+void	Server::addOldNickname(Client* client)
 {
-	return _oldNicknames;
+	std::vector<std::string>	ident;
+	ident.push_back(client->getNickname());
+	ident.push_back(client->getUser());
+	ident.push_back(client->getHost());
+	ident.push_back(client->getRealName());
+
+	if (_oldNicknames.size() >= OLD_CLIENT_LIMIT)
+		_oldNicknames.pop_back();
+	_oldNicknames.push_front(ident);
 }
 
-void	Server::addOldClient(std::string nickname, Client* client)
+std::list<std::vector<std::string> >&	Server::getOldNicknames()
 {
-	if (_oldNicknames.size() >= OLD_CLIENT_LIMIT)
-	{
-		delete (--_oldNicknames.end())->second;
-		_oldNicknames.erase(--_oldNicknames.end());
-	}
-	_oldNicknames.insert(_oldNicknames.begin(), std::make_pair(nickname, client));
+	return _oldNicknames;
 }
 
 void	Server::addClient(int sock)
@@ -202,14 +205,11 @@ void	Server::removeClient(Client *client)
 
 	for (Channel* channel = client->getChannel(client->getLastChannelName()); channel != NULL; channel = client->getChannel(client->getLastChannelName()))
 		client->leaveChannel(channel, this);
+	addOldNickname(client);
 	if (client->isRegistered() == true && _clientsByName.find(client->getNickname())->second == client)
-	{
 		_clientsByName.erase(client->getNickname());
-		// addOldClient(client->getNickname(), client);
-	}
-	else
-		delete client;
 	_clientsBySock.erase(it->fd);
+	delete client;
 	close(it->fd);
 	_fdList.erase(it);
 }
@@ -423,9 +423,9 @@ void	Server::stop(int status)
 	for (std::map<int, Client*>::iterator it = _clientsBySock.begin(); it != _clientsBySock.end(); ++it)
 		delete it->second;
 	_clientsBySock.clear();
-	// for (std::vector< std::pair<std::string, Client*> >::iterator it = _oldNicknames.begin(); it != _oldNicknames.end(); ++it)
-	// 	delete it->second;
-   	// _oldNicknames.clear();
+	for (std::list< std::vector<std::string> >::iterator it = _oldNicknames.begin(); it != _oldNicknames.end(); ++it)
+		it->clear();
+   	_oldNicknames.clear();
 
 	std::signal(SIGINT, SIG_DFL);
 	std::signal(SIGQUIT, SIG_DFL);

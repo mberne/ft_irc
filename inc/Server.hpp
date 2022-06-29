@@ -8,6 +8,7 @@
 # include <cstring>
 # include <vector>
 # include <map>
+# include <list>
 # include <csignal>
 # include <fstream>
 # include <ctime>
@@ -57,15 +58,15 @@ class Server
 		std::string							getCurrentTime() const;
 		void								addLog(std::string message, mode_t type);
 		// CLIENT
-		Client*											getClient(std::string name) const;
-		std::map<std::string, Client*>&					getAllClients();
-		size_t											getOpsNumber();
-		size_t											getNonRegisteredNumber();
-		void											addOldClient(std::string nickname, Client* client);
-		std::vector< std::pair<std::string, Client*> >&	getOldClients();
-		void											addClient(int sock);
-		void											removeClient(Client *src);
-		void											pingClient(Client* client);
+		Client*										getClient(std::string name) const;
+		std::map<std::string, Client*>&				getAllClients();
+		size_t										getOpsNumber();
+		size_t										getNonRegisteredNumber();
+		void										addOldNickname(Client* client);
+		std::list<std::vector<std::string> >&		getOldNicknames();
+		void										addClient(int sock);
+		void										removeClient(Client *src);
+		void										pingClient(Client* client);
 		// CHANNEL
 		Channel*							getChannel(std::string name) const;
 		std::map<std::string, Channel*>&	getAllChannels();
@@ -86,10 +87,10 @@ class Server
 		std::ofstream						_logFile;
 		std::map<std::string, command_t>	_commands;
 		// CONTENT
-		std::map<std::string, Client*>						_clientsByName;
-		std::map<int, Client*>								_clientsBySock;
-		std::vector< std::pair<std::string, Client*> >		_oldNicknames;
-		std::map<std::string, Channel*>						_channels;
+		std::map<std::string, Client*>				_clientsByName;
+		std::map<int, Client*>						_clientsBySock;
+		std::list< std::vector<std::string> >		_oldNicknames;
+		std::map<std::string, Channel*>				_channels;
 
 		// SERVER MAIN
 		void		acceptConnexions();

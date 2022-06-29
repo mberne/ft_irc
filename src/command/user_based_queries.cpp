@@ -67,13 +67,15 @@ void	irc_whowas(std::vector<std::string> cmd, Client* sender, Server* serv)
 		sender->addToOutputBuffer(ERR_NONICKNAMEGIVEN(sender->getNickname()));
 		return;
 	}
-	for (std::vector< std::pair<std::string, Client*> >::iterator it = serv->getOldClients().begin(); it != serv->getOldClients().end(); it++)
+	for (std::list< std::vector<std::string> >::iterator it = serv->getOldNicknames().begin(); it != serv->getOldNicknames().end(); it++)
 	{
-		if (!it->second->getNickname().compare(cmd[1]) && i < count)
+		if (!(*it)[0].compare(cmd[1]) && i < count)
 		{
-			sender->addToOutputBuffer(RPL_WHOWASUSER(sender->getNickname(), it->second));
-			sender->addToOutputBuffer(RPL_WHOISSERVER(sender->getNickname(), it->second->getNickname()));
-			sender->addToOutputBuffer(RPL_WHOISACTUALLY(sender->getNickname(), it->second));
+			Client*	client = new Client(*it);
+			sender->addToOutputBuffer(RPL_WHOWASUSER(sender->getNickname(), client));
+			sender->addToOutputBuffer(RPL_WHOISSERVER(sender->getNickname(), client->getNickname()));
+			sender->addToOutputBuffer(RPL_WHOISACTUALLY(sender->getNickname(), client));
+			delete client;
 			i++;
 		}
 	}
