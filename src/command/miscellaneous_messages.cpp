@@ -75,6 +75,7 @@ void	irc_lusers(std::vector<std::string> cmd, Client* sender, Server* serv)
 	sender->addToOutputBuffer(RPL_LUSEROP(sender->getNickname(), serv));
 	sender->addToOutputBuffer(RPL_LUSERUNKNOWN(sender->getNickname(), serv));
 	sender->addToOutputBuffer(RPL_LUSERCHANNELS(sender->getNickname(), serv));
+	sender->addToOutputBuffer(RPL_LUSERME(sender->getNickname(), serv));
 }
 
 void	irc_motd(std::vector<std::string> cmd, Client* sender, Server* serv)
