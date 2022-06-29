@@ -66,7 +66,7 @@ clean :
 			$(RM) $(PATH_OBJ)
 
 fclean :
-			$(RM) $(PATH_OBJ) $(NAME)
+			$(RM) $(PATH_OBJ) $(NAME) *.log
 
 #~~~~ Eugene ~~~~#
 
