@@ -197,7 +197,7 @@ void	Server::addClient(int sock)
 	if (_clientsBySock.size() >= CLIENT_LIMIT)
 	{
 		addLog("Connexion closed: " + newClient->getPrefix(), LOG_INFO);
-		irc_error(newClient, "Closing Link: " +  newClient->getHost() + "Server full");
+		irc_error(newClient, "Closing Link: " +  newClient->getHost() + " Server full));
 		send(newClient->getSock(), newClient->getOutputBuffer(), strlen(newClient->getOutputBuffer()), 0);
 		removeClient(newClient);
 	}
