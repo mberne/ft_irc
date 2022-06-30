@@ -32,6 +32,7 @@ class	BanMask
 		~BanMask();
 
 		bool			isClientBanned(Client* client) const;
+		std::string		getBanMask() const;
 
 		static bool		stringCorrespondToMask(std::string str, std::string mask);
 
@@ -51,12 +52,13 @@ class Channel
 		~Channel();
 
 		// CHANNEL INFO
-		std::string		getName() const;
-		std::string		getTopic() const;
-		void			setTopic(std::string topic);
-		std::string		getPassword() const;
-		int				clientCount() const;
-		int				getUserLimit() const;
+		std::string						getName() const;
+		std::string						getTopic() const;
+		void							setTopic(std::string topic);
+		std::string						getPassword() const;
+		int								clientCount() const;
+		int								getUserLimit() const;
+		std::map<std::string, BanMask>&	getBanList();
 		// MODES
 		std::string		setModes(std::string modes, std::map<char, std::string>& modesArgs);
 		bool			hasModes(mode_t modes) const;
@@ -78,12 +80,9 @@ class Channel
 		bool								isBanned(Client* client);
 		bool								isInvited(Client* client) const;
 		bool								ableToTalk(Client *client);
-
 		std::string							showClientsList();
 		void								sendToClients(std::string msg, Client* sender);
 		std::map<std::string, Client*> &	getAllClients();
-
-
 
 	private:
 
@@ -98,6 +97,10 @@ class Channel
 		std::map<std::string, Client*>		_clientsWithVoicePerm;	// List of clients with voice permission on (only if flag m is on)
 		std::map<std::string, Client*>		_invitedClients;		// List of clients that are invited to the channel
 		std::map<std::string, BanMask>		_banList;				// List of ban masks
+
+		void	addModes(char mode, std::map<char, std::string>& modesArgs, bool& change);
+		void	removeModes(char mode, std::map<char, std::string>& modesArgs, bool& change);
+
 };
 
 #endif //~~ CHANNEL_H

@@ -25,6 +25,11 @@ bool		BanMask::isClientBanned(Client* client) const
 		&& BanMask::stringCorrespondToMask(client->getHost(), _host) == true);
 }
 
+std::string		BanMask::getBanMask() const
+{
+	return _mask;
+}
+
 bool		BanMask::stringCorrespondToMask(std::string str, std::string mask)
 {
 	size_t	i = 0;
@@ -99,69 +104,130 @@ int				Channel::getUserLimit() const
 	return _userLimit;
 }
 
+std::map<std::string, BanMask>&	Channel::getBanList()
+{
+	return _banList;
+}
+
 //~~ MODES
 
-std::string		Channel::setModes(std::string modes, std::map<char, std::string>& modesArgs)
+void	Channel::addModes(char mode, std::map<char, std::string>& modesArgs, bool& change)
 {
-	std::string		charset("psitnm");
+	int newLimit;
+	switch (mode)
+	{
+		case 'o':
+			if (isOperator(getClient(modesArgs.find('o')->second)) == false)
+				change = 1;
+			addOperator(getClient(modesArgs.find('o')->second));
+			break;
+		case 'l':
+			newLimit = std::stoi(modesArgs.find('l')->second) >= CHANNEL_CLIENTS_LIMIT ? CHANNEL_CLIENTS_LIMIT : std::atoi(modesArgs.find('l')->second.c_str());
+			if (_userLimit != newLimit)
+				change = 1;
+			_userLimit = newLimit;
+			break;
+		case 'b':
+			if (_banList.find(modesArgs.find('b')->second) == _banList.end())
+				change = 1;
+			addBanMask(modesArgs.find('b')->second);
+			break;
+		case 'v':
+			if (hasVoice(getClient(modesArgs.find('v')->second)) == false)
+				change = 1;
+			addClientWithVoice(getClient(modesArgs.find('v')->second));
+			break;
+		case 'k':
+			if (_password.compare(modesArgs.find('k')->second) != 0)
+				change = 1;
+			_password = modesArgs.find('k')->second;
+			break;
+	}
+}
+
+void	Channel::removeModes(char mode, std::map<char, std::string>& modesArgs, bool& change)
+{
+	switch (mode)
+	{
+		case 'o':
+			if (isOperator(getClient(modesArgs.find('o')->second)) == true)
+				change = 1;
+			removeOperator(getClient(modesArgs.find('o')->second));
+			break;
+		case 'l':
+			if (_userLimit != CHANNEL_CLIENTS_LIMIT)
+				change = 1;
+			_userLimit = CHANNEL_CLIENTS_LIMIT;
+			break;
+		case 'b':
+			if (_banList.find(modesArgs.find('b')->second) != _banList.end())
+				change = 1;
+			removeBanMask(modesArgs.find('b')->second);
+			break;
+		case 'v':
+			if (hasVoice(getClient(modesArgs.find('v')->second)) == true)
+				change = 1;
+			removeClientWithVoice(getClient(modesArgs.find('v')->second));
+			break;
+		case 'k':
+			if (_password.compare(modesArgs.find('k')->second) == 0)
+			{
+				change = 1;
+				_password = "";
+				modesArgs.find('k')->second = "*";
+			}
+			break;
+	}
+}
+
+std::string		Channel::setModes(std::string validModes, std::map<char, std::string>& modesArgs)
+{
+	std::string		modString;
 	std::string		args;
+
+	std::string		charset("psitnm");
 	mode_t			flag = 1;
 
-	for(size_t	i = 0; i < charset.size(); i++)
+	for (size_t	i = 0; i < charset.size(); i++)
 	{
-		if (modes.find(charset[i]) != std::string::npos)
+		if (validModes.find(charset[i]) != std::string::npos)
 		{
-			if (modes[modes.find(charset[i]) - 1] == '+')
+			char sign = validModes[validModes.find(charset[i]) - 1];
+			if (sign == '+')
 				_modes |= flag;
-			if (modes[modes.find(charset[i]) - 1] == '-')
+			else if (sign == '-')
 				_modes &= ~flag;
+			if (modString[modString.find_last_of("+-", charset[i])] != sign)
+				modString.push_back(sign);
+			modString.push_back(charset[i]);
 		}
 		flag <<= 1;
 	}
-	if (modes.find('o') != std::string::npos)
+
+	charset = "olbvk";
+	
+	for (size_t	i = 0; i < charset.size(); i++)
 	{
-		if (modes[modes.find('o') - 1] == '+')
-			addOperator(getClient(modesArgs.find('o')->second));
-		if (modes[modes.find('o') - 1] == '-')
-			removeOperator(getClient(modesArgs.find('o')->second));
-		args += (" " + modesArgs.find('o')->second);
-	}
-	if (modes.find('l') != std::string::npos)
-	{
-		if (modes[modes.find('l') - 1] == '+')
-			_userLimit = (std::stoi(modesArgs.find('l')->second) >= CHANNEL_CLIENTS_LIMIT ? CHANNEL_CLIENTS_LIMIT : std::atoi(modesArgs.find('l')->second.c_str()));
-		if (modes[modes.find('l') - 1] == '-')
-			_userLimit = CHANNEL_CLIENTS_LIMIT;
-		args += (" " + modesArgs.find('l')->second);
-	}
-	if (modes.find('b') != std::string::npos)
-	{
-		if (modes[modes.find('b') - 1] == '+')
-			addBanMask(modesArgs.find('b')->second);
-		if (modes[modes.find('b') - 1] == '-')
-			removeBanMask(modesArgs.find('b')->second);
-		args += (" " + modesArgs.find('b')->second);
-	}
-	if (modes.find('v') != std::string::npos)
-	{
-		if (modes[modes.find('v') - 1] == '+')
-			addClientWithVoice(getClient(modesArgs.find('v')->second));
-		if (modes[modes.find('v') - 1] == '-')
-			removeClientWithVoice(getClient(modesArgs.find('v')->second));
-		args += (" " + modesArgs.find('v')->second);
-	}
-	if (modes.find('k') != std::string::npos)
-	{
-		if (modes[modes.find('k') - 1] == '+')
-			_password = modesArgs.find('k')->second;
-		if (modes[modes.find('k') - 1] == '-' && _password.compare(modesArgs.find('k')->second) == 0)
+		if (validModes.find(charset[i]) != std::string::npos)
 		{
-			_password = "";
-			modesArgs.find('k')->second = "*";
+			char sign = validModes[validModes.find(charset[i]) - 1];
+			bool change = false;
+
+			if (sign == '+')
+				addModes(charset[i], modesArgs, change);
+			else if (sign == '-')
+				removeModes(charset[i], modesArgs, change);
+			if (change == true)
+			{
+				if (modString[modString.find_last_of("+-", charset[i])] != sign)
+					modString.push_back(sign);
+				modString.push_back(charset[i]);
+			}
+			if (modesArgs.find(charset[i]) != modesArgs.end())
+				args += (" " + modesArgs.find(charset[i])->second);
 		}
-		args += (" " + modesArgs.find('k')->second);
 	}
-	return (modes + args);
+	return (modString + args);
 }
 
 
