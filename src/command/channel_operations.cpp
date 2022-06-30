@@ -270,8 +270,6 @@ void	irc_topic(std::vector<std::string> cmd, Client* sender, Server* serv)
 		sender->addToOutputBuffer(ERR_NOSUCHCHANNEL(sender->getNickname(), cmd[1]));
 	else if (sender->getChannel(cmd[1]) == NULL)
 		sender->addToOutputBuffer(ERR_NOTONCHANNEL(sender->getNickname(), cmd[1]));
-	else if (channel->hasModes(CHANNEL_FLAG_T) && !channel->isOperator(sender))
-		sender->addToOutputBuffer(ERR_CHANOPRIVSNEEDED(sender->getNickname(), cmd[1]));
 	else if (cmd.size() == 2)
 	{
 		if (channel->getTopic().empty())
@@ -282,6 +280,8 @@ void	irc_topic(std::vector<std::string> cmd, Client* sender, Server* serv)
 			sender->addToOutputBuffer(RPL_TOPICWHOTIME(sender->getNickname(), channel, sender->getNickname(), serv->getCurrentTime()));
 		}
 	}
+	else if (channel->hasModes(CHANNEL_FLAG_T) && !channel->isOperator(sender))
+		sender->addToOutputBuffer(ERR_CHANOPRIVSNEEDED(sender->getNickname(), cmd[1]));
 	else
 	{
 		if (cmd[2].size() > TOPIC_LEN)
