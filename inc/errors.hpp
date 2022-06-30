@@ -78,7 +78,7 @@
 // # define ERR_YOUREBANNEDCREEP(user) PROMPT(" 465 ", user) + std::string(" :You are banned from this server")
 // Retourné après une tentative de connexion et d'enregistrement sur un serveur configuré explicitement pour vous refuser les connexions.
 
-// # define ERR_KEYSET(user, name) PROMPT(" 467 ", user) + " " + name + std::string(" :Channel key already set")
+# define ERR_KEYSET(user, name) PROMPT(" 467 ", user) + " " + name + std::string(" :Channel key already set")
 // Clé de canal déjà définie.
 
 # define ERR_CHANNELISFULL(user, name) PROMPT(" 471 ", user) + " " + name + std::string(" :Cannot join channel (+l)")

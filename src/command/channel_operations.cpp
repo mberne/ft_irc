@@ -186,6 +186,11 @@ void	channelMode(std::vector<std::string> cmd, Client* sender, Server* serv, Cha
 				sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
 				return;
 			}
+			else if (modeString[i] == 'k' && !cmd[argIndex].compare(channel->getPassword()))
+			{
+				sender->addToOutputBuffer(ERR_KEYSET(sender->getNickname(), cmd[0]));
+				argIndex++;
+			}
 			else
 			{
 				modesArgs.insert(std::make_pair(modeString[i], cmd[argIndex++]));
