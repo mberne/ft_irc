@@ -153,13 +153,20 @@ void	channelMode(std::vector<std::string> cmd, Client* sender, Server* serv, Cha
 				sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
 				return;
 			}
-			size_t limit = (std::isdigit(cmd[argIndex][0]) ? std::stoi(cmd[argIndex]) : 0);
-			if (limit)
+			else if (sign == '-')
 			{
 				validModes.push_back(sign);
 				validModes.push_back(modeString[i]);
-				if (sign == '+')
+			}
+			else
+			{
+				size_t limit = (std::isdigit(cmd[argIndex][0]) ? std::stoi(cmd[argIndex]) : 0);
+				if (limit)
+				{
+					validModes.push_back(sign);
+					validModes.push_back(modeString[i]);
 					modesArgs.insert(std::make_pair(modeString[i], cmd[argIndex++]));
+				}
 			}
 		}
 		else if (std::string("bk").find(modeString[i]) != std::string::npos)
@@ -184,7 +191,11 @@ void	channelMode(std::vector<std::string> cmd, Client* sender, Server* serv, Cha
 		}
 	}
 	if (!validModes.empty())
-		channel->sendToClients(sender->getPrefix() + " " + cmd[0] + " " + channel->getName() + " " + channel->setModes(validModes, modesArgs), NULL);
+	{
+		std::string reply = channel->setModes(validModes, modesArgs);
+		if (!reply.empty())
+			channel->sendToClients(sender->getPrefix() + " " + cmd[0] + " " + channel->getName() + " " + reply, NULL);
+	}
 }
 
 void	irc_mode(std::vector<std::string> cmd, Client* sender, Server* serv)
