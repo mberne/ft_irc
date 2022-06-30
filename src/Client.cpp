@@ -173,14 +173,8 @@ void	Client::leaveChannel(Channel* channel, Server* serv)
 
 void		Client::leaveAllChannels(Server* serv)
 {
-	std::vector<std::string> cmd;
-	cmd.push_back("PART");
-	cmd.push_back("");
 	for (std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); it = _channels.begin())
-	{
-		cmd[1] = it->first;
-		irc_part(cmd, this, serv);
-	}
+		irc_part(vectorizator("PART", "", it->first), this, serv);
 }
 
 Channel*	Client::getChannel(std::string name) const
