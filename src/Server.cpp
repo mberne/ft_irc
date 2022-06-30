@@ -120,7 +120,7 @@ void		Server::addLog(std::string message, mode_t type)
 	}
 
 	size_t	start = 0;
-	message.erase(remove(message.begin(), message.end(), '\r'), message.end());
+	remove(message.begin(), message.end(), '\r');
 	for (size_t i = message.find('\n'); i != std::string::npos; i = message.find('\n', start))
 	{
 		std::string		line = message.substr(start, i - start);
@@ -432,7 +432,8 @@ void	Server::stop(int status)
 		addLog("Server exited with code: " + std::to_string(status) + " " + SERV_NAME + ": " + strerror(status), LOG_ERROR);
 	else
 		addLog("Server exited with code: " + std::to_string(status) + " " + SERV_NAME + ": Closed by host", LOG_INFO);
-	(status ? std::cerr : std::cout) << "Server exited with code: " << status << "\nLogs available at: " << getcwd(NULL, 0) << "/" << SERV_NAME << ".log" << std::endl;
+	char	buf[PATH_MAX];
+	(status ? std::cerr : std::cout) << "Server exited with code: " << status << "\nLogs available at: " << getcwd(buf, PATH_MAX) << "/" << SERV_NAME << ".log" << std::endl;
 	_logFile.close();
 	
 	std::for_each(_fdList.begin(), _fdList.end(), closeFd);
