@@ -99,7 +99,11 @@ void	userMode(std::vector<std::string> cmd, Client* sender)
 		}
 	}
 	if (!validModes.empty())
-		sender->addToOutputBuffer(sender->getPrefix() + " " + cmd[0] + " " + sender->getNickname() + " :" + sender->setModes(validModes));
+	{
+		std::string reply = sender->setModes(validModes);
+		if (!reply.empty())
+			sender->addToOutputBuffer(sender->getPrefix() + " " + cmd[0] + " " + sender->getNickname() + " :" + reply);
+	}
 }
 
 void	channelMode(std::vector<std::string> cmd, Client* sender, Server* serv, Channel* channel)
