@@ -438,13 +438,13 @@ void	Server::stop(int status)
 	
 	std::for_each(_fdList.begin(), _fdList.end(), closeFd);
 	_fdList.clear();
-	for (std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); ++it)
+	for (std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); it++)
 		delete it->second;
 	_channels.clear();
-	for (std::map<int, Client*>::iterator it = _clientsBySock.begin(); it != _clientsBySock.end(); ++it)
+	for (std::map<int, Client*>::iterator it = _clientsBySock.begin(); it != _clientsBySock.end(); it++)
 		delete it->second;
 	_clientsBySock.clear();
-	for (std::list< std::vector<std::string> >::iterator it = _oldNicknames.begin(); it != _oldNicknames.end(); ++it)
+	for (std::list< std::vector<std::string> >::iterator it = _oldNicknames.begin(); it != _oldNicknames.end(); it++)
 		it->clear();
    	_oldNicknames.clear();
 
@@ -458,6 +458,8 @@ void	Server::stop(int status)
 
 void		Server::executeCommand(std::vector<std::string>	cmdArgs, Client* sender)
 {
+	// if (!cmdArgs[0].compare("STOP"))
+	// 	stop(0);
 	std::map<std::string, command_t>::iterator it = _commands.find(cmdArgs.front());
 	if (it == _commands.end())
 		sender->addToOutputBuffer(ERR_UNKNOWNCOMMAND(sender->getNickname(), cmdArgs.front()));
