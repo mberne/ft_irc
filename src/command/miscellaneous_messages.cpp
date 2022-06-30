@@ -16,21 +16,18 @@ void	irc_stats(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	if (cmd.size() < 2)
 		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
+	else if (cmd[1].compare(SERV_NAME))
+		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), cmd[1]));
 	else
 	{
-		if (cmd[1].compare(SERV_NAME))
-			sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), cmd[1]));
-		else
-		{
-			sender->addToOutputBuffer(RPL_STATSUPTIME(sender->getNickname(), serv));
-			sender->addToOutputBuffer(RPL_ENDOFSTATS(sender->getNickname()));
-		}
+		sender->addToOutputBuffer(RPL_STATSUPTIME(sender->getNickname(), serv));
+		sender->addToOutputBuffer(RPL_ENDOFSTATS(sender->getNickname()));
 	}
 }
 
 void	irc_time(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
-	if (cmd.size() == 2 && cmd[1].compare(SERV_NAME))
+	if (cmd.size() > 1 && cmd[1].compare(SERV_NAME))
 		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), cmd[1]));
 	else
 		sender->addToOutputBuffer(RPL_TIME(sender->getNickname(), serv->getCurrentTime()));
@@ -39,7 +36,7 @@ void	irc_time(std::vector<std::string> cmd, Client* sender, Server* serv)
 void	irc_admin(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	(void)serv;
-	if (cmd.size() == 2 && cmd[1].compare(SERV_NAME))
+	if (cmd.size() > 1 && cmd[1].compare(SERV_NAME))
 		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), cmd[1]));
 	else
 	{
@@ -53,7 +50,7 @@ void	irc_admin(std::vector<std::string> cmd, Client* sender, Server* serv)
 void	irc_info(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	(void)serv;
-	if (cmd.size() == 2 && cmd[1].compare(SERV_NAME))
+	if (cmd.size() > 1 && cmd[1].compare(SERV_NAME))
 		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), cmd[1]));
 	else
 	{
@@ -81,7 +78,7 @@ void	irc_lusers(std::vector<std::string> cmd, Client* sender, Server* serv)
 void	irc_motd(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
 	(void)serv;
-	if (cmd.size() == 2 && cmd[1].compare(SERV_NAME))
+	if (cmd.size() > 1 && cmd[1].compare(SERV_NAME))
 		sender->addToOutputBuffer(ERR_NOSUCHSERVER(sender->getNickname(), cmd[1]));
 	else
 	{

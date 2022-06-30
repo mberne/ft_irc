@@ -457,7 +457,7 @@ void		Server::executeCommand(std::vector<std::string>	cmdArgs, Client* sender)
 	std::map<std::string, command_t>::iterator it = _commands.find(cmdArgs.front());
 	if (it == _commands.end())
 		sender->addToOutputBuffer(ERR_UNKNOWNCOMMAND(sender->getNickname(), cmdArgs.front()));
-	else if (sender->isRegistered() == false && it->first.compare("USER") && it->first.compare("PASS") && it->first.compare("NICK"))
+	else if (sender->isRegistered() == false && it->first.compare("USER") && it->first.compare("PASS") && it->first.compare("NICK") && it->first.compare("QUIT"))
 		sender->addToOutputBuffer(ERR_NOTREGISTERED(sender->getNickname()));
 	else if (sender->isRegistered() == false)
 	{

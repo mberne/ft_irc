@@ -42,15 +42,11 @@ void	irc_join(std::vector<std::string> cmd, Client* sender, Server* serv)
 				if (!current)
 					current = serv->addChannel(channels[i], sender);
 
-				std::vector<std::string> namesCmd;
-				namesCmd.push_back("NAMES");
-				namesCmd.push_back(current->getName());
-
 				sender->joinChannel(current);
 				current->sendToClients(sender->getPrefix() + " " + cmd[0] + " " + channels[i], NULL);
 				if (current->hasModes(CHANNEL_FLAG_T) == true)
 					sender->addToOutputBuffer(RPL_TOPIC(sender->getNickname(), current));
-				irc_names(namesCmd, sender, serv);
+				irc_names(vectorizator("NAMES", current->getName(), ""), sender, serv);
 			}
 		}
 	}
@@ -84,7 +80,6 @@ void	irc_part(std::vector<std::string> cmd, Client* sender, Server* serv)
 
 void	userMode(std::vector<std::string> cmd, Client* sender)
 {
-	
 	std::string		modes;
 
 	if (cmd[2].find_first_not_of("+-" + USER_MODES) != std::string::npos)
@@ -207,36 +202,34 @@ void	irc_mode(std::vector<std::string> cmd, Client* sender, Server* serv)
 
 void	irc_topic(std::vector<std::string> cmd, Client* sender, Server* serv)
 {
+
 	if (cmd.size() < 2)
-		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
-	else
 	{
-		Channel* channel = serv->getChannel(cmd[1]);
-		if (channel == NULL)
-			sender->addToOutputBuffer(ERR_NOSUCHCHANNEL(sender->getNickname(), cmd[1]));
-		else if (sender->getChannel(cmd[1]) == NULL)
-			sender->addToOutputBuffer(ERR_NOTONCHANNEL(sender->getNickname(), cmd[1]));
-		else if (channel->hasModes(CHANNEL_FLAG_T) && !channel->isOperator(sender))
-			sender->addToOutputBuffer(ERR_CHANOPRIVSNEEDED(sender->getNickname(), cmd[1]));
+		sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
+		return;
+	}
+	Channel* channel = serv->getChannel(cmd[1]);
+
+	if (channel == NULL)
+		sender->addToOutputBuffer(ERR_NOSUCHCHANNEL(sender->getNickname(), cmd[1]));
+	else if (sender->getChannel(cmd[1]) == NULL)
+		sender->addToOutputBuffer(ERR_NOTONCHANNEL(sender->getNickname(), cmd[1]));
+	else if (channel->hasModes(CHANNEL_FLAG_T) && !channel->isOperator(sender))
+		sender->addToOutputBuffer(ERR_CHANOPRIVSNEEDED(sender->getNickname(), cmd[1]));
+	else if (cmd.size() == 2)
+	{
+		if (channel->getTopic().empty() == false)
+			sender->addToOutputBuffer(RPL_NOTOPIC(sender->getNickname(), channel));
 		else
 		{
-			if (cmd.size() == 2)
-			{
-				std::string	topic = channel->getTopic();
-				if (topic.size() == 0)
-					sender->addToOutputBuffer(RPL_NOTOPIC(sender->getNickname(), channel));
-				else
-				{
-					sender->addToOutputBuffer(RPL_TOPIC(sender->getNickname(),channel));
-					sender->addToOutputBuffer(RPL_TOPICWHOTIME(sender->getNickname(), channel, sender->getNickname(), serv->getCurrentTime()));
-				}
-			}
-			else
-			{
-				channel->setTopic(cmd[2]);
-				channel->sendToClients(RPL_TOPIC(sender->getNickname(),channel), NULL);
-			}
+			sender->addToOutputBuffer(RPL_TOPIC(sender->getNickname(),channel));
+			sender->addToOutputBuffer(RPL_TOPICWHOTIME(sender->getNickname(), channel, sender->getNickname(), serv->getCurrentTime()));
 		}
+	}
+	else
+	{
+		channel->setTopic(cmd[2]);
+		channel->sendToClients(RPL_TOPIC(sender->getNickname(),channel), NULL);
 	}
 }
 
@@ -283,6 +276,7 @@ void	irc_list(std::vector<std::string> cmd, Client* sender, Server* serv)
 	else
 	{
 		std::vector<std::string>	channels;
+
 		parseArg(cmd[1], channels);
 		for (std::vector<std::string>::iterator it = channels.begin(); it < channels.end(); it++)
 		{
