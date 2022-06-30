@@ -101,21 +101,35 @@ void	Client::setIsPing(bool ping)
 
 std::string		Client::setModes(std::string modes)
 {
-	std::string		charset = "oi";
+	std::string		modeString;
+	std::string		charset = "i";
 	mode_t			flag = 1;
 
 	for (size_t	i = 0; i < charset.size(); i++)
 	{
 		if (modes.find(charset[i]) != std::string::npos)
 		{
-			if (modes[modes.find(charset[i]) - 1] == '+')
+			char	sign = modes[modes.find(charset[i]) - 1];
+			bool	change = false;
+
+			if (sign == '+')
+			{
+				if ((_modes | flag) != _modes)
+					change = true;
 				_modes |= flag;
-			if (modes[modes.find(charset[i]) - 1] == '-')
+			}
+			else if (sign == '-')
+			{
+				if ((_modes & ~flag) != _modes)
+					change = true;
 				_modes &= ~flag;
+			}
+			modeString.push_back(sign);
+			modeString.push_back(charset[i]);
 		}
 		flag <<= 1;
 	}
-	return (modes);
+	return (modeString);
 }
 
 std::string		Client::getModes() const

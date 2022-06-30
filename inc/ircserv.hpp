@@ -39,7 +39,7 @@ class Channel;
 # define SERV_LOC2					std::string("42 Lyon")
 // Server specifications
 # define CASE_MAPPING				std::string("ascii")
-# define USER_MODES					std::string("i")
+# define USER_MODES					std::string("oi")
 # define CHANNEL_MODES				std::string("opsitnmlbvk")
 # define CHAN_TYPES					std::string("#")
 # define NICK_LEN					20

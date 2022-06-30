@@ -193,13 +193,27 @@ std::string		Channel::setModes(std::string validModes, std::map<char, std::strin
 		if (validModes.find(charset[i]) != std::string::npos)
 		{
 			char sign = validModes[validModes.find(charset[i]) - 1];
+			bool change = false;
+
 			if (sign == '+')
+			{
+				if ((_modes | flag) != _modes)
+					change = true;
 				_modes |= flag;
+			}
 			else if (sign == '-')
+			{
+				if ((_modes & ~flag) != _modes)
+					change = true;
 				_modes &= ~flag;
-			if (modString[modString.find_last_of("+-", charset[i])] != sign)
-				modString.push_back(sign);
-			modString.push_back(charset[i]);
+			}
+
+			if (change == true)
+			{
+				if (modString[modString.find_last_of("+-", charset[i])] != sign)
+					modString.push_back(sign);
+				modString.push_back(charset[i]);
+			}
 		}
 		flag <<= 1;
 	}
@@ -222,9 +236,9 @@ std::string		Channel::setModes(std::string validModes, std::map<char, std::strin
 				if (modString[modString.find_last_of("+-", charset[i])] != sign)
 					modString.push_back(sign);
 				modString.push_back(charset[i]);
+				if (modesArgs.find(charset[i]) != modesArgs.end())
+					args += (" " + modesArgs.find(charset[i])->second);
 			}
-			if (modesArgs.find(charset[i]) != modesArgs.end())
-				args += (" " + modesArgs.find(charset[i])->second);
 		}
 	}
 	return (modString + args);
