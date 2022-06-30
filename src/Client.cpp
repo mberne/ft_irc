@@ -104,7 +104,7 @@ std::string		Client::setModes(std::string modes)
 	std::string		charset = "oi";
 	mode_t			flag = 1;
 
-	for(size_t	i = 0; i < charset.size(); i++)
+	for (size_t	i = 0; i < charset.size(); i++)
 	{
 		if (modes.find(charset[i]) != std::string::npos)
 		{
