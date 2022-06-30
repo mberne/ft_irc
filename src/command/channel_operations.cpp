@@ -40,7 +40,15 @@ void	irc_join(std::vector<std::string> cmd, Client* sender, Server* serv)
 			else
 			{
 				if (!current)
-					current = serv->addChannel(channels[i], sender);
+				{
+					if (serv->getAllChannels().size() >= CHANNEL_LIMIT)
+					{
+						irc_notice(vectorizator("NOTICE", sender->getNickname(), "Couldn't create channel " + channels[i] + " Server channel limit reached"), NULL, serv);
+						return;
+					}
+					else
+						current = serv->addChannel(channels[i], sender);
+				}
 				else if (current->getClient(sender->getNickname()) != NULL)
 					return;
 
