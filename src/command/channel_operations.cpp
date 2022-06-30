@@ -173,29 +173,38 @@ void	channelMode(std::vector<std::string> cmd, Client* sender, Server* serv, Cha
 				}
 			}
 		}
-		else if (std::string("bk").find(modeString[i]) != std::string::npos)
+		else if (std::string("b").find(modeString[i]) != std::string::npos)
 		{
-			if (cmd.size() != argIndex && modeString[i] == 'b')
+			if (cmd.size() == argIndex)
 			{
 				for (std::map<std::string, BanMask>::iterator it = channel->getBanList().begin(); it != channel->getBanList().end(); it++)
 					sender->addToOutputBuffer(RPL_BANLIST(sender->getNickname(), cmd[1], it->second.getBanMask()));
 				sender->addToOutputBuffer(RPL_ENDOFBANLIST(sender->getNickname(), cmd[1]));
 			}
-			else if (cmd.size() == argIndex)
+			else
+			{
+				validModes.push_back(sign);
+				validModes.push_back(modeString[i]);
+				modesArgs.insert(std::make_pair(modeString[i], cmd[argIndex++]));
+			}
+		}
+		else if (std::string("k").find(modeString[i]) != std::string::npos)
+		{
+			if (cmd.size() == argIndex)
 			{
 				sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
 				return;
 			}
-			else if (modeString[i] == 'k' && !cmd[argIndex].compare(channel->getPassword()))
+			else if (!cmd[argIndex].compare(channel->getPassword()))
 			{
 				sender->addToOutputBuffer(ERR_KEYSET(sender->getNickname(), cmd[0]));
 				argIndex++;
 			}
 			else
 			{
-				modesArgs.insert(std::make_pair(modeString[i], cmd[argIndex++]));
 				validModes.push_back(sign);
 				validModes.push_back(modeString[i]);
+				modesArgs.insert(std::make_pair(modeString[i], cmd[argIndex++]));
 			}
 		}
 	}
