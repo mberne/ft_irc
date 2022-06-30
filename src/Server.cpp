@@ -308,11 +308,14 @@ void	Server::acceptConnexions()
 {
 	int 			ret;
 	struct pollfd	tmp;
+	int				tmpErrno;
 
 	do
 	{
 		socklen_t addrlen = sizeof(_servSocket);
+		tmpErrno = errno;
 		ret = accept(_fdList[0].fd, reinterpret_cast<struct sockaddr*>(&_servSocket), &addrlen);
+		errno = tmpErrno;
 		if (ret > 0)
 		{
 			tmp.fd = ret;

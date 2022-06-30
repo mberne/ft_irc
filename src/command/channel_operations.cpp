@@ -125,9 +125,9 @@ void	channelMode(std::vector<std::string> cmd, Client* sender, Server* serv, Cha
 					return;
 				}
 				if (serv->getClient(cmd[argIndex]) == NULL)
-					sender->addToOutputBuffer(ERR_NOSUCHNICK(sender->getNickname(), cmd[argIndex]));
+					sender->addToOutputBuffer(ERR_NOSUCHNICK(sender->getNickname(), cmd[argIndex++]));
 				else if (channel->getClient(cmd[argIndex]) == NULL)
-					sender->addToOutputBuffer(ERR_USERNOTINCHANNEL(sender->getNickname(), cmd[argIndex], cmd[1]));
+					sender->addToOutputBuffer(ERR_USERNOTINCHANNEL(sender->getNickname(), cmd[argIndex++], cmd[1]));
 				else
 				{
 					modes.push_back(sign);
@@ -142,7 +142,7 @@ void	channelMode(std::vector<std::string> cmd, Client* sender, Server* serv, Cha
 					sender->addToOutputBuffer(ERR_NEEDMOREPARAMS(sender->getNickname(), cmd[0]));
 					return;
 				}
-				size_t limit = std::stoi(cmd[argIndex]);
+				size_t limit = (std::isdigit(cmd[argIndex][0]) ? std::stoi(cmd[argIndex]) : 0);
 				if (limit)
 				{
 					modes.push_back(sign);

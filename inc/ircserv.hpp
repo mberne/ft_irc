@@ -40,7 +40,7 @@ class Channel;
 // Server specifications
 # define CASE_MAPPING				std::string("ascii")
 # define USER_MODES					std::string("i")
-# define CHANNEL_MODES				std::string("opsitnmlbvk")
+# define CHANNEL_MODES				std::string("opsitnmlvkb")
 # define CHAN_TYPES					std::string("#")
 # define NICK_LEN					20
 # define USER_LEN					15

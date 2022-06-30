@@ -27,5 +27,5 @@ int main(int ac, char **av)
 
 	Server server(serverPort, av[2]);
 	try			{server.run();}
-	catch(...)	{server.stop(errno);}
+	catch(...)	{server.stop((errno == 0 ? 255 : errno));}
 }
