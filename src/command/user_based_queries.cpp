@@ -24,7 +24,7 @@ void	irc_who(std::vector<std::string> cmd, Client* sender, Server* serv)
 			if (!it->second->hasModes(CLIENT_FLAG_I) && (!showOnlyOperators || it->second->hasModes(CLIENT_FLAG_O)))
 				sender->addToOutputBuffer(RPL_WHOREPLY(sender->getNickname(), it->second));
 	}
-	sender->addToOutputBuffer(RPL_ENDOFWHO(sender->getNickname(), (cmd.size() == 1 ? "" : cmd[1])));
+	sender->addToOutputBuffer(RPL_ENDOFWHO(sender->getNickname(), (cmd.size() == 1 ? "*" : cmd[1])));
 }
 
 void	irc_whois(std::vector<std::string> cmd, Client* sender, Server* serv)
