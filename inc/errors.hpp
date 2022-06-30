@@ -60,11 +60,7 @@
 # define ERR_PASSWDMISMATCH(user) PROMPT(" 464 ", user) + std::string(" :Password incorrect")
 // Retourné pour indiquer l'échec d'une tentative d'enregistrement d'une connexion dû à un mot de passe incorrect ou manquant.
 
-<<<<<<< Updated upstream
 # define ERR_KEYSET(user, name) PROMPT(" 467 ", user) + " " + name + std::string(" :Channel key already set")
-=======
-// # define ERR_KEYSET(user, name) PROMPT(" 467 ", user) + " " + name + std::string(" :Channel key already set")
->>>>>>> Stashed changes
 // Clé de canal déjà définie.
 
 # define ERR_CHANNELISFULL(user, name) PROMPT(" 471 ", user) + " " + name + std::string(" :Cannot join channel (+l)")
