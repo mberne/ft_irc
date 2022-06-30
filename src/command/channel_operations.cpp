@@ -276,6 +276,8 @@ void	irc_topic(std::vector<std::string> cmd, Client* sender, Server* serv)
 	}
 	else
 	{
+		if (cmd[2].size() > TOPIC_LEN)
+			cmd[2] = cmd[2].substr(0, TOPIC_LEN);
 		channel->setTopic(cmd[2]);
 		channel->sendToClients(RPL_TOPIC(sender->getNickname(),channel), NULL);
 	}
