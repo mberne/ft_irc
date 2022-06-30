@@ -100,7 +100,6 @@ class Channel
 
 		void	addModes(char mode, std::map<char, std::string>& modesArgs, bool& change);
 		void	removeModes(char mode, std::map<char, std::string>& modesArgs, bool& change);
-
 };
 
 #endif //~~ CHANNEL_H
