@@ -121,6 +121,3 @@ class Channel
 *	t - toggle the topic settable by channel operator only flag;
 *
 */
-
-// psitnm
-// olbvk
