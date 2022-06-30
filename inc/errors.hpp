@@ -3,7 +3,7 @@
 
 #include "ircserv.hpp"
 
-# define ERR_UNKNOWNERROR(user, subcommand, info) PROMPT(" 400 ", user) + " " + (subcommand.empty() ? "" : " ") + subcommand) + std::string(" :") + info
+// # define ERR_UNKNOWNERROR(user, subcommand, info) PROMPT(" 400 ", user) + " " + (subcommand.empty() ? "" : " ") + subcommand) + std::string(" :") + info
 // Indicates that the given command/subcommand could not be processed. <subcommand> may repeat for more specific subcommands.
 
 # define ERR_NOSUCHNICK(user, name) PROMPT(" 401 ", user) + " " + name + std::string(" :No such nick/channel")
@@ -24,10 +24,10 @@
 # define ERR_WASNOSUCHNICK(user, name) PROMPT(" 406 ", user) + " " + name + std::string(" :There was no such nickname")
 // Renvoyé par WHOWAS pour indiquer qu'il n'y a pas d'information dans l'historique concernant ce pseudonyme.
 
-# define ERR_TOOMANYTARGETS(user, name) PROMPT(" 407 ", user) + " " + name + std::string(" :Duplicate recipients. No message delivered")
+// # define ERR_TOOMANYTARGETS(user, name) PROMPT(" 407 ", user) + " " + name + std::string(" :Duplicate recipients. No message delivered")
 // Renvoyé à un client qui essaie d'envoyer un PRIVMSG/NOTICE utilisant le format de destination utilisateur@hôte pour lequel utilisateur@hôte a plusieurs occurrences.
 
-# define ERR_NOORIGIN(user) PROMPT(" 409 ", user) + std::string(" :No origin specified")
+// # define ERR_NOORIGIN(user) PROMPT(" 409 ", user) + std::string(" :No origin specified")
 // Message PING ou PONG sans le paramètre origine qui est obligatoire puisque ces commandes doivent marcher sans préfixe.
 
 # define ERR_NORECIPIENT(user, command) PROMPT(" 411 ", user) + std::string(" :No recipient given (<") + command + std::string(">)")
@@ -36,16 +36,10 @@
 # define ERR_NOTEXTTOSEND(user) PROMPT(" 412 ", user) + std::string(" :No text to send")
 // Pas de texte à envoyer.
 
-# define ERR_NOTOPLEVEL(user, domain) PROMPT(" 413 ", user) + " " +  + std::string(" <masque> :No toplevel domain specified" //
-// Domaine principal non spécifié.
-
-# define ERR_WILDTOPLEVEL(user, domain) PROMPT(" 414 ", user) + " " +  + std::string(" <masque> :Wildcard in toplevel domain" //
-// Joker dans le domaine principal
-
 # define ERR_UNKNOWNCOMMAND(user, command) PROMPT(" 421 ", user) + " " + command + std::string(" :Unknown command")
 // Renvoyé à un client enregistré pour indiquer que la commande envoyée est inconnue du serveur.
 
-# define ERR_NOADMININFO(user, name) PROMPT(" 423 ", user) + " " + name + std::string(" :No administrative info available")
+// # define ERR_NOADMININFO(user, name) PROMPT(" 423 ", user) + " " + name + std::string(" :No administrative info available")
 // Renvoyé par un serveur en réponse à un message ADMIN quand il y a une erreur lors de la recherche des informations appropriées.
 
 # define ERR_NONICKNAMEGIVEN(user) PROMPT(" 431 ", user) + std::string(" :No nickname given")
@@ -56,9 +50,6 @@
 
 # define ERR_NICKNAMEINUSE(user, name) PROMPT(" 433 ", user) + " " + name + std::string(" :Nickname is already in use")
 // Renvoyé quand le traitement d'un message NICK résulte en une tentative de changer de pseudonyme en un déjà existant.
-
-# define ERR_NICKCOLLISION(user, name) PROMPT(" 436 ", user) + " " + name + std::string(" :Nickname collision KILL")
-// Renvoyé par un serveur à un client lorsqu'il détecte une collision de pseudonymes (enregistrement d'un pseudonyme qui existe déjà sur un autre serveur).
 
 # define ERR_USERNOTINCHANNEL(user, nickname, channel) PROMPT(" 441 ", user) + " " + nickname + " " + channel + std::string(" :They aren't on that channel")
 // Renvoyé par un serveur pour indiquer que l'utilisateur donné n'est pas dans le canal spécifié.
@@ -78,16 +69,16 @@
 # define ERR_ALREADYREGISTRED(user) PROMPT(" 462 ", user) + std::string(" :You may not reregister")
 // Retourné par le serveur à tout lien qui tente de changer les détails enregistrés (tels que mot de passe et détails utilisateur du second message USER)
 
-# define ERR_NOPERMFORHOST(user) PROMPT(" 463 ", user) + std::string(" :Your host isn't among the privileged")
+// # define ERR_NOPERMFORHOST(user) PROMPT(" 463 ", user) + std::string(" :Your host isn't among the privileged")
 // Renvoyé à un client qui essaie de s'enregistrer sur un serveur qui n'accepte pas les connexions depuis cet hôte.
 
 # define ERR_PASSWDMISMATCH(user) PROMPT(" 464 ", user) + std::string(" :Password incorrect")
 // Retourné pour indiquer l'échec d'une tentative d'enregistrement d'une connexion dû à un mot de passe incorrect ou manquant.
 
-# define ERR_YOUREBANNEDCREEP(user) PROMPT(" 465 ", user) + std::string(" :You are banned from this server")
+// # define ERR_YOUREBANNEDCREEP(user) PROMPT(" 465 ", user) + std::string(" :You are banned from this server")
 // Retourné après une tentative de connexion et d'enregistrement sur un serveur configuré explicitement pour vous refuser les connexions.
 
-# define ERR_KEYSET(user, name) PROMPT(" 467 ", user) + " " + name + std::string(" :Channel key already set")
+// # define ERR_KEYSET(user, name) PROMPT(" 467 ", user) + " " + name + std::string(" :Channel key already set")
 // Clé de canal déjà définie.
 
 # define ERR_CHANNELISFULL(user, name) PROMPT(" 471 ", user) + " " + name + std::string(" :Cannot join channel (+l)")
@@ -111,7 +102,7 @@
 # define ERR_CHANOPRIVSNEEDED(user, name) PROMPT(" 482 ", user) + " " + name + std::string(" :You're not channel operator")
 // Toute commande qui requiert les privilèges 'chanop' (tels les messages MODE) doit retourner ce message à un client qui l'utilise sans être chanop sur le canal spécifié.
 
-# define ERR_CANTKILLSERVER(user) PROMPT(" 483 ", user) + std::string(" :You cant kill a server!")
+// # define ERR_CANTKILLSERVER(user) PROMPT(" 483 ", user) + std::string(" :You cant kill a server!")
 // Toute tentative d'utiliser la commande KILL sur un serveur doit être refusée et cette erreur renvoyée directement au client.
 
 # define ERR_NOOPERHOST(user) PROMPT(" 491 ", user) + std::string(" :No O-lines for your host")

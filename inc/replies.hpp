@@ -113,8 +113,8 @@
 // Quand il liste les bannissements actifs pour un canal donné, un serveur doit renvoyer la liste en utilisant les messages RPL_BANLIST et RPL_ENDOFBANLIST.
 // Un RPL_BANLIST différent doit être utilisé pour chaque identification de bannissement.
 // Après avoir listé les identifications de bannissement (s'il y en a), un RPL_ENDOFBANLIST doit être renvoyé.
-# define RPL_BANLIST(user, channel, banid)	PROMPT(" 367 ", user) + " " + channel->getName() + " " + banid
-# define RPL_ENDOFBANLIST(user, name)		PROMPT(" 368 ", user) + " " + name + std::string(" :End of channel ban list")
+// # define RPL_BANLIST(user, channel, banid)	PROMPT(" 367 ", user) + " " + channel->getName() + " " + banid
+// # define RPL_ENDOFBANLIST(user, name)		PROMPT(" 368 ", user) + " " + name + std::string(" :End of channel ban list")
 
 // Un serveur répondant à un message INFO doit envoyer toute sa série d'info en une suite de réponses RPL_INFO, avec un RPL_ENDOFINFO pour indiquer la fin des réponses.
 # define RPL_INFO(user, arg)	PROMPT(" 371 ", user) + " " + arg
