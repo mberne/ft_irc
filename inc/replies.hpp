@@ -92,7 +92,7 @@
 																																																			(client->getLastChannelName().compare("*") && client->getChannel(client->getLastChannelName())->hasVoice(client) ? "+" : "")) + \
 																																																			std::string(" :0 ") + \
 																																																			client->getRealName()
-# define RPL_ENDOFWHO(user, name)		PROMPT(" 315 ", user) + " " + name + std::string(" :End of /WHO list")
+# define RPL_ENDOFWHO(user, name)		PROMPT(" 315 ", user) + " " + (name.empty() ? "" : name) + std::string(" :End of /WHO list")
 
 // Réponse du serveur indiquant les détails de sa version.
 // <version> est la version actuelle du programme utilisé (comprenant le numéro de mise à jour) et <debuglevel> est utilisé pour indiquer si le serveur fonctionne en mode débugage.
