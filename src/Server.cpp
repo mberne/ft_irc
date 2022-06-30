@@ -193,6 +193,14 @@ void	Server::addClient(int sock)
 	_clientsBySock.insert(std::make_pair(sock, newClient));
 
 	addLog("New connexion: " + newClient->getPrefix(), LOG_INFO);
+
+	if (_clientsBySock.size() >= CLIENT_LIMIT)
+	{
+		addLog("Connexion closed: " + newClient->getPrefix(), LOG_INFO);
+		irc_error(newClient, "Closing Link: " +  newClient->getHost() + "Server full");
+		send(newClient->getSock(), newClient->getOutputBuffer(), strlen(newClient->getOutputBuffer()), 0);
+		removeClient(newClient);
+	}
 }
 
 void	Server::removeClient(Client *client)
