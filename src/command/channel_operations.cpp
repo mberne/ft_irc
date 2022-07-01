@@ -277,7 +277,7 @@ void	irc_topic(std::vector<std::string> cmd, Client* sender, Server* serv)
 		else
 		{
 			sender->addToOutputBuffer(RPL_TOPIC(sender->getNickname(),channel));
-			sender->addToOutputBuffer(RPL_TOPICWHOTIME(sender->getNickname(), channel, sender->getNickname(), serv->getCurrentTime()));
+			sender->addToOutputBuffer(RPL_TOPICWHOTIME(sender->getNickname(), channel));
 		}
 	}
 	else if (channel->hasModes(CHANNEL_FLAG_T) && !channel->isOperator(sender))
@@ -287,6 +287,8 @@ void	irc_topic(std::vector<std::string> cmd, Client* sender, Server* serv)
 		if (cmd[2].size() > TOPIC_LEN)
 			cmd[2] = cmd[2].substr(0, TOPIC_LEN);
 		channel->setTopic(cmd[2]);
+		channel->setTopicTime();
+		channel->setTopicWriter(sender->getNickname());
 		channel->sendToClients(RPL_TOPIC(sender->getNickname(),channel), NULL);
 	}
 }

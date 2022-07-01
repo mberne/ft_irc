@@ -55,6 +55,10 @@ class Channel
 		std::string						getName() const;
 		std::string						getTopic() const;
 		void							setTopic(std::string topic);
+		std::string						getTopicTime() const;
+		void							setTopicTime();
+		std::string						getTopicWriter() const;
+		void							setTopicWriter(std::string writer);
 		std::string						getPassword() const;
 		int								clientCount() const;
 		int								getUserLimit() const;
@@ -88,6 +92,8 @@ class Channel
 
 		std::string const					_name;			// cf. comment at end of file
 		std::string							_topic;			// Topic of the channel
+		time_t								_topicTime;
+		std::string							_topicWriter;
 		std::string							_password;		// Channek's password
 		int									_userLimit;		// Maximum of clients that can be connected to the channel
 		mode_t								_modes;			// cf. comment at end of file

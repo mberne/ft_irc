@@ -69,9 +69,9 @@
 
 // Lors de l'envoi d'un message TOPIC pour déterminer le sujet d'un canal, une de ces deux réponses est envoyée.
 // Si le sujet est défini, RPL_TOPIC est renvoyée, sinon c'est RPL_NOTOPIC.
-# define RPL_NOTOPIC(user, channel)						PROMPT(" 331 ", user) + " " + channel->getName() + std::string(" :No topic is set")
-# define RPL_TOPIC(user, channel)						PROMPT(" 332 ", user) + " " + channel->getName() + std::string(" :") + channel->getTopic()
-# define RPL_TOPICWHOTIME(user, channel, name, hour)	PROMPT(" 333 ", user) + " " + channel->getName() + " " + name + " " + hour
+# define RPL_NOTOPIC(user, channel)			PROMPT(" 331 ", user) + " " + channel->getName() + std::string(" :No topic is set")
+# define RPL_TOPIC(user, channel)			PROMPT(" 332 ", user) + " " + channel->getName() + std::string(" :") + channel->getTopic()
+# define RPL_TOPICWHOTIME(user, channel)	PROMPT(" 333 ", user) + " " + channel->getName() + " " + channel->getTopicWriter() + " " + channel->getTopicTime()
 
 // INVITE sans argument
 # define RPL_INVITELIST(user, channel)	PROMPT(" 336 ", user) + " " + channel->getName()
