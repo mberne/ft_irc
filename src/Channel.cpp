@@ -89,6 +89,26 @@ void			Channel::setTopic(std::string topic)
 	_topic = topic;
 }
 
+std::string	Channel::getTopicTime() const
+{
+	return std::to_string(_topicTime);
+}
+
+void	Channel::setTopicTime()
+{
+	_topicTime = time(NULL);
+}
+
+std::string	Channel::getTopicWriter() const
+{
+	return _topicWriter;
+}
+
+void	Channel::setTopicWriter(std::string writer)
+{
+	_topicWriter = writer;
+}
+
 std::string		Channel::getPassword() const
 {
 	return _password;

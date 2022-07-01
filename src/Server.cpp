@@ -90,10 +90,12 @@ std::string	Server::getStartTime() const
 
 std::string	Server::getCurrentTime() const
 {
-	time_t	currentTime = time(NULL);
-	char*	time = asctime(localtime(&currentTime));
+	time_t		currentTime = time(NULL);
+	std::string	time = asctime(localtime(&currentTime));
+	size_t		pos = time.find("  ");
 
-	time[strlen(time) - 1] = '\0'; // Remove '\n';
+	time.erase(pos, 1); // Remove space
+	time.erase(time.size() - 1); // Remove '\n';
 	return time;
 }
 
