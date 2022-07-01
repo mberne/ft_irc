@@ -82,9 +82,11 @@ std::string	Server::getPassword() const
 
 std::string	Server::getStartTime() const
 {
-	char*	time = asctime(localtime(&_startTime));
+	std::string	time = asctime(localtime(&_startTime));
+	size_t		pos = time.find("  ");
 
-	time[strlen(time) - 1] = '\0'; // Remove '\n';
+	time.erase(pos, 1); // Remove space
+	time[time.size() - 1] = '\0'; // Remove '\n';
 	return time;
 }
 
@@ -468,8 +470,6 @@ void	Server::stop(int status)
 
 void		Server::executeCommand(std::vector<std::string>	cmdArgs, Client* sender)
 {
-	// if (!cmdArgs[0].compare("STOP"))
-	// 	stop(0);
 	std::map<std::string, command_t>::iterator it = _commands.find(cmdArgs.front());
 	if (it == _commands.end())
 		sender->addToOutputBuffer(ERR_UNKNOWNCOMMAND(sender->getNickname(), cmdArgs.front()));
