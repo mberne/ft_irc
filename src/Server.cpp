@@ -187,12 +187,12 @@ std::list<std::vector<std::string> >&	Server::getOldNicknames()
 	return _oldNicknames;
 }
 
-void	Server::addClient(int sock)
+void	Server::addClient(int sockfd)
 {
-	Client*		newClient = new Client(sock);
+	Client*		newClient = new Client(sockfd);
 	
 	newClient->setHost(inet_ntoa(_servSocket.sin_addr));
-	_clientsBySock.insert(std::make_pair(sock, newClient));
+	_clientsBySock.insert(std::make_pair(sockfd, newClient));
 
 	addLog("New connexion: " + newClient->getPrefix(), LOG_INFO);
 

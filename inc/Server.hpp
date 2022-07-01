@@ -65,7 +65,7 @@ class Server
 		size_t										getNonRegisteredNumber();
 		void										addOldNickname(Client* client);
 		std::list<std::vector<std::string> >&		getOldNicknames();
-		void										addClient(int sock);
+		void										addClient(int sockfd);
 		void										removeClient(Client *src);
 		void										pingClient(Client* client);
 		std::string									showLonelyClientsList();

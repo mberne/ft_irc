@@ -2,7 +2,7 @@
 
 //~~ CONSTRUCTOR
 
-Client::Client(int sock) : _fd(sock), _modes(0), _connexionStartTime(time(NULL)), _password(false), _retriesLeft(MAX_PASS_ATTEMPT), _lastCmdTime(time(NULL)) {}
+Client::Client(int sockfd) : _fd(sockfd), _modes(0), _connexionStartTime(time(NULL)), _password(false), _retriesLeft(MAX_PASS_ATTEMPT), _lastCmdTime(time(NULL)) {}
 
 Client::Client(std::vector<std::string>	ident) : _nickname(ident[0]), _user(ident[1]), _host(ident[2]), _realName(ident[3]), _connexionStartTime(0) {}
 
@@ -102,7 +102,7 @@ void	Client::setIsPing(bool ping)
 std::string		Client::setModes(std::string modes)
 {
 	std::string		modeString;
-	std::string		charset = "i";
+	std::string		charset = "oi";
 	mode_t			flag = 1;
 
 	for (size_t	i = 0; i < charset.size(); i++)
@@ -124,8 +124,11 @@ std::string		Client::setModes(std::string modes)
 					change = true;
 				_modes &= ~flag;
 			}
-			modeString.push_back(sign);
-			modeString.push_back(charset[i]);
+			if (change)
+			{
+				modeString.push_back(sign);
+				modeString.push_back(charset[i]);
+			}
 		}
 		flag <<= 1;
 	}
