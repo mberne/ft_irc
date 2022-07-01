@@ -120,7 +120,7 @@ void		Server::addLog(std::string message, mode_t type)
 	}
 
 	size_t	start = 0;
-	remove(message.begin(), message.end(), '\r');
+	message.erase(remove(message.begin(), message.end(), '\r'), message.end());
 	for (size_t i = message.find('\n'); i != std::string::npos; i = message.find('\n', start))
 	{
 		std::string		line = message.substr(start, i - start);

@@ -13,6 +13,7 @@
 # include <fstream>
 # include <ctime>
 # include <algorithm>
+# include <climits>
 // Other libs
 # include <unistd.h>
 # include <netdb.h>
