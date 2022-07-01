@@ -246,7 +246,7 @@ std::string		Server::showLonelyClientsList()
 
 	for (std::map<std::string, Client*>::iterator it = _clientsByName.begin(); it != _clientsByName.end(); it++)
 	{
-		if (!it->second->hasModes(CLIENT_FLAG_I))
+		if (!it->second->hasModes(CLIENT_FLAG_I) && it->second->getNumberOfChannels() == 0)
 		{
 			if (it != _clientsByName.begin())
 				clientList += " ";
